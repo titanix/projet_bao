@@ -15,60 +15,64 @@ use warnings;
 use File::Slurp;
 use Encode 'decode';
 
-#-----------------------------------------------------------
 my $rep="$ARGV[0]";
 # on s'assure que le nom du répertoire ne se termine pas par un "/"
 $rep=~ s/[\/]$//;
 # on initialise une variable contenant le flux de sortie 
-my $DUMPFULL1="";
-#----------------------------------------
+$DUMPFULL1="";
+
 my $output1="SORTIE.xml";
 if (!open (FILEOUT,">$output1")) { die "Pb a l'ouverture du fichier $output1"};
-#----------------------------------------
-&parcours_arborescence_fichiers($rep);	#recurse!
-#----------------------------------------
+
+parcours_arborescence_fichiers($rep);
+
 print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 print FILEOUT "<PARCOURS>\n";
-print FILEOUT "<NOM>Votre nom</NOM>\n";
+print FILEOUT "<NOM>Lecailliez ; Genet</NOM>\n";
 print FILEOUT "<FILTRAGE>".$DUMPFULL1."</FILTRAGE>\n";
 print FILEOUT "</PARCOURS>\n";
 close(FILEOUT);
 exit;
 
+print $DUMPFULL1;
+
 sub parcours_arborescence_fichiers {
-    my $path = shift(@_);
+    my ($path, $output) = @_;
     opendir(DIR, $path) or die "can't open $path: $!\n";
+    
     my @files = readdir(DIR);
     closedir(DIR);
+    
     foreach my $file (@files) {
 		next if $file =~ /^\.\.?$/;
 		$file = $path."/".$file;
 		if (-d $file) {
-	    	&parcours_arborescence_fichiers($file);#recurse!
+	    	&parcours_arborescence_fichiers($file);
 		}
 		if (-f $file) {
-#       TRAITEMENT à réaliser sur chaque fichier
-#       Insérer ici votre code (le filtreur)
-
 			if($file =~ /\.xml$/i)
 			{
 				my $file_content = read_file($file);
-				
 				$file_content = decode("iso-8859-1", $file_content); 
+				
+				my @channel_title = extract_tag_content($file_content, "title");
+				$DUMPFULL1 .= "<rubrique>${channel_title[0]}</rubrique>\n";
 				
 				foreach $item(extract_tag_content($file_content, "item"))
 				{
-					print "----------------------------\n";
-					print $item, "\n";
-					print "----------------------------\n";
-				#exit 0;
+					my @titre = extract_tag_content($item, "title");
+					my @descr = extract_tag_content($item, "description");
+					$DUMPFULL1 .= "<titre>${titre[0]}</titre>\n";
+					$DUMPFULL1 .= "<description>${descr[0]}</description>\n";
 				}
-
 			}
 		}
     }
 }
 
+# param content : texte xml ˆ traiter
+# param tag : nom (sans crochets) du tag xml dont il faut rŽcupŽrer le contenu
+# return : la liste des contenus du tag contenu dans le texte
 sub extract_tag_content
 {
 	my ($content, $tag) = @_;
@@ -96,16 +100,6 @@ sub extract_tag_content_helper
 	
 	$content = substr($content, $end_tag_index + length($end_tag));
 	
-	if($TRACE)
-	{
-	print "DEBUG ", length($end_tag), "\n";
-	
-	print "next text length ", length($content), "\n";
-	print "start tag index ", $start_tag_index, "\n";
-	print "end tag index ", $end_tag_index, "\n";
-	print "---", "\n";
-	}
-
 	extract_tag_content_helper($content, $tag, $list);
 }
 

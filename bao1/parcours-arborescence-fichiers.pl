@@ -10,7 +10,11 @@ JANVIER 2005
 <FICHIER><NOM>du fichier</NOM></FICHIER><CONTENU>du filtrage</CONTENU></FICHIER>
 DOC
 
+#use strict;
+use warnings;
 use File::Slurp;
+use Encode 'decode';
+
 #-----------------------------------------------------------
 my $rep="$ARGV[0]";
 # on s'assure que le nom du répertoire ne se termine pas par un "/"
@@ -37,31 +41,71 @@ sub parcours_arborescence_fichiers {
     my @files = readdir(DIR);
     closedir(DIR);
     foreach my $file (@files) {
-	next if $file =~ /^\.\.?$/;
-	$file = $path."/".$file;
-	if (-d $file) {
-	    &parcours_arborescence_fichiers($file);#recurse!
-	}
-	if (-f $file) {
+		next if $file =~ /^\.\.?$/;
+		$file = $path."/".$file;
+		if (-d $file) {
+	    	&parcours_arborescence_fichiers($file);#recurse!
+		}
+		if (-f $file) {
 #       TRAITEMENT à réaliser sur chaque fichier
 #       Insérer ici votre code (le filtreur)
 
-print "$file\n";
-		my $file_content = read_file($file);
- &extract_tag_content($file_content, "item");
-	    print $i++,"\n";
-	}
+			if($file =~ /\.xml$/i)
+			{
+				my $file_content = read_file($file);
+				
+				$file_content = decode("iso-8859-1", $file_content); 
+				
+				foreach $item(extract_tag_content($file_content, "item"))
+				{
+					print "----------------------------\n";
+					print $item, "\n";
+					print "----------------------------\n";
+				#exit 0;
+				}
+
+			}
+		}
     }
 }
 
-# extrait le contenu d'une balise XML dont le nom lui passé en paramètre
 sub extract_tag_content
 {
-	my $text = @_[0];
-	my $tag = @_[1];
-	
-	if($text =~ /(<$tag>[^<]*<\/$tag>)/)
-	{
-		return $1;
-	}
+	my ($content, $tag) = @_;
+	my @list = ();
+	extract_tag_content_helper($content, $tag, \@list);
+	return reverse(@list);
 }
+
+sub extract_tag_content_helper
+{
+	my ($content, $tag, $list) = @_;
+	
+	my $start_tag = "<$tag>";
+	my $end_tag = "</$tag>";
+	my $start_tag_index = index($content, $start_tag);	
+	my $end_tag_index = index $content, $end_tag;
+		
+	if($start_tag_index == -1)
+	{
+		return;
+	}
+	
+	unshift @$list, substr($content, $start_tag_index + length($start_tag), 
+			$end_tag_index - length($start_tag) - $start_tag_index);
+	
+	$content = substr($content, $end_tag_index + length($end_tag));
+	
+	if($TRACE)
+	{
+	print "DEBUG ", length($end_tag), "\n";
+	
+	print "next text length ", length($content), "\n";
+	print "start tag index ", $start_tag_index, "\n";
+	print "end tag index ", $end_tag_index, "\n";
+	print "---", "\n";
+	}
+
+	extract_tag_content_helper($content, $tag, $list);
+}
+

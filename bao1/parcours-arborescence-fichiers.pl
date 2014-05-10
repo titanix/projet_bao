@@ -10,7 +10,6 @@ JANVIER 2005
 <FICHIER><NOM>du fichier</NOM></FICHIER><CONTENU>du filtrage</CONTENU></FICHIER>
 DOC
 
-#use strict;
 use warnings;
 use File::Slurp;
 use Encode;
@@ -20,26 +19,33 @@ use HTML::Entities;
 my $rep="$ARGV[0]";
 # on s'assure que le nom du rÈpertoire ne se termine pas par un "/"
 $rep=~ s/[\/]$//;
-# on initialise une variable contenant le flux de sortie 
-$DUMPFULL1="";
+@out_list = (); # contient le contenu extrait des fichiers rss
 
-my $output1="SORTIE.xml";
-if (!open (FILEOUT,">$output1")) { die "Pb a l'ouverture du fichier $output1"};
+my $output_xml="SORTIE.xml";
+if (!open (FILEOUT,">$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
+my $output_txt="sortie.txt";
+if (!open (TXT_OUT,">$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
 
 parcours_arborescence_fichiers($rep);
 
 print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
+print FILEOUT '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
 print FILEOUT "<PARCOURS>\n";
 print FILEOUT "<NOM>Lecailliez ; Genet</NOM>\n";
-print FILEOUT "<FILTRAGE>".$DUMPFULL1."</FILTRAGE>\n";
+print FILEOUT "<FILTRAGE>";
+foreach $pair(@out_list)
+{
+	print FILEOUT "<$pair->[1]>$pair->[0]</$pair->[1]>\n";
+	print TXT_OUT "$pair->[0]\n";
+}
+print FILEOUT "</FILTRAGE>\n";
 print FILEOUT "</PARCOURS>\n";
 close(FILEOUT);
+
 exit;
 
-print $DUMPFULL1;
-
 sub parcours_arborescence_fichiers {
-    my ($path, $output) = @_;
+    my ($path) = @_;
     opendir(DIR, $path) or die "can't open $path: $!\n";
     
     my @files = readdir(DIR);
@@ -55,7 +61,6 @@ sub parcours_arborescence_fichiers {
 			if($file =~ /\.xml$/i)
 			{
 				my $file_content = read_file($file);
-				#$file_content = decode("iso-8859-1", $file_content); 
 				$file_content = decode("Detect", $file_content);
 				
 				# pour une raison inconnue il faut l'appeler 2 fois pour avoir le résultat escompté
@@ -63,7 +68,7 @@ sub parcours_arborescence_fichiers {
 				decode_entities($file_content); 
 				
 				my @titles = extract_tag_content($file_content, "title");
-				$DUMPFULL1 .= "<rubrique>${titles[0]}</rubrique>\n";
+				push(@out_list, [$titles[0], "rubrique"]);
 				
 				foreach $item(extract_tag_content($file_content, "item"))
 				{
@@ -72,8 +77,8 @@ sub parcours_arborescence_fichiers {
 					# précédent le premier item n'est pas constant
 					my @titre = extract_tag_content($item, "title");
 					my @descr = extract_tag_content($item, "description");
-					$DUMPFULL1 .= "<titre>${titre[0]}</titre>\n";
-					$DUMPFULL1 .= "<description>${descr[0]}</description>\n";
+					push(@out_list, [$titre[0], "titre"]);
+					push(@out_list, [$descr[0], "description"]);
 				}
 			}
 		}
@@ -112,4 +117,3 @@ sub extract_tag_content_helper
 	
 	extract_tag_content_helper($content, $tag, $list);
 }
-

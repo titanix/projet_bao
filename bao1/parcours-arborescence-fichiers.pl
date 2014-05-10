@@ -13,7 +13,9 @@ DOC
 #use strict;
 use warnings;
 use File::Slurp;
-use Encode 'decode';
+use Encode;
+require Encode::Detect;
+use HTML::Entities;
 
 my $rep="$ARGV[0]";
 # on s'assure que le nom du rÈpertoire ne se termine pas par un "/"
@@ -53,13 +55,21 @@ sub parcours_arborescence_fichiers {
 			if($file =~ /\.xml$/i)
 			{
 				my $file_content = read_file($file);
-				$file_content = decode("iso-8859-1", $file_content); 
+				#$file_content = decode("iso-8859-1", $file_content); 
+				$file_content = decode("Detect", $file_content);
 				
-				my @channel_title = extract_tag_content($file_content, "title");
-				$DUMPFULL1 .= "<rubrique>${channel_title[0]}</rubrique>\n";
+				# pour une raison inconnue il faut l'appeler 2 fois pour avoir le résultat escompté
+				decode_entities($file_content);
+				decode_entities($file_content); 
+				
+				my @titles = extract_tag_content($file_content, "title");
+				$DUMPFULL1 .= "<rubrique>${titles[0]}</rubrique>\n";
 				
 				foreach $item(extract_tag_content($file_content, "item"))
 				{
+					# en réalité on possède déjà tous les titres du fichiers dans @titles
+					# mais on risque une désynchronisation si le nombre de balises titres
+					# précédent le premier item n'est pas constant
 					my @titre = extract_tag_content($item, "title");
 					my @descr = extract_tag_content($item, "description");
 					$DUMPFULL1 .= "<titre>${titre[0]}</titre>\n";
@@ -78,7 +88,7 @@ sub extract_tag_content
 	my ($content, $tag) = @_;
 	my @list = ();
 	extract_tag_content_helper($content, $tag, \@list);
-	return reverse(@list);
+	return @list;
 }
 
 sub extract_tag_content_helper
@@ -95,7 +105,7 @@ sub extract_tag_content_helper
 		return;
 	}
 	
-	unshift @$list, substr($content, $start_tag_index + length($start_tag), 
+	push @$list, substr($content, $start_tag_index + length($start_tag), 
 			$end_tag_index - length($start_tag) - $start_tag_index);
 	
 	$content = substr($content, $end_tag_index + length($end_tag));

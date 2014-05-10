@@ -62,6 +62,7 @@ sub parcours_arborescence_fichiers {
 			{
 				my $file_content = read_file($file);
 				$file_content = decode("Detect", $file_content);
+				clean_txt(\$file_content);
 				
 				# pour une raison inconnue il faut l'appeler 2 fois pour avoir le résultat escompté
 				decode_entities($file_content);
@@ -116,4 +117,19 @@ sub extract_tag_content_helper
 	$content = substr($content, $end_tag_index + length($end_tag));
 	
 	extract_tag_content_helper($content, $tag, $list);
+}
+
+# param text_ref : référence vers une chaîne à nettoyer
+sub clean_txt
+{
+	my ($text_ref) = @_;
+	# suppression de <![CDATA[ ]]>
+	$$text_ref =~ s/<!\[CDATA\[//g;
+	$$text_ref =~ s/\]\]>//g;
+	# suppression des balises <a>, </a> et <img>
+	$$text_ref =~ s/<a[^>]*>//ig;
+	$$text_ref =~ s/<\/a>//ig;
+	$$text_ref =~ s/<img[^>]*>//ig;
+	# remplacement des & en entités html
+	$$text_ref =~ s/&/&amp;/g;
 }

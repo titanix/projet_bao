@@ -75,11 +75,6 @@ sub parcours_arborescence_fichiers {
 				$file_content = decode("Detect", $file_content);
 				clean_txt(\$file_content);
 				
-				# pour une raison inconnue il faut l'appeler plusieurs fois pour avoir le résultat escompté
-				decode_entities($file_content);
-				decode_entities($file_content); 
-				decode_entities($file_content);
-				
 				my @titles = $proc->($file_content, "title");
 				push(@out_list, [clean(remove_outer_tag($titles[0])), "rubrique"]);
 				
@@ -176,18 +171,27 @@ sub clean_txt
 	# suppression de <![CDATA[ ]]>
 	$$text_ref =~ s/<!\[CDATA\[//g;
 	$$text_ref =~ s/\]\]>//g;
-	# suppression des balises <a>, </a>, <p> et <p> et <img>
+	# suppression des balises <a>, </a> et <img>
 	# il ne faut pas supprimer toutes les balises, car le programme en a besoin de certaines
 	$$text_ref =~ s/<a[^>]*>//ig;
 	$$text_ref =~ s/<\/a>//ig;
 	$$text_ref =~ s/<img[^>]*>//ig;
 	# remplacement des & en entités html
 	$$text_ref =~ s/&/&amp;/g;
+	
+	# pour une raison inconnue il faut l'appeler plusieurs fois pour avoir le résultat escompté
+	decode_entities($$text_ref);
+	decode_entities($$text_ref); 
+	decode_entities($$text_ref);
 }
 
 sub clean
 {
 	my ($text) = @_;
+	
+	$text =~ s/<p>//ig;
+	$text =~ s/<\/p>//ig;
+	
 	return $text;
 }
 

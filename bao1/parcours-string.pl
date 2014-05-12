@@ -30,7 +30,7 @@ sub extract_tag_content_helper
 	}
 	
 	push @$list, substr($content, $start_tag_index, 
-			$end_tag_index - $start_tag_index);
+		$end_tag_index - $start_tag_index + length($end_tag));
 	
 	$content = substr($content, $end_tag_index + length($end_tag));
 	

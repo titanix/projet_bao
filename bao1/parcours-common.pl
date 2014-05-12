@@ -15,9 +15,6 @@ use File::Slurp;
 use Encode;
 require Encode::Detect;
 use HTML::Entities;
-use XML::LibXML;
-use Data::Dumper;
-use Try::Tiny;
 
 # contient le contenu extrait des fichiers rss
 @out_list = (); # je sais, les variables globales c'est mal...
@@ -93,64 +90,6 @@ sub parcours_arborescence_fichiers {
     }
 }
 
-# param $content : texte xml à traiter
-# param $tag : nom (sans crochets) du tag xml dont il faut récupérer le contenu
-# return : la liste des contenus du tag contenu dans le texte
-# note : la balise qui entoure le XML à extraire n'est pas retirée par cette fonction
-sub extract_tag_content
-{
-	my ($content, $tag) = @_;
-	my @list = ();
-	extract_tag_content_helper($content, $tag, \@list);
-	return @list;
-}
-
-sub extract_tag_content_helper
-{
-	my ($content, $tag, $list) = @_;
-	
-	my $start_tag = "<$tag>";
-	my $end_tag = "</$tag>";
-	my $start_tag_index = index($content, $start_tag);	
-	my $end_tag_index = index $content, $end_tag;
-		
-	if($start_tag_index == -1)
-	{
-		return;
-	}
-	
-	push @$list, substr($content, $start_tag_index, 
-			$end_tag_index - $start_tag_index);
-	
-	$content = substr($content, $end_tag_index + length($end_tag));
-	
-	extract_tag_content_helper($content, $tag, $list);
-}
-
-# param $content : texte xml à traiter
-# param $tag : nom (sans crochets) du tag xml dont il faut récupérer le contenu
-# return : la liste des contenus du tag contenu dans le texte
-sub extract_rss
-{
-	my ($content, $tag) = @_;
-	
-	my @list = ();
-	my $parser = new XML::LibXML;
-	
-	try {
-    	my $xml_doc = $parser->parse_string($content);
-
-		foreach	$t ($xml_doc->getElementsByTagName($tag))
-		{
-			push @list, $t->toStringEC14N;
-		}
-	} catch {
-        warn "Erreur dans extract_rss : $_";
-	};
-	
-	return @list;
-}
-
 # param $str : enlève de la chaîne sélectionné la balise qui est censé l'entourer
 # exemple : remove_outer_tag(<a>text</a>) -> text
 sub remove_outer_tag
@@ -195,4 +134,6 @@ sub clean
 	return $text;
 }
 
-main($ARGV[0], \&extract_rss);
+#main($ARGV[0], \&extract_rss);
+
+1; #nécessaire pour que l'importation puisse être réalisé dans d'autres fichiers perl

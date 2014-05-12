@@ -1,0 +1,3 @@
+- bien gérer l'endocage : il faut pouvoir écrire le résultat en utf-8 ou iso au choix
+- tester avec l'archive annuelle
+- gérer les doublons

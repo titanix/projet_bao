@@ -18,6 +18,7 @@ use HTML::Entities;
 
 # contient le contenu extrait des fichiers rss
 @out_list = (); # je sais, les variables globales c'est mal...
+my $processed_files = 0;
 
 sub main
 {
@@ -25,13 +26,15 @@ sub main
 		
 	# on s'assure que le nom du rÈpertoire ne se termine pas par un "/"
 	$rep=~ s/[\/]$//;
-
-	my $output_xml="SORTIE.xml";
-	if (!open (FILEOUT,">$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
-	my $output_txt="sortie.txt";
-	if (!open (TXT_OUT,">$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
-
+	($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+	
 	parcours_arborescence_fichiers($rep, $proc);
+	
+	@months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+	my $output_xml="SORTIE_$mday-$months[$mon]-$hour-$min-$sec.xml";
+	if (!open (FILEOUT,">$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
+	my $output_txt="sortie_$mday-$months[$mon]-$hour-$min-$sec.txt";
+	if (!open (TXT_OUT,">$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
 
 	print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 	print FILEOUT '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
@@ -47,6 +50,9 @@ sub main
 	print FILEOUT "</PARCOURS>\n";
 	close(FILEOUT);
 
+	print "Fichier xml ecrit : $output_xml\n";
+	print "Fichier txt ecrit : $output_txt\n";
+	
 	exit 0;
 }
 
@@ -85,6 +91,8 @@ sub parcours_arborescence_fichiers {
 					push(@out_list, [clean(remove_outer_tag($titre[0])), "titre"]);
 					push(@out_list, [clean(remove_outer_tag($descr[0])), "description"]);
 				}
+				
+				print "File [$file] processed.\n"
 			}
 		}
     }
@@ -96,7 +104,7 @@ sub remove_outer_tag
 {
 	my ($str) = @_;
 	
-	if($str =~ /^(<[^>]+>)/)
+	if(defined($str) && $str =~ /^(<[^>]+>)/)
 	{
 		my $size = length $1;
 		return substr($str, $size, length($str) - (2 * $size + 1));
@@ -133,7 +141,5 @@ sub clean
 	
 	return $text;
 }
-
-#main($ARGV[0], \&extract_rss);
 
 1; #nécessaire pour que l'importation puisse être réalisé dans d'autres fichiers perl

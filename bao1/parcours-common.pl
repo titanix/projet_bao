@@ -38,16 +38,16 @@ sub main
 
 	print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 	print FILEOUT '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
-	print FILEOUT "<PARCOURS>\n";
-	print FILEOUT "<NOM>Lecailliez ; Genet</NOM>\n";
-	print FILEOUT "<FILTRAGE>";
+	print FILEOUT "<parcours>\n";
+	print FILEOUT "<nom>Lecailliez ; Genet</nom>\n";
+	print FILEOUT "<filtrage>";
 	foreach $pair(@out_list)
 	{
-		print FILEOUT "<$pair->[1]>$pair->[0]</$pair->[1]>\n";
+		print FILEOUT "<$pair->[1]><![CDATA[$pair->[0]]]></$pair->[1]>\n";
 		print TXT_OUT "$pair->[0]\n";
 	}
-	print FILEOUT "</FILTRAGE>\n";
-	print FILEOUT "</PARCOURS>\n";
+	print FILEOUT "</filtrage>\n";
+	print FILEOUT "</parcours>\n";
 	close(FILEOUT);
 
 	print "Fichier xml ecrit : $output_xml\n";
@@ -115,14 +115,18 @@ sub remove_outer_tag
 sub clean_txt
 {
 	my ($text_ref) = @_;
+	
+	decode_entities($$text_ref); # de cette manière, on va pouvoir supprimer les balises HTML encodés dans le contenu
+
 	# suppression de <![CDATA[ ]]>
 	$$text_ref =~ s/<!\[CDATA\[//g;
 	$$text_ref =~ s/\]\]>//g;
-	# suppression des balises <a>, </a> et <img>
+	# suppression des balises <a>, </a>, <img> et <br> et ses variantes
 	# il ne faut pas supprimer toutes les balises, car le programme en a besoin de certaines
 	$$text_ref =~ s/<a[^>]*>//ig;
 	$$text_ref =~ s/<\/a>//ig;
 	$$text_ref =~ s/<img[^>]*>//ig;
+	$$text_ref =~ s/<br[^>]*>//ig;
 	# remplacement des & en entités html
 	$$text_ref =~ s/&/&amp;/g;
 	

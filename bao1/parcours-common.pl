@@ -1,20 +1,11 @@
 #/usr/bin/perl
-<<DOC; 
-Votre Nom : 
-JANVIER 2005
- usage : perl parcours-arborescence-fichiers repertoire-a-parcourir
- Le programme prend en entrÈe le nom du rÈpertoire contenant les fichiers
- ‡ traiter
- Le programme construit en sortie un fichier structurÈ contenant sur chaque
- ligne le nom du fichier et le rÈsultat du filtrage :
-<FICHIER><NOM>du fichier</NOM></FICHIER><CONTENU>du filtrage</CONTENU></FICHIER>
-DOC
 
 use warnings;
 use File::Slurp;
 use Encode;
 require Encode::Detect;
 use HTML::Entities;
+use Time::HiRes qw(time);
 
 # contient le contenu extrait des fichiers rss
 @out_list = (); # je sais, les variables globales c'est mal...
@@ -24,13 +15,27 @@ sub main
 {
 	my ($rep, $proc) = @_;
 		
-	# on s'assure que le nom du rÈpertoire ne se termine pas par un "/"
-	$rep=~ s/[\/]$//;
-	($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+	my $start = time();
+	$rep=~ s/[\/]$//; 	# on s'assure que le nom du répertoire ne se termine pas par un "/"
 	
 	parcours_arborescence_fichiers($rep, $proc);
+	write_result(\@out_list);
 	
-	@months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+	my $end = time();
+	printf("Temps d'exécution : %.2f\n", $end - $start);
+
+	exit 0;
+}
+
+# param $list_ref : référence vers la liste qui contient les couples "contenu/item" 
+# à imprimer dans les fichiers de sortie
+sub write_result
+{
+	my ($list_ref) = @_;
+	
+	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+	
 	my $output_xml="SORTIE_$mday-$months[$mon]-$hour-$min-$sec.xml";
 	if (!open (FILEOUT,">$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
 	my $output_txt="sortie_$mday-$months[$mon]-$hour-$min-$sec.txt";
@@ -41,7 +46,7 @@ sub main
 	print FILEOUT "<parcours>\n";
 	print FILEOUT "<nom>Lecailliez ; Genet</nom>\n";
 	print FILEOUT "<filtrage>";
-	foreach $pair(@out_list)
+	foreach my $pair(@$list_ref)
 	{
 		print FILEOUT "<$pair->[1]><![CDATA[$pair->[0]]]></$pair->[1]>\n";
 		print TXT_OUT "$pair->[0]\n";
@@ -52,8 +57,6 @@ sub main
 
 	print "Fichier xml ecrit : $output_xml\n";
 	print "Fichier txt ecrit : $output_txt\n";
-	
-	exit 0;
 }
 
 # param $path : chemin du dossier dont les fichiers sont analysés

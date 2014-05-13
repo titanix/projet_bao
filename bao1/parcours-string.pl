@@ -11,8 +11,31 @@ sub extract_tag_content
 {
 	my ($content, $tag) = @_;
 	my @list = ();
-	extract_tag_content_helper($content, $tag, \@list);
+	extract_tag_content_helper_derec($content, $tag, \@list);
 	return @list;
+}
+
+sub extract_tag_content_helper_derec
+{
+	my ($content, $tag, $list) = @_;
+	
+	my $start_tag = "<$tag>";
+	my $end_tag = "</$tag>";
+	my $start_tag_index = index($content, $start_tag);	
+	my $end_tag_index = index $content, $end_tag;
+	
+	while ($start_tag_index != -1 || !defined($content) || $content eq "")
+	{
+		$start_tag_index = index($content, $start_tag);	
+		$end_tag_index = index $content, $end_tag;
+		
+		push @$list, substr($content, $start_tag_index, 
+			$end_tag_index - $start_tag_index + length($end_tag));
+
+		$content = substr($content, $end_tag_index + length($end_tag));
+		
+
+	}
 }
 
 sub extract_tag_content_helper

@@ -8,10 +8,13 @@ use Encode;
 require Encode::Detect;
 use HTML::Entities;
 use Data::GUID;
+use Time::HiRes qw(time);
 
 sub parallel_main
 {
 	my ($rep) = @_;
+	
+	my $start = time();
 	my $proc = \&extract_tag_content;
 	
 	if(!defined($rep))
@@ -23,7 +26,7 @@ sub parallel_main
 	$rep=~ s/[\/]$//; # on s'assure que le nom du répertoire ne se termine pas par un "/"
 	my @folders = (); # listes des répertoires sur lesquels on travaille
 	my %worker_result = ();
-	my $pm = Parallel::ForkManager->new(3, '/tmp/');
+	my $pm = Parallel::ForkManager->new(4, '/tmp/'); # on travail avec N processus fils, qui sérialisent leurs données dans /tmp
 	
 	# fonction de callback appelée lors de la terminaison d'un processus fils
   	$pm->run_on_finish(sub {
@@ -36,11 +39,13 @@ sub parallel_main
       	}
 	});
 
-	build_subdir_list($rep, \@folders, 2);
+	build_subdir_list($rep, \@folders, 2); # on construit la liste des répertoires que se partageront les processus fils
 
 	foreach my $folder (@folders)
 	{
     	my $pid = $pm->start and next; # on crée un nouveau processus
+    	# à partir de maintenant le code est exécuté dans les processus fils
+    	
 		my @xml_files = (); # on construit la listes des fichiers XML à traiter
 		build_file_list($folder, \@xml_files);
 		my @out_list = ();	
@@ -60,6 +65,7 @@ sub parallel_main
 				push(@out_list, [clean(remove_outer_tag($titre[0])), "titre"]);
 				push(@out_list, [clean(remove_outer_tag($descr[0])), "description"]);
 			}
+			print "File [$file] processed.\n"
     	}
 		$pm->finish(0, \@out_list);  # on met fin au processus enfant
 	}
@@ -95,6 +101,8 @@ sub parallel_main
 	print "Fichier xml ecrit : $output_xml\n";
 	print "Fichier txt ecrit : $output_txt\n";
 	
+	my $end = time();
+	printf("Temps d'exécution : %.2f\n", $end - $start);
 	exit 0;
 }
 

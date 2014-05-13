@@ -7,10 +7,12 @@ use File::Slurp;
 use Encode;
 require Encode::Detect;
 use HTML::Entities;
+use Data::GUID;
 
 sub parallel_main
 {
 	my ($rep) = @_;
+	my $proc = \&extract_tag_content;
 	
 	if(!defined($rep))
 	{
@@ -19,44 +21,76 @@ sub parallel_main
 	}
 	
 	$rep=~ s/[\/]$//; # on s'assure que le nom du répertoire ne se termine pas par un "/"
-	my @files = ();
+	my @folders = (); # listes des répertoires sur lesquels on travaille
 	my %worker_result = ();
-
-	#build_file_list($rep, \@files);
-	build_subdir_list($rep, \@files, 2);
-print Dumper("list content [@files]\n");
-	exit;
+	my $pm = Parallel::ForkManager->new(3, '/tmp/');
 	
-	my $pm = Parallel::ForkManager->new(4);
+	
+	
+	# fonction de callback d'un processus fils
+  $pm -> run_on_finish ( # called BEFORE the first call to start()
+    sub {
+      my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference) = @_;
 
-#print Dumper("list content [@files]\n");
+      # retrieve data structure from child
+      if (defined($data_structure_reference)) {  # children are not forced to send anything
+        #my $string = ${$data_structure_reference};  # child passed a string reference
+        $worker_result{Data::GUID->new->as_string} = @$data_structure_reference;
+        #print "$string\n";
+      } else {  # problems occuring during storage or retrieval will throw a warning
+        print qq|No message received from child process $pid!\n|;
+      }
+    }
+  );
 
-	foreach my $file (@files)
+	
+
+	build_subdir_list($rep, \@folders, 2);
+#print "dir list built\n";
+#exit;
+	foreach my $folder (@folders)
 	{
 		# Forks and returns the pid for the child:
     	my $pid = $pm->start and next;
-print $pid;
-    	my $file_content = read_file($file);
-		$file_content = decode("Detect", $file_content);
-		clean_txt(\$file_content);
+		my @xml_files = (); # on construit la listes des fichiers XML à traiter
+		build_file_list($folder, \@xml_files);
+		#my $guid = Data::GUID->new->as_string; # clefs des résultats du processus
+		my @out_list = ();	
+	
+		foreach my $file (@xml_files) {
+#print "working on file $file\n";
+    		my $file_content = read_file($file);
+			$file_content = decode("Detect", $file_content);
+			clean_txt(\$file_content);
 				
-		my @titles = extract_tag_content($file_content, "title");
-		#push(@out_list, [clean(remove_outer_tag($titles[0])), "rubrique"]);
+			my @titles = extract_tag_content($file_content, "title");
+			push(@out_list, [clean(remove_outer_tag($titles[0])), "rubrique"]);
 				
-		#foreach $item($proc->($file_content, "item"))
-		#{
-		#	my @titre = $proc->($item, "title");
-		#	my @descr = $proc->($item, "description");
-		#	push(@out_list, [clean(remove_outer_tag($titre[0])), "titre"]);
-		#	push(@out_list, [clean(remove_outer_tag($descr[0])), "description"]);
-		#}
+			foreach my $item($proc->($file_content, "item"))
+			{
+				my @titre = $proc->($item, "title");
+				my @descr = $proc->($item, "description");
+				push(@out_list, [clean(remove_outer_tag($titre[0])), "titre"]);
+				push(@out_list, [clean(remove_outer_tag($descr[0])), "description"]);
+			}
+    	}
     	
-    	
+    	#$worker_result{Data::GUID->new->as_string} = @out_list;
+		# send it back to the parent process
+		$pm->finish(0, \@out_list);  # note that it's a scalar REFERENCE, not the scalar itself
+
+
 
     	$pm->finish; # Terminates the child process
 	}
 	$pm->wait_all_children;
 	
+	print "finished!\n";
+	print length(keys(%worker_result)), "\n";
+	foreach my $k (keys(%worker_result)) {
+		print "Clef=$k Valeur=$worker_result{$k}\n";
+	}
+
 	
 	exit 0;
 }

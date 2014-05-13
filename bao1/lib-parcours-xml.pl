@@ -1,5 +1,3 @@
-require 'parcours-common.pl';
-
 use warnings;
 use strict;
 use XML::LibXML;
@@ -8,7 +6,7 @@ use Try::Tiny;
 # param $content : texte xml à traiter
 # param $tag : nom (sans crochets) du tag xml dont il faut récupérer le contenu
 # return : la liste des contenus du tag contenu dans le texte
-sub extract_rss
+sub extract_xml
 {
 	my ($content, $tag) = @_;
 	
@@ -29,4 +27,4 @@ sub extract_rss
 	return @list;
 }
 
-main($ARGV[0], \&extract_rss);
+1;

@@ -1,4 +1,5 @@
-require 'parcours-common.pl';
+require 'lib-parcours-common.pl';
+require 'lib-parcours-string.pl';
 use strict;
 use warnings;
 use Data::Dumper;
@@ -12,7 +13,13 @@ use Time::HiRes qw(time);
 
 sub parallel_main
 {
-	my ($rep) = @_;
+	my ($rep, $nb_proc) = @_;
+
+	if(!defined()) {
+		$nb_proc = 1;
+	} else {
+		$nb_proc = $nb_proc + 0;
+	}
 	
 	my $start = time();
 	my $proc = \&extract_tag_content;
@@ -26,7 +33,7 @@ sub parallel_main
 	$rep=~ s/[\/]$//; # on s'assure que le nom du répertoire ne se termine pas par un "/"
 	my @folders = (); # listes des répertoires sur lesquels on travaille
 	my %worker_result = ();
-	my $pm = Parallel::ForkManager->new(4, '/tmp/'); # on travail avec N processus fils, qui sérialisent leurs données dans /tmp
+	my $pm = Parallel::ForkManager->new($nb_proc, '/tmp/'); # on travail avec N processus fils, qui sérialisent leurs données dans /tmp
 	
 	# fonction de callback appelée lors de la terminaison d'un processus fils
   	$pm->run_on_finish(sub {
@@ -164,36 +171,11 @@ sub build_subdir_list_helper {
     }
 }
 
-
-sub extract_tag_content
+if(!defined($ARGV[0]))
 {
-	my ($content, $tag) = @_;
-	my @list = ();
-	extract_tag_content_helper($content, $tag, \@list);
-	return @list;
+	print "Il manque un argument au script.\n";
+	print "usage : perl parcours-parallel.pl <nom_repertoire>\n";
+	exit 1;
 }
 
-sub extract_tag_content_helper
-{
-	my ($content, $tag, $list) = @_;
-	
-	my $start_tag = "<$tag>";
-	my $end_tag = "</$tag>";
-	my $start_tag_index = index($content, $start_tag);	
-	my $end_tag_index = index $content, $end_tag;
-		
-	if($start_tag_index == -1)
-	{
-		return;
-	}
-	
-	push @$list, substr($content, $start_tag_index, 
-		$end_tag_index - $start_tag_index + length($end_tag));
-	
-	$content = substr($content, $end_tag_index + length($end_tag));
-	
-	extract_tag_content_helper($content, $tag, $list);
-}
-
-
-parallel_main($ARGV[0]);
+parallel_main(@ARGV);

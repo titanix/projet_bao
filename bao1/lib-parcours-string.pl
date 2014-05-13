@@ -1,5 +1,3 @@
-require 'parcours-common.pl';
-
 use warnings;
 use strict;
 
@@ -60,5 +58,4 @@ sub extract_tag_content_helper
 	extract_tag_content_helper($content, $tag, $list);
 }
 
-
-main($ARGV[0], \&extract_tag_content);
+1;

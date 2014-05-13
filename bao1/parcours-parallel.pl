@@ -25,40 +25,27 @@ sub parallel_main
 	my %worker_result = ();
 	my $pm = Parallel::ForkManager->new(3, '/tmp/');
 	
-	
-	
-	# fonction de callback d'un processus fils
-  $pm -> run_on_finish ( # called BEFORE the first call to start()
-    sub {
-      my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference) = @_;
-
-      # retrieve data structure from child
-      if (defined($data_structure_reference)) {  # children are not forced to send anything
-        #my $string = ${$data_structure_reference};  # child passed a string reference
-        $worker_result{Data::GUID->new->as_string} = @$data_structure_reference;
-        #print "$string\n";
-      } else {  # problems occuring during storage or retrieval will throw a warning
-        print qq|No message received from child process $pid!\n|;
-      }
-    }
-  );
-
-	
+	# fonction de callback appelée lors de la terminaison d'un processus fils
+  	$pm->run_on_finish(sub {
+    	my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_struc_ref) = @_;
+      	# on récupère la référence vers la structure de donnée envoyée par le fils, quand c'est le cas
+		if (defined($data_struc_ref)) {
+        	$worker_result{Data::GUID->new->as_string} = $data_struc_ref;
+		} else {  # problems occuring during storage or retrieval will throw a warning
+			print qq|No message received from child process $pid!\n|;
+      	}
+	});
 
 	build_subdir_list($rep, \@folders, 2);
-#print "dir list built\n";
-#exit;
+
 	foreach my $folder (@folders)
 	{
-		# Forks and returns the pid for the child:
-    	my $pid = $pm->start and next;
+    	my $pid = $pm->start and next; # on crée un nouveau processus
 		my @xml_files = (); # on construit la listes des fichiers XML à traiter
 		build_file_list($folder, \@xml_files);
-		#my $guid = Data::GUID->new->as_string; # clefs des résultats du processus
 		my @out_list = ();	
 	
 		foreach my $file (@xml_files) {
-#print "working on file $file\n";
     		my $file_content = read_file($file);
 			$file_content = decode("Detect", $file_content);
 			clean_txt(\$file_content);
@@ -74,23 +61,39 @@ sub parallel_main
 				push(@out_list, [clean(remove_outer_tag($descr[0])), "description"]);
 			}
     	}
-    	
-    	#$worker_result{Data::GUID->new->as_string} = @out_list;
-		# send it back to the parent process
-		$pm->finish(0, \@out_list);  # note that it's a scalar REFERENCE, not the scalar itself
-
-
-
-    	$pm->finish; # Terminates the child process
+		$pm->finish(0, \@out_list);  # on met fin au processus enfant
 	}
 	$pm->wait_all_children;
 	
-	print "finished!\n";
-	print length(keys(%worker_result)), "\n";
-	foreach my $k (keys(%worker_result)) {
-		print "Clef=$k Valeur=$worker_result{$k}\n";
+	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+	my $output_xml="sortie_PARALLEL_$mday-$months[$mon]-$hour-$min-$sec.xml";
+	if (!open (FILEOUT,">$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
+	my $output_txt="sortie_PARALLEL_$mday-$months[$mon]-$hour-$min-$sec.txt";
+	if (!open (TXT_OUT,">$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
+	
+	print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
+	print FILEOUT '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
+	print FILEOUT "<parcours>\n";
+	print FILEOUT "<nom>Lecailliez ; Genet</nom>\n";
+	print FILEOUT "<filtrage>";
+	foreach my $key (keys(%worker_result)) {
+		# normalement les valeurs sont des références vers une liste de tableaux
+		foreach (${worker_result{$key}})
+		{
+			foreach my $pair (@{$_}) # super lisible !
+			{
+			print FILEOUT "<$pair->[1]><![CDATA[$pair->[0]]]></$pair->[1]>\n";
+			print TXT_OUT "$pair->[0]\n";
+			}
+		}
 	}
+	print FILEOUT "</filtrage>\n";
+	print FILEOUT "</parcours>\n";
+	close(FILEOUT);
 
+	print "Fichier xml ecrit : $output_xml\n";
+	print "Fichier txt ecrit : $output_txt\n";
 	
 	exit 0;
 }

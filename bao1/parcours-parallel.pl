@@ -10,13 +10,15 @@ require Encode::Detect;
 use HTML::Entities;
 use Data::GUID;
 use Time::HiRes qw(time);
+use Digest::MD5 qw(md5_base64);
+use Try::Tiny;
 
 sub parallel_main
 {
 	my ($rep, $nb_proc) = @_;
 
 	if(!defined()) {
-		$nb_proc = 1;
+		$nb_proc = 4;
 	} else {
 		$nb_proc = $nb_proc + 0;
 	}
@@ -33,7 +35,7 @@ sub parallel_main
 	$rep=~ s/[\/]$//; # on s'assure que le nom du répertoire ne se termine pas par un "/"
 	my @folders = (); # listes des répertoires sur lesquels on travaille
 	my %worker_result = ();
-	my $pm = Parallel::ForkManager->new($nb_proc, '/tmp/'); # on travail avec N processus fils, qui sérialisent leurs données dans /tmp
+	my $pm = Parallel::ForkManager->new($nb_proc, '/Volumes/ramdisk/tmp'); # on travail avec N processus fils, qui sérialisent leurs données dans /tmp
 	
 	# fonction de callback appelée lors de la terminaison d'un processus fils
   	$pm->run_on_finish(sub {
@@ -78,35 +80,33 @@ sub parallel_main
 	}
 	$pm->wait_all_children;
 	
-	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
-	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
-	my $output_xml="sortie_PARALLEL_$mday-$months[$mon]-$hour-$min-$sec.xml";
-	if (!open (FILEOUT,">$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
-	my $output_txt="sortie_PARALLEL_$mday-$months[$mon]-$hour-$min-$sec.txt";
-	if (!open (TXT_OUT,">$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
+	my @resulting_merged_list = ();
+	my @element_hash = ();
 	
-	print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
-	print FILEOUT '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
-	print FILEOUT "<parcours>\n";
-	print FILEOUT "<nom>Lecailliez ; Genet</nom>\n";
-	print FILEOUT "<filtrage>";
 	foreach my $key (keys(%worker_result)) {
 		# normalement les valeurs sont des références vers une liste de tableaux
 		foreach (${worker_result{$key}})
 		{
 			foreach my $pair (@{$_}) # super lisible !
 			{
-			print FILEOUT "<$pair->[1]><![CDATA[$pair->[0]]]></$pair->[1]>\n";
-			print TXT_OUT "$pair->[0]\n";
+				my $hash;
+				try {
+			 		$hash = md5_base64(decode_utf8($pair->[0])) or die "$!\n";
+				} catch { 
+					# TODO : faire un truc plus sérieux
+					warn "Erreur : $_"; 
+				};
+				if(!($hash ~~ @element_hash))
+				{
+					push(@resulting_merged_list, $pair);
+					push(@element_hash, $hash);
+				}
+				# else { print "one item skipped of type $pair->[1]\n"; }
 			}
 		}
 	}
-	print FILEOUT "</filtrage>\n";
-	print FILEOUT "</parcours>\n";
-	close(FILEOUT);
 
-	print "Fichier xml ecrit : $output_xml\n";
-	print "Fichier txt ecrit : $output_txt\n";
+	write_result(\@resulting_merged_list);
 	
 	my $end = time();
 	printf("Temps d'exécution : %.2f\n", $end - $start);

@@ -27,38 +27,6 @@ sub main
 	exit 0;
 }
 
-# param $list_ref : référence vers la liste qui contient les couples "contenu/item" 
-# à imprimer dans les fichiers de sortie
-sub write_result
-{
-	my ($list_ref) = @_;
-	
-	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
-	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
-	
-	my $output_xml="SORTIE_$mday-$months[$mon]-$hour-$min-$sec.xml";
-	if (!open (FILEOUT,">$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
-	my $output_txt="sortie_$mday-$months[$mon]-$hour-$min-$sec.txt";
-	if (!open (TXT_OUT,">$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
-
-	print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
-	print FILEOUT '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
-	print FILEOUT "<parcours>\n";
-	print FILEOUT "<nom>Lecailliez ; Genet</nom>\n";
-	print FILEOUT "<filtrage>";
-	foreach my $pair(@$list_ref)
-	{
-		print FILEOUT "<$pair->[1]><![CDATA[$pair->[0]]]></$pair->[1]>\n";
-		print TXT_OUT "$pair->[0]\n";
-	}
-	print FILEOUT "</filtrage>\n";
-	print FILEOUT "</parcours>\n";
-	close(FILEOUT);
-
-	print "Fichier xml ecrit : $output_xml\n";
-	print "Fichier txt ecrit : $output_txt\n";
-}
-
 # param $path : chemin du dossier dont les fichiers sont analysés
 # param $proc : référence vers la fonction d'extraction qui opère sur des fragments XML
 sub parcours_arborescence_fichiers {
@@ -99,6 +67,38 @@ sub parcours_arborescence_fichiers {
 			}
 		}
     }
+}
+
+# param $list_ref : référence vers la liste qui contient les couples "contenu/item" 
+# à imprimer dans les fichiers de sortie
+sub write_result
+{
+	my ($list_ref) = @_;
+	
+	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+	
+	my $output_xml="SORTIE_$mday-$months[$mon]-$hour-$min-$sec.xml";
+	if (!open (FILEOUT,">$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
+	my $output_txt="sortie_$mday-$months[$mon]-$hour-$min-$sec.txt";
+	if (!open (TXT_OUT,">$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
+
+	print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
+	print FILEOUT '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
+	print FILEOUT "<parcours>\n";
+	print FILEOUT "<nom>Lecailliez ; Genet</nom>\n";
+	print FILEOUT "<filtrage>";
+	foreach my $pair(@$list_ref)
+	{
+		print FILEOUT "<$pair->[1]><![CDATA[$pair->[0]]]></$pair->[1]>\n";
+		print TXT_OUT "$pair->[0]\n";
+	}
+	print FILEOUT "</filtrage>\n";
+	print FILEOUT "</parcours>\n";
+	close(FILEOUT);
+
+	print "Fichier xml ecrit : $output_xml\n";
+	print "Fichier txt ecrit : $output_txt\n";
 }
 
 # param $str : enlève de la chaîne sélectionné la balise qui est censé l'entourer

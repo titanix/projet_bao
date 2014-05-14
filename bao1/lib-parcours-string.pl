@@ -9,7 +9,7 @@ sub extract_tag_content
 {
 	my ($content, $tag) = @_;
 	my @list = ();
-	extract_tag_content_helper_derec($content, $tag, \@list);
+	extract_tag_content_helper($content, $tag, \@list);
 	return @list;
 }
 
@@ -22,10 +22,15 @@ sub extract_tag_content_helper_derec
 	my $start_tag_index = index($content, $start_tag);	
 	my $end_tag_index = index $content, $end_tag;
 	
-	while ($start_tag_index != -1 || !defined($content) || $content eq "")
+	while ($start_tag_index != -1 && defined($content) && $content ne "")
+	#while ($start_tag_index != -1 || !defined($content) || $content eq "")
 	{
 		$start_tag_index = index($content, $start_tag);	
 		$end_tag_index = index $content, $end_tag;
+		
+		my $temp = substr($content, $start_tag_index, 
+			$end_tag_index - $start_tag_index + length($end_tag));
+		if($temp eq "") { return; }
 		
 		push @$list, substr($content, $start_tag_index, 
 			$end_tag_index - $start_tag_index + length($end_tag));

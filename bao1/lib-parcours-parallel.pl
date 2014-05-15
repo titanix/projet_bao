@@ -166,6 +166,7 @@ sub build_subdir_list_helper {
 
     foreach my $file (@files) {    
 		next if $file =~ /^\.\.?$/;
+		next if $file =~ /^fil/;
 		$file = $dir."/".$file;
 		if (-d $file && ($depth < $max_depth)) {
 	    	build_subdir_list_helper($file, $list_ref, $max_depth, $depth + 1);

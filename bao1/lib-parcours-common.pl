@@ -41,6 +41,7 @@ sub parcours_arborescence_fichiers {
     
     foreach my $file (@files) {    
 		next if $file =~ /^\.\.?$/;
+		next if $file =~ /^fil/;
 		$file = $path."/".$file;
 		if (-d $file) {
 	    	parcours_arborescence_fichiers($file, $proc);

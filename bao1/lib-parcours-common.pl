@@ -93,6 +93,7 @@ sub write_result
 	print FILEOUT "<parcours>\n";
 	print FILEOUT "<nom>Lecailliez ; Genet</nom>\n";
 	print FILEOUT "<filtrage>";
+
 	foreach my $pair(@$list_ref)
 	{
 		print FILEOUT "<$pair->[1]><![CDATA[$pair->[0]]]></$pair->[1]>\n";
@@ -148,7 +149,7 @@ sub clean_txt_copy
 {
 	my ($text) = @_;
 	
-	decode_entities($text_ref); # de cette manière, on va pouvoir supprimer les balises HTML encodés dans le contenu
+	decode_entities($text); # de cette manière, on va pouvoir supprimer les balises HTML encodés dans le contenu
 
 	# suppression de <![CDATA[ ]]>
 	$text =~ s/<!\[CDATA\[//g;

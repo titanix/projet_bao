@@ -13,9 +13,13 @@ use Time::HiRes qw(time);
 use Digest::MD5 qw(md5_base64);
 use Try::Tiny;
 
+# param $rep : répertoire à parcourir
+# param $extract_fun : référence vers la fonction d'extration à utiliser
+# param[opt] $nb_proc : nombre de processus maximal à forker
+# param[opt] $out_dir : répertoire de sortie des fichiers résultats écrits
 sub parallel_main
 {
-	my ($rep, $nb_proc) = @_;
+	my ($rep, $extract_fun, $nb_proc, $out_dir) = @_;
 
 	if(!defined()) {
 		$nb_proc = 4;
@@ -83,6 +87,7 @@ sub parallel_main
 	my @resulting_merged_list = ();
 	my @element_hash = ();
 	
+	# on construit la liste finale de résultat à partir des listes générées par les processus fils
 	foreach my $key (keys(%worker_result)) {
 		# normalement les valeurs sont des références vers une liste de tableaux
 		foreach (${worker_result{$key}})
@@ -106,7 +111,7 @@ sub parallel_main
 		}
 	}
 
-	write_result(\@resulting_merged_list);
+	write_result(\@resulting_merged_list, $out_dir);
 	
 	my $end = time();
 	printf("Temps d'exécution : %.2f\n", $end - $start);
@@ -143,7 +148,7 @@ sub build_file_list {
     }
 }
 
-# construit une liste des répertoire contenu dans le dossier passé en paramètre
+# construit une liste des répertoires contenus dans le dossier passé en paramètre
 # avec une profondeur maximale
 sub build_subdir_list {
     my ($dir, $list_ref, $max_depth) = @_;
@@ -171,11 +176,4 @@ sub build_subdir_list_helper {
     }
 }
 
-if(!defined($ARGV[0]))
-{
-	print "Il manque un argument au script.\n";
-	print "usage : perl parcours-parallel.pl <nom_repertoire>\n";
-	exit 1;
-}
-
-parallel_main(@ARGV);
+1;

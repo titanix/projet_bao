@@ -13,13 +13,13 @@ my $processed_files = 0;
 
 sub main
 {
-	my ($rep, $proc) = @_;
+	my ($rep, $proc, $out_dir) = @_;
 		
 	my $start = time();
 	$rep=~ s/[\/]$//; 	# on s'assure que le nom du répertoire ne se termine pas par un "/"
 	
 	parcours_arborescence_fichiers($rep, $proc);
-	write_result(\@out_list);
+	write_result(\@out_list, $out_dir);
 	
 	my $end = time();
 	printf("Temps d'exécution : %.2f\n", $end - $start);

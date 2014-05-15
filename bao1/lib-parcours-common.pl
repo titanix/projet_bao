@@ -83,9 +83,9 @@ sub write_result
 	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
 	
 	my $output_xml="$output_dir/SORTIE_$mday-$months[$mon]-$hour-$min-$sec.xml";
-	if (!open (FILEOUT,">$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
+	if (!open (FILEOUT, ">:encoding(UTF-8)", "$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
 	my $output_txt="$output_dir/sortie_$mday-$months[$mon]-$hour-$min-$sec.txt";
-	if (!open (TXT_OUT,">$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
+	if (!open (TXT_OUT, ">:encoding(UTF-8)", "$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
 
 	print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 	print FILEOUT '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";

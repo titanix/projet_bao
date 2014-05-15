@@ -98,7 +98,7 @@ sub parallel_main
 			{
 				my $hash;
 				try {
-			 		$hash = md5_base64(decode_utf8($pair->[0])) or die "$!\n";
+			 		$hash = md5_base64(encode_utf8($pair->[0])) or die "$!\n";
 				} catch { 
 					# TODO : faire un truc plus sérieux
 					warn "Erreur : $_"; 

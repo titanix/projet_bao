@@ -19,19 +19,19 @@ sub main
 	my $out_dir = $conf_ref->{'out_dir'};
 	my $start = time();
 	
-	$rep=~ s/[\/]$//; 	# on s'assure que le nom du répertoire ne se termine pas par un "/"
+	$rep=~ s/[\/]$//; 	# on s'assure que le nom du r√©pertoire ne se termine pas par un "/"
 	
 	parcours_arborescence_fichiers($rep, $proc);
 	write_result(\@out_list, $out_dir);
 	
 	my $end = time();
-	printf("Temps d'exécution : %.2f\n", $end - $start);
+	printf("Temps d'ex√©cution : %.2f\n", $end - $start);
 
 	exit 0;
 }
 
-# param $path : chemin du dossier dont les fichiers sont analysés
-# param $proc : référence vers la fonction d'extraction qui opère sur des fragments XML
+# param $path : chemin du dossier dont les fichiers sont analys√©s
+# param $proc : r√©f√©rence vers la fonction d'extraction qui op√®re sur des fragments XML
 sub parcours_arborescence_fichiers {
     my ($path, $proc) = @_;
     opendir(DIR, $path) or die "can't open $path: $!\n";
@@ -56,9 +56,9 @@ sub parcours_arborescence_fichiers {
 				
 				foreach $item($proc->($file_content, "item"))
 				{
-					# en réalité on possède déjà tous les titres du fichiers dans @titles
-					# mais on risque une désynchronisation si le nombre de balises titres
-					# précédent le premier item n'est pas constant
+					# en r√©alit√© on poss√®de d√©j√† tous les titres du fichiers dans @titles
+					# mais on risque une d√©synchronisation si le nombre de balises titres
+					# pr√©c√©dent le premier item n'est pas constant
 					my @titre = $proc->($item, "title");
 					my @descr = $proc->($item, "description");
 					push(@out_list, [clean(remove_outer_tag($titre[0])), "titre"]);
@@ -71,7 +71,7 @@ sub parcours_arborescence_fichiers {
     }
 }
 
-# param $list_ref : référence vers la liste qui contient les couples "contenu/item" à imprimer dans les fichiers de sortie
+# param $list_ref : r√©f√©rence vers la liste qui contient les couples "contenu/item" √† imprimer dans les fichiers de sortie
 # param[opt] $output_dir : chemin de base du dossier qui contiendra les fichiers de sorties
 sub write_result
 {
@@ -105,7 +105,7 @@ sub write_result
 	print "Fichier txt ecrit : $output_txt\n";
 }
 
-# param $str : enlève de la chaîne sélectionné la balise qui est censé l'entourer
+# param $str : enl√®ve de la cha√Æne s√©lectionn√© la balise qui est cens√© l'entourer
 # exemple : remove_outer_tag(<a>text</a>) -> text
 sub remove_outer_tag
 {
@@ -118,12 +118,12 @@ sub remove_outer_tag
 	}
 }
 
-# param $text_ref : référence vers une chaîne à nettoyer
+# param $text_ref : r√©f√©rence vers une cha√Æne √† nettoyer
 sub clean_txt
 {
 	my ($text_ref) = @_;
 	
-	decode_entities($$text_ref); # de cette manière, on va pouvoir supprimer les balises HTML encodés dans le contenu
+	decode_entities($$text_ref); # de cette mani√®re, on va pouvoir supprimer les balises HTML encod√©s dans le contenu
 
 	# suppression de <![CDATA[ ]]>
 	$$text_ref =~ s/<!\[CDATA\[//g;
@@ -134,10 +134,10 @@ sub clean_txt
 	$$text_ref =~ s/<\/a>//ig;
 	$$text_ref =~ s/<img[^>]*>//ig;
 	$$text_ref =~ s/<br[^>]*>//ig;
-	# remplacement des & en entités html
+	# remplacement des & en entit√©s html
 	$$text_ref =~ s/&/&amp;/g;
 	
-	# pour une raison inconnue il faut l'appeler plusieurs fois pour avoir le résultat escompté
+	# pour une raison inconnue il faut l'appeler plusieurs fois pour avoir le r√©sultat escompt√©
 	decode_entities($$text_ref);
 	decode_entities($$text_ref); 
 	decode_entities($$text_ref);
@@ -147,7 +147,7 @@ sub clean_txt_copy
 {
 	my ($text) = @_;
 	
-	decode_entities($text_ref); # de cette manière, on va pouvoir supprimer les balises HTML encodés dans le contenu
+	decode_entities($text_ref); # de cette mani√®re, on va pouvoir supprimer les balises HTML encod√©s dans le contenu
 
 	# suppression de <![CDATA[ ]]>
 	$text =~ s/<!\[CDATA\[//g;
@@ -158,10 +158,10 @@ sub clean_txt_copy
 	$text =~ s/<\/a>//ig;
 	$text =~ s/<img[^>]*>//ig;
 	$text =~ s/<br[^>]*>//ig;
-	# remplacement des & en entités html
+	# remplacement des & en entit√©s html
 	$text =~ s/&/&amp;/g;
 	
-	# pour une raison inconnue il faut l'appeler plusieurs fois pour avoir le résultat escompté
+	# pour une raison inconnue il faut l'appeler plusieurs fois pour avoir le r√©sultat escompt√©
 	decode_entities($text);
 	decode_entities($text); 
 	decode_entities($text); 
@@ -181,4 +181,4 @@ sub clean
 	return $text;
 }
 
-1; #nécessaire pour que l'importation puisse être réalisé dans d'autres fichiers perl
+1; #n√©cessaire pour que l'importation puisse √™tre r√©alis√© dans d'autres fichiers perl

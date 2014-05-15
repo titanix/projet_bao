@@ -5,13 +5,6 @@ require 'lib-parcours-string.pl';
 require 'lib-parcours-xml.pl';
 require 'lib-parcours-parallel.pl';
 
-#if(!defined$ARGV[0])
-#{
-#	print "Il manque un argument au script.\n";
-#	print "usage : perl parcours-string.pl <nom_repertoire>\n";
-#	exit 1;
-#}
-
 my $extract_fun = \&extract_tag_content;
 
 my $work_dir = ''; # chemin vers le répertoire à analyser
@@ -29,37 +22,43 @@ Les options suivantes sont disponibles (longues et courtes) :
 --xml 				-x	Utilisations de l'extraction xml
 --output_dir=<dossier>		-o	Chemin vers le dossier de sortie
 --proc=N			-p	Nombre de processus maximal utilisé en parallèle
---verbose			-v	Affichage d'informations complémentaires durant l'exécution
+--verbose			-v	Affichage d'informations verbeux [pas implémenté]
 --help				-h	Affichage de ce message d'aide
 END
 
 my $res = GetOptions ('input_dir=s' => \$work_dir, 'output_dir:s' => \$out_dir,
 	'proc:i' => \$proc, 'xml' => \$xml, 'help' => \$help);
 	
-print "arg work_dir : $word_dir\n";
-print "arg out_dir : $out_dir\n";
-print "arg proc : $proc\n";
-print "arg xml : $xml\n";
-print "arg help : $help\n";	
-print "arg verbose : $verbose\n";	
-	
-if($work_dir eq '')
+# en utilisant une telle structure, on peut rajouter plus facilement des paramètres par la suite
+my %conf = 
+(
+	'work_dir' => $work_dir,
+	'out_dir' => $out_dir,
+	'max_proc' => $proc,
+	'use_xml' => $xml
+);
+
+if($help == 1)
+{
+	print $help_text;
+	exit 0;
+}
+if($conf{'work_dir'} eq '')
 {
 	print "Erreur : le répertoire de travail n'est pas fixé.\n";
 	print $help_text;
+	exit 1;
 }
 
-if($xml == 1)
+if($conf{'use_xml'} == 1)
 {
 	$extract_fun = \&extract_xml;
 }
-if($proc > 0)
+if($conf{'max_proc'} > 0)
 {
-	parallel_main($work_dir, $extract_fun, $proc, $out_dir);
+	parallel_main(\%conf, $extract_fun);
 }
 else
 {
-	main($work_dir, $extract_fun, $out_dir);
+	main(\%conf, $extract_fun);
 }
-
-#main($ARGV[0], \&extract_tag_content);

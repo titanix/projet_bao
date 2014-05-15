@@ -13,9 +13,12 @@ my $processed_files = 0;
 
 sub main
 {
-	my ($rep, $proc, $out_dir) = @_;
-		
+	my ($conf_ref, $proc) = @_;
+	
+	my $rep = $conf_ref->{'work_dir'};
+	my $out_dir = $conf_ref->{'out_dir'};
 	my $start = time();
+	
 	$rep=~ s/[\/]$//; 	# on s'assure que le nom du rŽpertoire ne se termine pas par un "/"
 	
 	parcours_arborescence_fichiers($rep, $proc);
@@ -47,7 +50,6 @@ sub parcours_arborescence_fichiers {
 			{
 				my $file_content = read_file($file);
 				$file_content = decode("Detect", $file_content);
-				#clean_txt(\$file_content);
 				
 				my @titles = $proc->($file_content, "title");
 				push(@out_list, [clean(remove_outer_tag($titles[0])), "rubrique"]);

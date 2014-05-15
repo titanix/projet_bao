@@ -19,16 +19,19 @@ use Try::Tiny;
 # param[opt] $out_dir : répertoire de sortie des fichiers résultats écrits
 sub parallel_main
 {
-	my ($rep, $extract_fun, $nb_proc, $out_dir) = @_;
+	my ($conf_ref, $extract_fun) = @_;
+	
+	my $rep = $conf_ref->{'work_dir'};
+	my $out_dir = $conf_ref->{'out_dir'};
+	my $nb_proc = $conf_ref->{'max_proc'};
+	my $proc = $extract_fun;
+	my $start = time();
 
 	if(!defined()) {
 		$nb_proc = 4;
 	} else {
 		$nb_proc = $nb_proc + 0;
 	}
-	
-	my $start = time();
-	my $proc = \&extract_tag_content;
 	
 	if(!defined($rep))
 	{
@@ -66,7 +69,6 @@ sub parallel_main
 		foreach my $file (@xml_files) {
     		my $file_content = read_file($file);
 			$file_content = decode("Detect", $file_content);
-			clean_txt(\$file_content);
 				
 			my @titles = extract_tag_content($file_content, "title");
 			push(@out_list, [clean(remove_outer_tag($titles[0])), "rubrique"]);

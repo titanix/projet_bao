@@ -47,7 +47,7 @@ sub parcours_arborescence_fichiers {
 			{
 				my $file_content = read_file($file);
 				$file_content = decode("Detect", $file_content);
-				clean_txt(\$file_content);
+				#clean_txt(\$file_content);
 				
 				my @titles = $proc->($file_content, "title");
 				push(@out_list, [clean(remove_outer_tag($titles[0])), "rubrique"]);
@@ -69,18 +69,20 @@ sub parcours_arborescence_fichiers {
     }
 }
 
-# param $list_ref : référence vers la liste qui contient les couples "contenu/item" 
-# à imprimer dans les fichiers de sortie
+# param $list_ref : référence vers la liste qui contient les couples "contenu/item" à imprimer dans les fichiers de sortie
+# param[opt] $output_dir : chemin de base du dossier qui contiendra les fichiers de sorties
 sub write_result
 {
-	my ($list_ref) = @_;
+	my ($list_ref, $output_dir) = @_;
+	
+	if(!defined($output_dir)) { $output_dir = "./" }
 	
 	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
 	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
 	
-	my $output_xml="SORTIE_$mday-$months[$mon]-$hour-$min-$sec.xml";
+	my $output_xml="$output_dir/SORTIE_$mday-$months[$mon]-$hour-$min-$sec.xml";
 	if (!open (FILEOUT,">$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
-	my $output_txt="sortie_$mday-$months[$mon]-$hour-$min-$sec.txt";
+	my $output_txt="$output_dir/sortie_$mday-$months[$mon]-$hour-$min-$sec.txt";
 	if (!open (TXT_OUT,">$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
 
 	print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
@@ -139,9 +141,37 @@ sub clean_txt
 	decode_entities($$text_ref);
 }
 
+sub clean_txt_copy
+{
+	my ($text) = @_;
+	
+	decode_entities($text_ref); # de cette manière, on va pouvoir supprimer les balises HTML encodés dans le contenu
+
+	# suppression de <![CDATA[ ]]>
+	$text =~ s/<!\[CDATA\[//g;
+	$text =~ s/\]\]>//g;
+	# suppression des balises <a>, </a>, <img> et <br> et ses variantes
+	# il ne faut pas supprimer toutes les balises, car le programme en a besoin de certaines
+	$text =~ s/<a[^>]*>//ig;
+	$text =~ s/<\/a>//ig;
+	$text =~ s/<img[^>]*>//ig;
+	$text =~ s/<br[^>]*>//ig;
+	# remplacement des & en entités html
+	$text =~ s/&/&amp;/g;
+	
+	# pour une raison inconnue il faut l'appeler plusieurs fois pour avoir le résultat escompté
+	decode_entities($text);
+	decode_entities($text); 
+	decode_entities($text); 
+	
+	return $text;
+}
+
 sub clean
 {
 	my ($text) = @_;
+	
+	$text = clean_txt_copy($text);
 	
 	$text =~ s/<p>//ig;
 	$text =~ s/<\/p>//ig;

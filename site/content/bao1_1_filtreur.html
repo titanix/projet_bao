@@ -1,0 +1,69 @@
+<div id="content">
+<div id='main' class="book">
+    <h1>Code du filtreur</h1>
+  <div><h2>Consignes et code de base</h2>
+
+<p>Il était demandé de modifier le code suivant de façon à :</p>
+<ul>
+<li>Extraire le contenu de la balise titre</li>
+<li>Extraire le contenu de la balise description</li>
+<li>Rendre le programme plus générique</li>
+</ul>
+
+<p>Le code fourni était le suivant :</p>
+<div class="code-block">
+<div class="code-block-header"><span style="font-weight:bold;">filtreur.pl</span></div>
+<div class="code-block-content">
+<pre style="color:#3b3b3b"><span style="color:#af82d4">#!/usr/bin/perl</span>
+<span style="color:#45ae34;font-weight:700">open</span>(FILEINPUT,<span style="color:#666">"<span style="color:#0053ff;font-weight:700">$ARGV</span>[0]"</span>);
+<span style="color:#069;font-weight:700">while</span> (<span style="color:#0053ff;font-weight:700">$ligne</span> = &lt;FILEINPUT>){
+    <span style="color:#069;font-weight:700">if</span> (<span style="color:#0053ff;font-weight:700">$ligne</span>=<span style="color:#666">~/REGEXP/</span>) {
+             <span style="color:#45ae34;font-weight:700">print</span> <span style="color:#0053ff;font-weight:700">$ligne</span>;
+     }
+}
+<span style="color:#45ae34;font-weight:700">close</span>(FILEINPUT);
+</pre>
+</div>
+</div>
+
+<h3>Modifications apportées</h3>
+
+<p>
+Le fichier RSS récupéré à des fins de test ne fait usage que d’un saut de ligne après la déclaration
+ d’une feuille 
+de style XSLT, en conséquence de quoi le code, qui est censé afficher les lignes où sont trouvées 
+le motif désiré, va afficher une ou plusieurs fois le contenu entier du fichier. Il est donc 
+modifié de façon à n’afficher sur la sortie que la partie matchée, et non la ligne entière.
+</p>
+<p>
+En outre, comme les deux premières modifications demandées par le sujet sont des cas particuliers
+dans la troisième, elles sont étés sautées.
+<br/>Le code est rendu plus générique en prenant en argument du script (second argument) le nom de 
+la balise utilisée dans le motif à chercher.
+<p>
+
+
+<div class="code-block">
+<div class="code-block-header"><span style="font-weight:bold;">filtreur-mod.pl</bold></div>
+<div class="code-block-content">
+<pre style="color:#839496"><span style="color:#586e75;font-style:italic">#!/usr/bin/perl</span>
+
+<span style="color:#859900">open</span>(FILEINPUT,<span style="color:#269186"><span style="color:#2aa198">"</span><span style="color:#b58900"><span style="color:#b58900">$</span>ARGV</span>[0]<span style="color:#2aa198">"</span></span>);
+<span style="color:#738a05">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>tag</span> = <span style="color:#b58900"><span style="color:#b58900">$</span>ARGV</span>[1];
+
+<span style="color:#859900">while</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>ligne</span> = &lt;FILEINPUT>){
+<span style="color:#859900">if</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>ligne</span>=<span style="color:#d30102">~/(&lt;$tag>[^&lt;]*&lt;\/$tag>)/</span>) {
+             <span style="color:#859900">print</span> <span style="color:#268bd2"><span style="color:#b58900">$</span>1</span>;
+     }
+}
+<span style="color:#859900">close</span>(FILEINPUT);
+</pre>
+</div>
+</div>
+
+
+
+<div id="nav"><a href="bao1_intro.html">précédent</a> | 
+<a href="bao1_2_function_pointer.html">suivant</a></div></div>
+</div>
+</div>

@@ -1,0 +1,43 @@
+<div id="content">
+<div id='main' class="book">
+    <h1>Intégration à GitHub</h1>
+  <div>
+  <h2>Configuration</h2>
+<p>
+Pour utiliser GitHub, il faut que l'adresse email enregistrée dans la configuration de git
+soit la même que l'adresse principale utilisée sur GitHub.
+<br/>Ce n'était pas mon cas, j'ai donc dû changer ma configuration pour l'adapter.
+</p>
+
+<p>Git peut être configuré à un niveau global (utilisé par tout les projets de 
+l'utilisateur) ou au niveau d'un répertoire local. Les paramètres locaux ont préséance
+sur les globaux.
+</p>
+
+<p>Pour ma part, j'ai choisi de changer les paramètres globaux, pour ne pas avoir à 
+refaire l'opération dans le futur, d'autant plus que l'adresse mail précédemment
+renseignée n'était plus valide.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Commandes git</bold>
+</div>
+<div class="code-block-content">
+# ajout du paramètre global name qui contient mon nom
+git config --global user.name "Louis Lecailliez"
+# modification de l'adresse email (caviardée)
+git config --global user.email "louis....@.....fr"
+# affichage des paramètres globaux
+git config --global -l
+# dans le répertoire du projet, liste tous les paramètres de configuration utilisés
+git config -l
+</div>
+</div>
+
+
+
+<div id="nav"><a href="">précédent</a> | 
+<a href="">suivant</a></div></div>
+</div>
+</div>

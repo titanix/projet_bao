@@ -1,0 +1,75 @@
+h3
+{
+	color: #0388a6;
+}
+
+div.code-block
+{
+	border: 1px dashed #C0C0C0;
+	margin-bottom: 10px;
+}
+
+div.code-block-header
+{
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	display: block;
+	border-bottom: 1px dashed #C0C0C0;
+}
+
+div.code-block-content
+{
+	padding: 10px;
+	display: block;
+}
+
+/* Là, l'utilisation d'un préprocesseur tel que LESS serait utile. */
+div.warning-block
+{
+	border: 1px dashed #CC0000;
+	margin-bottom: 10px;
+}
+
+div.warning-block-header
+{
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	display: block;
+	border-bottom: 1px dashed #CC0000;
+}
+
+div.warning-block-content
+{
+	padding: 10px;
+	display: block;
+}
+
+/* Là, l'utilisation d'un préprocesseur tel que LESS serait utile. */
+div.note-block
+{
+	border: 1px dashed #0066E5;
+	margin-bottom: 10px;
+	/*background-color:#E8F1FF;*/
+	background-color:#EDF4FF;
+	
+}
+
+div.note-block-header
+{
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	display: block;
+	border-bottom: 1px dashed #0066E5;
+}
+
+div.note-block-content
+{
+	padding: 10px;
+	display: block;
+}

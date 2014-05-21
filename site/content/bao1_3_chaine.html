@@ -1,0 +1,117 @@
+<div id="content">
+<div id='main' class="book">
+    <h1>Extraction par chaîne</h1>
+  <div>
+  
+
+<h2>Extraction « manuelle »</h2>
+
+<p>On y est censé utiliser des expressions régulières mais étant donné que pour récupérer 
+le contenu des titres et des descriptions des items, je voulais d’abord récupérer
+le contenu d’un item, puis en extraire le titre et la description, ce n’était pas
+ possible.</p>
+ 
+<p>
+Il aurait en effet fallu pouvoir écrire une expression comme celle-ci :
+<br/>/<item>([^<]*)<\/item>/ 
+<br/>pour matcher le contenu d’un item. 
+</p>
+
+<p>Mais cela ne marche pas, car elle va reconnaître 
+le contenu d’un item jusqu’à rencontrer la première fermeture de balise, puis la 
+présence d’item dans l’expression, qui n’est pas le tag de fermeture  
+effectivement rencontré, va faire qu’il n’y a pas reconnaissance du contenu.</p>
+
+<div class="warning-block">
+<div class="warning-block-header">
+	<span style="font-weight:bold;">Note</bold>
+</div>
+<div class="warning-block-content">
+En réalité il est possible d'obtenir le comportement désiré en utilisant un opérateur
+Perl qui permet d'indiquer qu'on souhaite un match minimum, et d'éviter le comportement
+glouton par défaut.
+<br/>Ceci est une extension du langage des expressions régulières.
+</div>
+</div>
+
+<h3>[todo]</h3>
+
+<p>C’est pourquoi j’ai eu l’idée d’une procédure (extract_tag_content) qui à partir d’un 
+nom de balise donné, va chercher dans le texte donné en paramètre la position de la 
+première balise ouvrante ainsi que celle de la première balise fermante concernée et
+renvoyer le contenu présent entre les deux. L’implémentation est faite avec les
+fonctions index et substr de Perl.</p>
+
+<p>Cette fonction permet donc d’extraire du contenu où plusieurs balises de noms 
+différents sont présentes. Si une balise contient au moins une autre balise du 
+même nom, le résultat renvoyé ne sera pas le résultat attendu.</p>
+
+<p>La procédure effectivement implémentée renvoi la liste des contenus contenu dans
+une balise donnée, dans leur ordre d’apparition dans le fichier. Ainsi, un appel
+pour obtenir le contenu de la balise title va renvoyer en premier lieu la balise
+title enfant du channel, puis celles se trouvant dans les différents items du flux.</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">lib-parcours-string.pl</bold>
+</div>
+<div class="code-block-content">
+<pre style="color:#586e75"><span style="color:#859900">use</span> warnings;
+<span style="color:#859900">use</span> strict;
+
+<span style="color:#586e75;font-style:italic"># param $content : texte xml à traiter</span>
+<span style="color:#586e75;font-style:italic"># param $tag : nom (sans crochets) du tag xml dont il faut récupérer le contenu</span>
+<span style="color:#586e75;font-style:italic"># return : la liste des contenus du tag contenu dans le texte</span>
+<span style="color:#586e75;font-style:italic"># note : la balise qui entoure le XML à extraire n'est pas retirée par cette fonction</span>
+<span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">extract_tag_content</span>
+{
+    <span style="color:#073642;font-weight:700">my</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>tag</span>) = <span style="color:#268bd2"><span style="color:#b58900">@</span>_</span>;
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">@</span>list</span> = ();
+    extract_tag_content_helper(<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>tag</span>, \<span style="color:#b58900"><span style="color:#b58900">@</span>list</span>);
+    <span style="color:#859900">return</span> <span style="color:#b58900"><span style="color:#b58900">@</span>list</span>;
+}
+
+<span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">extract_tag_content_helper</span>
+{
+    <span style="color:#073642;font-weight:700">my</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>tag</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>list</span>) = <span style="color:#268bd2"><span style="color:#b58900">@</span>_</span>;
+    
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>start_tag</span> = <span style="color:#269186"><span style="color:#2aa198">"</span>&lt;<span style="color:#b58900"><span style="color:#b58900">$</span>tag</span>><span style="color:#2aa198">"</span></span>;
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>end_tag</span> = <span style="color:#269186"><span style="color:#2aa198">"</span>&lt;/<span style="color:#b58900"><span style="color:#b58900">$</span>tag</span>><span style="color:#2aa198">"</span></span>;
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>start_tag_index</span> = <span style="color:#859900">index</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>start_tag</span>);  
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>end_tag_index</span> = <span style="color:#859900">index</span> <span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>end_tag</span>;
+        
+    <span style="color:#859900">if</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>start_tag_index</span> == -1)
+    {
+        <span style="color:#859900">return</span>;
+    }
+    
+    <span style="color:#859900">push</span> <span style="color:#b58900"><span style="color:#b58900">@</span>$list</span>, <span style="color:#859900">substr</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>start_tag_index</span>, 
+        <span style="color:#b58900"><span style="color:#b58900">$</span>end_tag_index</span> - <span style="color:#b58900"><span style="color:#b58900">$</span>start_tag_index</span> + <span style="color:#859900">length</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>end_tag</span>));
+    
+    <span style="color:#b58900"><span style="color:#b58900">$</span>content</span> = <span style="color:#859900">substr</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>end_tag_index</span> + <span style="color:#859900">length</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>end_tag</span>));
+    
+    extract_tag_content_helper(<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>tag</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>list</span>);
+}
+
+1;
+</pre>
+</div>
+</div>
+
+<p>On notera que la fonction est récursive terminale. Ainsi, de nombreux appels de
+fonctions sont effectués et l'interpréteur s'en plaint lorsque la chaîne passée en
+paramètre est très longue.</p>
+
+<h3>Dérécursivation</h3>
+
+<p>TODO</p>
+
+
+
+
+
+
+<div id="nav"><a href="">précédent</a> | 
+<a href="">suivant</a></div></div>
+</div>
+</div>

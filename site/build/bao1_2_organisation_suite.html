@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<!-- saved from url=(0023)http://git-scm.com/book -->
+<html lang="en" class="js fontface webkit chrome no-windows no-ie8 wf-adelle-n4-active wf-adelle-n7-active wf-active">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  		<meta charset="utf-8">
+  		<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+		<title>Git - Book</title>
+
+  		<link href="index.css" media="screen" rel="stylesheet" type="text/css">
+  		<link href="louis.css" media="screen" rel="stylesheet" type="text/css">
+
+  		<style type="text/css">.tk-adelle{font-family:"adelle",serif;}</style><link rel="stylesheet" href="http://use.typekit.com/c/1265dd/adelle:n4:n7.XK9:F:2,XKF:F:2/d?3bb2a6e53c9684ffdc9a98ff1f5b2a62be32f57674629b256bf45cc5d898bd33078f6d102fef89283fbbb31e1e08dbab19f40e05a4b4be3e89b3372a143e7a26dcd5dad130c72bab3e8fd8b99a9642fbd1ac9ca2f85adca09826901eba44606d532f918a18db21e3aa7eedc4c96415fb336454aeba9ccc4db2a429ad19d964ab58d4b37e4065f51b76f05e5784b3d8559dc1b815733d6d01c3628dc2ef213aaf691e3a89bf6dd61e2ad9429b23fe4aa8ae920a330c526bf40743ee5dfcd44574840a956bad758ed0eee2b5a93c60d4e7fb298bff1da10e582117053d1df952252f3c620756aa9c01af18b814425fcac6691a37beec766e06872a3e540e07e591a00479af59d5422d070cd9e6028fcffcbc624bd8c4a7d13947ef50a81c4a28244fad90bde4a302">
+  		<script>
+    		//<![CDATA[
+      		try{Typekit.load();}catch(e){}
+    		//]]>
+  		</script>
+	</head>
+<body id="documentation">
+
+  <div class="inner">
+    <header>
+  		<a href="index.html">
+  			<img src="toolbox.png" width="110" height="46" alt="Git">
+  		</a>
+  		<span id="tagline">
+    		<em>--</em>projet-boite-à-outils
+  		</span>
+		<!--<form id="search" action="http://git-scm.com/search/results">
+    		<input id="search-text" name="search" placeholder="Search entire site..." autocomplete="off" type="text">
+  		</form>
+  		<div id="search-results"></div>-->
+	</header>
+  </div> <!-- .inner -->
+
+	<div class="inner">
+      <div id="content-wrapper">
+        <aside class="sidebar">
+  <nav>
+    <ul>
+      <li>
+        <a href="">Sujets chauds</a>
+        <ul class="expanded">
+          <li>
+            <a href="bao1_2_function_pointer.html">Pointeurs de fonction</a>
+          </li>
+          <li>
+            <a href="bao1_5_parallelisation.html">Code parallèle</a>
+          </li>
+          <li>
+            <a href="">Mini-mémo git</a>
+          </li>
+
+        </ul>
+      </li>
+      <li>
+        <a href="">Téléchargements</a>
+      </li>
+    	<li>
+        <a href="">Auteurs</a>
+      </li>
+    </ul>
+    
+    <hr class="sidebar">
+    	<p>Download this book in <a href="https://github.s3.amazonaws.com/media/progit.en.pdf">PDF</a>, <a href="https://github.s3.amazonaws.com/media/pro-git.en.mobi">mobi</a>, or <a href="https://github.s3.amazonaws.com/media/progit.epub">ePub</a> form for free.</p>
+
+  		<p>
+			This book is translated into 
+  			<a href="http://git-scm.com/book/de">German</a>,
+  			<a href="http://git-scm.com/book/zh">中文</a>,
+  			<a href="http://git-scm.com/book/zh-tw">Taiwanese Mandarin</a>,
+  			<a href="http://git-scm.com/book/fr">French</a>,
+  			<a href="http://git-scm.com/book/ja">Japanese</a>.
+		</p>
+	</hr>
+	<hr class="sidebar">
+		<p>
+			The source of this book and the translations are <a href="https://github.com/progit/progit">hosted on GitHub.</a><br>
+			Patches, suggestions, and comments are welcome.
+		</p>
+	</hr>
+  </nav>
+		</aside>
+          <div id="content">
+<div id='main' class="book">
+    <h1>Modularisation du code (suite)</h1>
+  <div>
+  <h2>Préparation à la parallélisation</h2>
+<p>
+Je voulais créer une version parallèle du code, pouvant utiliser les méthodes d'extraction
+déjà créées. Il fallait donc modifier les fichiers de façon à ce qu'ils puissent être
+inclus dans les scripts parallèles et séquentiels.
+</p>
+
+<p>
+Rappel de l'architecture précédente :
+<img src="img/archi_modulaire_1.png" style="margin:0 auto;"/>
+</p>
+
+<p>Les procédures d'extractions définies dans les fichiers parcours-XYZ.pl ont été transférées
+dans des fichiers lib-parcours-XYZ.pl. Les fichiers parcours-*.pl en eux-mêmes ne contiennent
+plus qu'un appel à la procédure <em>main</em> de lib-parcours-common.pl.</p>
+
+<img src="img/archi_modulaire_2.png" style="margin:0 auto;"/>
+
+<p>
+Le fichiers parcours-parallel.pl se base sur certaines procédures de nettoyage du parcours
+commun (séquentiel). Il prend en dépendance les fichiers Perl dont on veut pouvoir utiliser
+les procédures d'extractions (sur l'image, uniquement parcours-string). 
+Il définit une fonction
+<em>parallel_main</em>, qui est appelée en fin de script avec les arguments adéquats.
+</p>
+
+<h3>Architecture finale</h3>
+
+<p>Finalement, cette façon de procéder n'était pas très élégante, puisque les 3 fichiers
+exécutables devaient gérer les arguments passés en ligne de commande pour faire leur appel
+à main ou parallel_main.</p>
+
+</p>Le code a donc été réparti de manière à utiliser un point d'entrée unique : parcours.pl.
+En outre, il centralise les dépendances aux autres bibliothèques.</p>
+
+<img src="img/archi_modulaire_3.png" style="margin:0 auto;"/>
+
+
+<h4>Getopt</h4>
+
+Comme le programme gérait de plus en plus de paramètres fournis au lancement, les parser
+à la main aurait été laborieux. Ainsi, j'ai fait le choix d'utiliser le module 
+Getopt::Long, qui permet d'utiliser des arguments en ligne de commande avec la syntaxe
+des programmes <acronym title="Command Line Interface">CLI</acronym> qui utilisent la
+bibliothèque C GNU <a href="http://en.wikipedia.org/wiki/Getopt"/>getopt_long</a>.
+</p>
+
+<p>De cette manière, il devient plus facile d'ajouter et de retirer des arguments
+durant le développement, le code est réduit et il y a plus de cas d'utilisations
+gérés (syntaxe longue ou courte).</p>
+
+<p>Le dernier changement a été de passer les arguments (en dehors du pointeur de fonction)
+aux procédures main et parallel_main via une table de hashage passée par référence.
+De cette manière, la modification des arguments de ces procédures est simplifiée.</p>
+
+<h3>Le code</h3>
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">parcours.pl</bold>
+</div>
+<div class="code-block-content">
+<pre style="color:#586e75"><span style="color:#859900">use</span> Getopt::Long;
+
+<span style="color:#859900">require</span> <span style="color:#269186"><span style="color:#2aa198">'</span>lib-parcours-common.pl<span style="color:#2aa198">'</span></span>;
+<span style="color:#859900">require</span> <span style="color:#269186"><span style="color:#2aa198">'</span>lib-parcours-string.pl<span style="color:#2aa198">'</span></span>;
+<span style="color:#859900">require</span> <span style="color:#269186"><span style="color:#2aa198">'</span>lib-parcours-xml.pl<span style="color:#2aa198">'</span></span>;
+<span style="color:#859900">require</span> <span style="color:#269186"><span style="color:#2aa198">'</span>lib-parcours-parallel.pl<span style="color:#2aa198">'</span></span>;
+
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>extract_fun</span> = \&amp;extract_tag_content;
+
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>work_dir</span> = <span style="color:#269186"><span style="color:#2aa198">'</span><span style="color:#2aa198">'</span></span>; <span style="color:#586e75;font-style:italic"># chemin vers le répertoire à analyser</span>
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>out_dir</span> = <span style="color:#269186"><span style="color:#2aa198">'</span>.<span style="color:#2aa198">'</span></span>; <span style="color:#586e75;font-style:italic"># chemin vers le répertoire de sortie</span>
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>proc</span> = 0; <span style="color:#586e75;font-style:italic"># nombre de processus maximal utilisé</span>
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>xml</span> = 0; <span style="color:#586e75;font-style:italic"># utilisation de l'extraction xml</span>
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>help</span> = 0; <span style="color:#586e75;font-style:italic"># affichage de l'aide</span>
+
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>help_text</span> = <span style="color:#2aa198">&lt;&lt;END</span>;<span style="color:#2aa198">
+usage : perl parcours.pl --input_dir=&lt;dossier_entrée> [options]
+
+Les options suivantes sont disponibles (longues et courtes) :
+--xml               -x  Utilisations de l'extraction xml
+--output_dir=&lt;dossier>      -o  Chemin vers le dossier de sortie
+--proc=N            -p  Nombre de processus maximal utilisé en parallèle
+--verbose           -v  Affichage d'informations verbeux [pas implémenté]
+--help              -h  Affichage de ce message d'aide
+</span><span style="color:#2aa198">END</span>
+
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>res</span> = GetOptions (<span style="color:#269186"><span style="color:#2aa198">'</span>input_dir=s<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> \<span style="color:#b58900"><span style="color:#b58900">$</span>work_dir</span>, <span style="color:#269186"><span style="color:#2aa198">'</span>output_dir:s<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> \<span style="color:#b58900"><span style="color:#b58900">$</span>out_dir</span>,
+    <span style="color:#269186"><span style="color:#2aa198">'</span>proc:i<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> \<span style="color:#b58900"><span style="color:#b58900">$</span>proc</span>, <span style="color:#269186"><span style="color:#2aa198">'</span>xml<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> \<span style="color:#b58900"><span style="color:#b58900">$</span>xml</span>, <span style="color:#269186"><span style="color:#2aa198">'</span>help<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> \<span style="color:#b58900"><span style="color:#b58900">$</span>help</span>);
+    
+<span style="color:#586e75;font-style:italic"># en utilisant une telle structure, on peut rajouter plus facilement des paramètres par la suite</span>
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">%</span>conf</span> = 
+(
+    <span style="color:#269186"><span style="color:#2aa198">'</span>work_dir<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> <span style="color:#b58900"><span style="color:#b58900">$</span>work_dir</span>,
+    <span style="color:#269186"><span style="color:#2aa198">'</span>out_dir<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> <span style="color:#b58900"><span style="color:#b58900">$</span>out_dir</span>,
+    <span style="color:#269186"><span style="color:#2aa198">'</span>max_proc<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> <span style="color:#b58900"><span style="color:#b58900">$</span>proc</span>,
+    <span style="color:#269186"><span style="color:#2aa198">'</span>use_xml<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> <span style="color:#b58900"><span style="color:#b58900">$</span>xml</span>
+);
+
+<span style="color:#859900">if</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>help</span> == 1)
+{
+    <span style="color:#859900">print</span> <span style="color:#b58900"><span style="color:#b58900">$</span>help_text</span>;
+    <span style="color:#859900">exit</span> 0;
+}
+<span style="color:#859900">if</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>conf</span>{<span style="color:#269186"><span style="color:#2aa198">'</span>work_dir<span style="color:#2aa198">'</span></span>} <span style="color:#859900">eq</span> <span style="color:#269186"><span style="color:#2aa198">'</span><span style="color:#2aa198">'</span></span>)
+{
+    <span style="color:#859900">print</span> <span style="color:#269186"><span style="color:#2aa198">"</span>Erreur : le répertoire de travail n'est pas fixé.<span style="color:#dc322f">\n</span><span style="color:#2aa198">"</span></span>;
+    <span style="color:#859900">print</span> <span style="color:#b58900"><span style="color:#b58900">$</span>help_text</span>;
+    <span style="color:#859900">exit</span> 1;
+}
+
+<span style="color:#859900">if</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>conf</span>{<span style="color:#269186"><span style="color:#2aa198">'</span>use_xml<span style="color:#2aa198">'</span></span>} == 1)
+{
+    <span style="color:#b58900"><span style="color:#b58900">$</span>extract_fun</span> = \&amp;extract_xml;
+}
+<span style="color:#859900">if</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>conf</span>{<span style="color:#269186"><span style="color:#2aa198">'</span>max_proc<span style="color:#2aa198">'</span></span>} > 0)
+{
+    parallel_main(\<span style="color:#b58900"><span style="color:#b58900">%</span>conf</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>extract_fun</span>);
+}
+<span style="color:#859900">else</span>
+{
+    main(\<span style="color:#b58900"><span style="color:#b58900">%</span>conf</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>extract_fun</span>);
+}
+
+</pre>
+</div>
+</div>
+
+
+
+<div id="nav"><a href="bao1_2_organisation.html">précédent</a> | 
+<a href="bao1_3_chaine.html">suivant</a></div></div>
+</div>
+</div>
+      </div>
+      <footer>
+  <div class="site-source">
+    Design du site <a href="https://github.com/git/git-scm.com/blob/master/MIT-LICENSE.txt">licence open-source</a>.<br>
+    Patches, suggestions, and comments are welcome.
+  </div>
+  <div class="sfc-member">
+    Git is a member of <a href="http://git-scm.com/sfc">Software Freedom Conservancy</a>
+  </div>
+</footer>
+
+    </div>
+</body></html>

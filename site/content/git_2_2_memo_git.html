@@ -2,48 +2,61 @@
 <div id='main' class="book">
     <h1>Modularisation du code</h1>
   <div>
-  <h2>...</h2>
-
-<p></p>
-
+  
+  
+  <h2>Actions de base</h2>
 <dl>
 <dt>Création d’un repository pour le dossier courant (récursif)</dt>
 <dd>git init</dd>
 
 <dt>Ajout d’un fichier aux fichiers à ajouter au dépot au prochain commit</dt>
-<dd>git add &lt;filename&gt;</dd>
+<dd>git add <em>filename</em></dd>
 
 <dt>Voir quel sont les fichiers qui seront ajoutés au prochain commit</dt>
 <dd>git status</dd>
 
 <dt>Sauvegarde d’un état (commit)</dt>
-<dd>git commit –m "&l;message&gt;"</dd>
+<dd>git commit –m "<em>message</em>"</dd>
 
 <dt>Revenir à la dernière version sauvegardée d’un fichier</dt>
-<dd>git checkout -- &lt;filename&gt;</dd>
+<dd>git checkout -- <em>filename</em></dd>
 
-<dt>Corriger le message du derneir commit</dt>
+<dt>Corriger le message du dernier commit</dt>
 <dd>git commit --amend -m "Fichier de sortie encodé en UFT8."</dd>
 </dl>
 
-Lister la configuration
-git config -l
-Réécrire l’email de la configuration
-git config --global user.email <mail>
-Ajout du répertoire distant sous le raccourci githubrep
-git remote add githubrep https://github.com/titanix/projet_bao.git
-Liste les répertoires distants enregistrés (alias seulement)
-git remote
-Listes les répertoires distants enregistrés (noms courts et adresse complètes)
-git remote -v
+<h3>Configuration de git</h3>
+
+<dl>
+<dt>Lister la configuration</dt>
+<dd>git config -l</dd>
+
+<dt>Réécrire l’email de la configuration</dt>
+<dd>git config --global user.email <em>mail</em></dd>
+</dl>
 
 
-<div class="code-block">
-<div class="code-block-header">
-	<span style="font-weight:bold;"></bold>
+<h2>Gestion des dépôts distants</h2>
+<dl>
+<dt>Ajout du répertoire distant sous le raccourci githubrep</dt>
+<dd>git remote add githubrep https://github.com/titanix/projet_bao.git</dd>
+
+<dt>Liste les répertoires distants enregistrés (alias seulement)</dt>
+<dd>git remote</dd>
+
+<dt>Listes les répertoires distants enregistrés (noms courts et adresse complètes)</dt>
+<dd>git remote -v</dd>
+</dl>
+
+<div class="warning-block">
+<div class="warning-block-header">
+	<span style="font-weight:bold;">Tomber d'une branche, ça peut faire mal</bold>
 </div>
-<div class="code-block-content">
-
+<div class="warning-block-content">
+Avant de travailler avec les branches, sauvegardez au moyen de la commande <em>commit</em>
+toutes les modifications sur les fichiers suivit par git que vous voulez conserver, car
+quand on revient sur une branche, on arrive sur l'état du dernier commit.
+<br/>J'ai malheureusement perdu un peu de travail de cette manière :(
 </div>
 </div>
 

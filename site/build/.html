@@ -83,7 +83,41 @@
 	</hr>
   </nav>
 		</aside>
-          CONTENT_PLACEHOLDER
+          Une des difficultés de parallélisation du programme vient du manque de structures
+de données thread safe (et lock free tant qu'à faire) dans le langage ou dans sa
+ bibliothèque standard.
+
+En outre, la méthode utilisée fait usage de la classe Parallel:ForkManager, qui n'est
+qu'un wrapper autour de l'appel système fork. Les processus créés utilisent de facto des 
+espaces mémoires différents pour l'écriture (il est fait usage de la technique de copy
+on write par le système, d'où un faible coût de création des processus) ce qui empêchent
+de les faire travailler sur une même structure de données.
+Un premier coût est donc la sérialisation et la désérialisation dans un fichier pour
+passer les résultats au processus père.
+
+Le second coût est celui de réunir les différentes données dans une seule liste. Faire
+cela permet d'utiliser une procédure unique d'écriture dans les fichiers de sortie. Mais
+cela prend beaucoup trop de temps.
+
+size of hash:  12.
+taille de la liste:  22542.
+taille de la liste:  25809.
+taille de la liste:  24174.
+taille de la liste:  26010.
+taille de la liste:  24276.
+taille de la liste:  26010.
+taille de la liste:  26877.
+taille de la liste:  24075.
+taille de la liste:  24593.
+taille de la liste:  26010.
+taille de la liste:  23724.
+taille de la liste:  25998.
+
+On a donc environ 25000 * 12 = 300000 fichiers traités
+
+VS
+
+taille de la liste:  300098.
       </div>
       <footer>
   <div class="site-source">

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<!-- saved from url=(0023)http://git-scm.com/book -->
+<html lang="en" class="js fontface webkit chrome no-windows no-ie8 wf-adelle-n4-active wf-adelle-n7-active wf-active">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  		<meta charset="utf-8">
+  		<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+		<title>Git - Book</title>
+
+  		<link href="http://git-scm.com/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+  		<link href="index.css" media="screen" rel="stylesheet" type="text/css">
+  		<link href="louis.css" media="screen" rel="stylesheet" type="text/css">
+
+  		<style type="text/css">.tk-adelle{font-family:"adelle",serif;}</style><link rel="stylesheet" href="http://use.typekit.com/c/1265dd/adelle:n4:n7.XK9:F:2,XKF:F:2/d?3bb2a6e53c9684ffdc9a98ff1f5b2a62be32f57674629b256bf45cc5d898bd33078f6d102fef89283fbbb31e1e08dbab19f40e05a4b4be3e89b3372a143e7a26dcd5dad130c72bab3e8fd8b99a9642fbd1ac9ca2f85adca09826901eba44606d532f918a18db21e3aa7eedc4c96415fb336454aeba9ccc4db2a429ad19d964ab58d4b37e4065f51b76f05e5784b3d8559dc1b815733d6d01c3628dc2ef213aaf691e3a89bf6dd61e2ad9429b23fe4aa8ae920a330c526bf40743ee5dfcd44574840a956bad758ed0eee2b5a93c60d4e7fb298bff1da10e582117053d1df952252f3c620756aa9c01af18b814425fcac6691a37beec766e06872a3e540e07e591a00479af59d5422d070cd9e6028fcffcbc624bd8c4a7d13947ef50a81c4a28244fad90bde4a302">
+  		<script>
+    		//<![CDATA[
+      		try{Typekit.load();}catch(e){}
+    		//]]>
+  		</script>
+	</head>
+<body id="documentation">
+
+  <div class="inner">
+    <header>
+  		<a href="index.html">
+  			<img src="toolbox.png" width="110" height="46" alt="Git">
+  		</a>
+  		<span id="tagline">
+    		<em>--</em>projet-boite-à-outils
+  		</span>
+		<!--<form id="search" action="http://git-scm.com/search/results">
+    		<input id="search-text" name="search" placeholder="Search entire site..." autocomplete="off" type="text">
+  		</form>
+  		<div id="search-results"></div>-->
+	</header>
+  </div> <!-- .inner -->
+
+	<div class="inner">
+      <div id="content-wrapper">
+        <aside class="sidebar">
+  <nav>
+    <ul>
+      <li>
+        <a href="">À propos</a>
+      </li>
+      <li>
+        <a href="">Sujets chauds</a>
+        <ul class="expanded">
+          <li>
+            <a href="bao1_2_function_pointer.html">Pointeurs de fonction</a>
+          </li>
+          <li>
+            <a href="bao1_5_parallelisation.html">Code parallèle</a>
+          </li>
+          <li>
+            <a href="">Mini-mémo git</a>
+          </li>
+
+        </ul>
+      </li>
+      <li>
+        <a href="">Téléchargements</a>
+      </li>
+    </ul>
+    
+    <hr class="sidebar">
+    	<p>Download this book in <a href="https://github.s3.amazonaws.com/media/progit.en.pdf">PDF</a>, <a href="https://github.s3.amazonaws.com/media/pro-git.en.mobi">mobi</a>, or <a href="https://github.s3.amazonaws.com/media/progit.epub">ePub</a> form for free.</p>
+
+  		<p>
+			This book is translated into 
+  			<a href="http://git-scm.com/book/de">German</a>,
+  			<a href="http://git-scm.com/book/zh">中文</a>,
+  			<a href="http://git-scm.com/book/zh-tw">Taiwanese Mandarin</a>,
+  			<a href="http://git-scm.com/book/fr">French</a>,
+  			<a href="http://git-scm.com/book/ja">Japanese</a>.
+		</p>
+	</hr>
+	<hr class="sidebar">
+		<p>
+			The source of this book and the translations are <a href="https://github.com/progit/progit">hosted on GitHub.</a><br>
+			Patches, suggestions, and comments are welcome.
+		</p>
+	</hr>
+  </nav>
+		</aside>
+          <div id="content">
+          
+
+<div class="book" id="main">
+  <div><h1>Chapter 1</h1><h1>Getting Started</h1>
+
+<p>This chapter will be about getting started with Git.  We will begin at the beginning by explaining some background on version control tools, then move on to how to get Git running on your system and finally how to get it setup to start working with.  At the end of this chapter you should understand why Git is around, why you should use it and you should be all setup to do so.</p>
+
+<div id="nav"><a href="/book">prev</a> | <a href="/book/en/Getting-Started-About-Version-Control">next</a></div></div>
+</div><div class="dropdown-panel" id="chapters-dropdown" style="display: none;">
+  <div class="three-column">
+    <div class="column-left">
+      <ol class="book-toc">
+  <li class="chapter">
+  <h2>1. <a href="/book/en/Getting-Started">Getting Started</a></h2>
+    <ol>
+          <li>
+            1.1
+            <a href="/book/en/Getting-Started-About-Version-Control">About Version Control</a>
+          </li>
+          <li>
+            1.2
+            <a href="/book/en/Getting-Started-A-Short-History-of-Git">A Short History of Git</a>
+          </li>
+          <li>
+            1.3
+            <a href="/book/en/Getting-Started-Git-Basics">Git Basics</a>
+          </li>
+          <li>
+            1.4
+            <a href="/book/en/Getting-Started-Installing-Git">Installing Git</a>
+          </li>
+          <li>
+            1.5
+            <a href="/book/en/Getting-Started-First-Time-Git-Setup">First-Time Git Setup</a>
+          </li>
+          <li>
+            1.6
+            <a href="/book/en/Getting-Started-Getting-Help">Getting Help</a>
+          </li>
+          <li>
+            1.7
+            <a href="/book/en/Getting-Started-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class="chapter">
+  <h2>2. <a href="/book/en/Git-Basics">Git Basics</a></h2>
+    <ol>
+          <li>
+            2.1
+            <a href="/book/en/Git-Basics-Getting-a-Git-Repository">Getting a Git Repository</a>
+          </li>
+          <li>
+            2.2
+            <a href="/book/en/Git-Basics-Recording-Changes-to-the-Repository">Recording Changes to the Repository</a>
+          </li>
+          <li>
+            2.3
+            <a href="/book/en/Git-Basics-Viewing-the-Commit-History">Viewing the Commit History</a>
+          </li>
+          <li>
+            2.4
+            <a href="/book/en/Git-Basics-Undoing-Things">Undoing Things</a>
+          </li>
+          <li>
+            2.5
+            <a href="/book/en/Git-Basics-Working-with-Remotes">Working with Remotes</a>
+          </li>
+          <li>
+            2.6
+            <a href="/book/en/Git-Basics-Tagging">Tagging</a>
+          </li>
+          <li>
+            2.7
+            <a href="/book/en/Git-Basics-Tips-and-Tricks">Tips and Tricks</a>
+          </li>
+          <li>
+            2.8
+            <a href="/book/en/Git-Basics-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class="chapter">
+  <h2>3. <a href="/book/en/Git-Branching">Git Branching</a></h2>
+    <ol>
+          <li>
+            3.1
+            <a href="/book/en/Git-Branching-What-a-Branch-Is">What a Branch Is</a>
+          </li>
+          <li>
+            3.2
+            <a href="/book/en/Git-Branching-Basic-Branching-and-Merging">Basic Branching and Merging</a>
+          </li>
+          <li>
+            3.3
+            <a href="/book/en/Git-Branching-Branch-Management">Branch Management</a>
+          </li>
+          <li>
+            3.4
+            <a href="/book/en/Git-Branching-Branching-Workflows">Branching Workflows</a>
+          </li>
+          <li>
+            3.5
+            <a href="/book/en/Git-Branching-Remote-Branches">Remote Branches</a>
+          </li>
+          <li>
+            3.6
+            <a href="/book/en/Git-Branching-Rebasing">Rebasing</a>
+          </li>
+          <li>
+            3.7
+            <a href="/book/en/Git-Branching-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+</ol>
+
+    </div>
+    <div class="column-middle">
+      <ol class="book-toc">
+  <li class="chapter">
+  <h2>4. <a href="/book/en/Git-on-the-Server">Git on the Server</a></h2>
+    <ol>
+          <li>
+            4.1
+            <a href="/book/en/Git-on-the-Server-The-Protocols">The Protocols</a>
+          </li>
+          <li>
+            4.2
+            <a href="/book/en/Git-on-the-Server-Getting-Git-on-a-Server">Getting Git on a Server</a>
+          </li>
+          <li>
+            4.3
+            <a href="/book/en/Git-on-the-Server-Generating-Your-SSH-Public-Key">Generating Your SSH Public Key</a>
+          </li>
+          <li>
+            4.4
+            <a href="/book/en/Git-on-the-Server-Setting-Up-the-Server">Setting Up the Server</a>
+          </li>
+          <li>
+            4.5
+            <a href="/book/en/Git-on-the-Server-Public-Access">Public Access</a>
+          </li>
+          <li>
+            4.6
+            <a href="/book/en/Git-on-the-Server-GitWeb">GitWeb</a>
+          </li>
+          <li>
+            4.7
+            <a href="/book/en/Git-on-the-Server-Gitosis">Gitosis</a>
+          </li>
+          <li>
+            4.8
+            <a href="/book/en/Git-on-the-Server-Gitolite">Gitolite</a>
+          </li>
+          <li>
+            4.9
+            <a href="/book/en/Git-on-the-Server-Git-Daemon">Git Daemon</a>
+          </li>
+          <li>
+            4.10
+            <a href="/book/en/Git-on-the-Server-Hosted-Git">Hosted Git</a>
+          </li>
+          <li>
+            4.11
+            <a href="/book/en/Git-on-the-Server-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class="chapter">
+  <h2>5. <a href="/book/en/Distributed-Git">Distributed Git</a></h2>
+    <ol>
+          <li>
+            5.1
+            <a href="/book/en/Distributed-Git-Distributed-Workflows">Distributed Workflows</a>
+          </li>
+          <li>
+            5.2
+            <a href="/book/en/Distributed-Git-Contributing-to-a-Project">Contributing to a Project</a>
+          </li>
+          <li>
+            5.3
+            <a href="/book/en/Distributed-Git-Maintaining-a-Project">Maintaining a Project</a>
+          </li>
+          <li>
+            5.4
+            <a href="/book/en/Distributed-Git-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class="chapter">
+  <h2>6. <a href="/book/en/Git-Tools">Git Tools</a></h2>
+    <ol>
+          <li>
+            6.1
+            <a href="/book/en/Git-Tools-Revision-Selection">Revision Selection</a>
+          </li>
+          <li>
+            6.2
+            <a href="/book/en/Git-Tools-Interactive-Staging">Interactive Staging</a>
+          </li>
+          <li>
+            6.3
+            <a href="/book/en/Git-Tools-Stashing">Stashing</a>
+          </li>
+          <li>
+            6.4
+            <a href="/book/en/Git-Tools-Rewriting-History">Rewriting History</a>
+          </li>
+          <li>
+            6.5
+            <a href="/book/en/Git-Tools-Debugging-with-Git">Debugging with Git</a>
+          </li>
+          <li>
+            6.6
+            <a href="/book/en/Git-Tools-Submodules">Submodules</a>
+          </li>
+          <li>
+            6.7
+            <a href="/book/en/Git-Tools-Subtree-Merging">Subtree Merging</a>
+          </li>
+          <li>
+            6.8
+            <a href="/book/en/Git-Tools-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+</ol>
+
+    </div>
+    <div class="column-right">
+      <ol class="book-toc">
+  <li class="chapter">
+  <h2>7. <a href="/book/en/Customizing-Git">Customizing Git</a></h2>
+    <ol>
+          <li>
+            7.1
+            <a href="/book/en/Customizing-Git-Git-Configuration">Git Configuration</a>
+          </li>
+          <li>
+            7.2
+            <a href="/book/en/Customizing-Git-Git-Attributes">Git Attributes</a>
+          </li>
+          <li>
+            7.3
+            <a href="/book/en/Customizing-Git-Git-Hooks">Git Hooks</a>
+          </li>
+          <li>
+            7.4
+            <a href="/book/en/Customizing-Git-An-Example-Git-Enforced-Policy">An Example Git-Enforced Policy</a>
+          </li>
+          <li>
+            7.5
+            <a href="/book/en/Customizing-Git-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class="chapter">
+  <h2>8. <a href="/book/en/Git-and-Other-Systems">Git and Other Systems</a></h2>
+    <ol>
+          <li>
+            8.1
+            <a href="/book/en/Git-and-Other-Systems-Git-and-Subversion">Git and Subversion</a>
+          </li>
+          <li>
+            8.2
+            <a href="/book/en/Git-and-Other-Systems-Migrating-to-Git">Migrating to Git</a>
+          </li>
+          <li>
+            8.3
+            <a href="/book/en/Git-and-Other-Systems-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class="chapter">
+  <h2>9. <a href="/book/en/Git-Internals">Git Internals</a></h2>
+    <ol>
+          <li>
+            9.1
+            <a href="/book/en/Git-Internals-Plumbing-and-Porcelain">Plumbing and Porcelain</a>
+          </li>
+          <li>
+            9.2
+            <a href="/book/en/Git-Internals-Git-Objects">Git Objects</a>
+          </li>
+          <li>
+            9.3
+            <a href="/book/en/Git-Internals-Git-References">Git References</a>
+          </li>
+          <li>
+            9.4
+            <a href="/book/en/Git-Internals-Packfiles">Packfiles</a>
+          </li>
+          <li>
+            9.5
+            <a href="/book/en/Git-Internals-The-Refspec">The Refspec</a>
+          </li>
+          <li>
+            9.6
+            <a href="/book/en/Git-Internals-Transfer-Protocols">Transfer Protocols</a>
+          </li>
+          <li>
+            9.7
+            <a href="/book/en/Git-Internals-Maintenance-and-Data-Recovery">Maintenance and Data Recovery</a>
+          </li>
+          <li>
+            9.8
+            <a href="/book/en/Git-Internals-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+</ol>
+
+      <ol class="book-toc">
+        <li class="chapter">
+          <h2><a href="/book/commands">Index of Commands</a></h2>
+        </li>
+      </ol>
+    </div>
+  </div>
+ </div>
+
+</div>
+
+
+
+        </div>
+      </div>
+      <footer>
+  <div class="site-source">
+    Design du site <a href="https://github.com/git/git-scm.com/blob/master/MIT-LICENSE.txt">licence open-source</a>.<br>
+    Patches, suggestions, and comments are welcome.
+  </div>
+  <div class="sfc-member">
+    Git is a member of <a href="http://git-scm.com/sfc">Software Freedom Conservancy</a>
+  </div>
+</footer>
+
+    </div>
+</body></html>

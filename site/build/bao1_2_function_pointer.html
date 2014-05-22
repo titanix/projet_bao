@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<!-- saved from url=(0023)http://git-scm.com/book -->
+<html lang="en" class="js fontface webkit chrome no-windows no-ie8 wf-adelle-n4-active wf-adelle-n7-active wf-active">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  		<meta charset="utf-8">
+  		<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+		<title>Git - Book</title>
+
+  		<link href="http://git-scm.com/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+  		<link href="index.css" media="screen" rel="stylesheet" type="text/css">
+  		<link href="louis.css" media="screen" rel="stylesheet" type="text/css">
+
+  		<style type="text/css">.tk-adelle{font-family:"adelle",serif;}</style><link rel="stylesheet" href="http://use.typekit.com/c/1265dd/adelle:n4:n7.XK9:F:2,XKF:F:2/d?3bb2a6e53c9684ffdc9a98ff1f5b2a62be32f57674629b256bf45cc5d898bd33078f6d102fef89283fbbb31e1e08dbab19f40e05a4b4be3e89b3372a143e7a26dcd5dad130c72bab3e8fd8b99a9642fbd1ac9ca2f85adca09826901eba44606d532f918a18db21e3aa7eedc4c96415fb336454aeba9ccc4db2a429ad19d964ab58d4b37e4065f51b76f05e5784b3d8559dc1b815733d6d01c3628dc2ef213aaf691e3a89bf6dd61e2ad9429b23fe4aa8ae920a330c526bf40743ee5dfcd44574840a956bad758ed0eee2b5a93c60d4e7fb298bff1da10e582117053d1df952252f3c620756aa9c01af18b814425fcac6691a37beec766e06872a3e540e07e591a00479af59d5422d070cd9e6028fcffcbc624bd8c4a7d13947ef50a81c4a28244fad90bde4a302">
+  		<script>
+    		//<![CDATA[
+      		try{Typekit.load();}catch(e){}
+    		//]]>
+  		</script>
+	</head>
+<body id="documentation">
+
+  <div class="inner">
+    <header>
+  		<a href="index.html">
+  			<img src="toolbox.png" width="110" height="46" alt="Git">
+  		</a>
+  		<span id="tagline">
+    		<em>--</em>projet-boite-à-outils
+  		</span>
+		<!--<form id="search" action="http://git-scm.com/search/results">
+    		<input id="search-text" name="search" placeholder="Search entire site..." autocomplete="off" type="text">
+  		</form>
+  		<div id="search-results"></div>-->
+	</header>
+  </div> <!-- .inner -->
+
+	<div class="inner">
+      <div id="content-wrapper">
+        <aside class="sidebar">
+  <nav>
+    <ul>
+      <li>
+        <a href="">À propos</a>
+      </li>
+      <li>
+        <a href="">Sujets chauds</a>
+        <ul class="expanded">
+          <li>
+            <a href="bao1_2_function_pointer.html">Pointeurs de fonction</a>
+          </li>
+          <li>
+            <a href="bao1_5_parallelisation.html">Code parallèle</a>
+          </li>
+          <li>
+            <a href="">Mini-mémo git</a>
+          </li>
+
+        </ul>
+      </li>
+      <li>
+        <a href="">Téléchargements</a>
+      </li>
+    </ul>
+    
+    <hr class="sidebar">
+    	<p>Download this book in <a href="https://github.s3.amazonaws.com/media/progit.en.pdf">PDF</a>, <a href="https://github.s3.amazonaws.com/media/pro-git.en.mobi">mobi</a>, or <a href="https://github.s3.amazonaws.com/media/progit.epub">ePub</a> form for free.</p>
+
+  		<p>
+			This book is translated into 
+  			<a href="http://git-scm.com/book/de">German</a>,
+  			<a href="http://git-scm.com/book/zh">中文</a>,
+  			<a href="http://git-scm.com/book/zh-tw">Taiwanese Mandarin</a>,
+  			<a href="http://git-scm.com/book/fr">French</a>,
+  			<a href="http://git-scm.com/book/ja">Japanese</a>.
+		</p>
+	</hr>
+	<hr class="sidebar">
+		<p>
+			The source of this book and the translations are <a href="https://github.com/progit/progit">hosted on GitHub.</a><br>
+			Patches, suggestions, and comments are welcome.
+		</p>
+	</hr>
+  </nav>
+		</aside>
+          <div id="content">
+<div id='main' class="book">
+    <h1>Pointeurs de fonction</h1>
+  <div>
+  
+  <h2>Motivation</h2>
+  <p>Le projet demande de traiter un corpus de fichier de plusieurs moyens différents (expressions
+  régulières, parseur XML, etc.) pour lequel il y en a en commun de nombreuses opérations : 
+  parcours récursif du répertoire à analyser, ouverture de fichiers, nettoyage des chaînes extraites
+  et génération des fichiers résultats.
+  </p>
+  <p>
+  Il n'est donc pas utile de répéter ces opérations plusieurs fois, en faisant une copie d'un fichier
+  en le modifiant pour y écrire un nouveau traitement. Pire, procéder comme cela devient vite un 
+  cauchemar à maintenir, car une modifications apportées à ces opérations dans un fichier ne seront
+  pas répercutées automatiquement dans les autres.
+  </p>
+  <p>
+  L'idée est donc d'écrire ce code commun dans une fonction, d'écrire le code de traitement spécifique
+  dans une autre, de la passé en paramètre de la première fonciton évoquée.
+  <br/>Pour pouvoir faire cela en Perl, il faut passer une référence vers la fonction à appeler
+  puis utiliser une syntaxe spécifique pour l'appel depuis une variable.
+  </p>
+  
+  <h3>En Perl</h3>
+  Création d'une référence à une fonction.
+<div class="code-block">
+<div class="code-block-content">
+my $fun_ref = \&<em>function_name</em>;
+</div>
+</div>
+
+<p>L'appel à une fonction depuis une référence stockée dans une variable se fait de la manière suivante :</p>
+<div class="code-block">
+<div class="code-block-content">
+$fun_ref->(<em>arguments</em>);
+</div>
+</div>
+
+<h4>Démonstration</h4>
+<p>Voici un script d'illustration. Il prend en argument le mot "lol" ou le mot "pwet". À chacun
+de ces mots est associée une procédure qui affiche un message. La fonction appelée est cherchée
+dans une table de hashage qui associe une chaîne de caractère à une référence sur une fonction.
+</p>
+<p>Si un argument non reconnu est passé en paramètre, le script se plaint et aucune des deux
+fonctions d'affichage n'est appelée. Notez qu'il y a ici deux niveaux d'indirections : la référence
+elle-même est obtenue depuis la table de hashage.</p>
+
+<div class="code-block">
+<div class="code-block-header"><span style="font-weight:bold;">test_fun_ref.pl <a href="code/test_fun_ref.pl">(téléchargement)</a></span></div>
+<div class="code-block-header">usage : perl test-fun-ref.pl lol|pwet</div>
+<div class="code-block-content">
+<pre style="color:#586e75"><span style="color:#586e75;font-style:italic">#/usr/bin/perl</span>
+<span style="color:#859900">use</span> warnings;
+
+<span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">print_lol</span>
+{
+    <span style="color:#859900">print</span> <span style="color:#269186"><span style="color:#2aa198">"</span>CALLED function lol<span style="color:#dc322f">\n</span><span style="color:#2aa198">"</span></span>;
+}
+
+<span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">print_pwet</span>
+{
+    <span style="color:#859900">print</span> <span style="color:#269186"><span style="color:#2aa198">"</span>CALLED function pwet<span style="color:#dc322f">\n</span><span style="color:#2aa198">"</span></span>;
+}
+
+<span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">main</span>
+{   
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>arg</span> = <span style="color:#859900">shift</span> <span style="color:#268bd2"><span style="color:#b58900">@</span>_</span>;
+    
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">%</span>functions</span> = (
+        <span style="color:#269186"><span style="color:#2aa198">'</span>lol<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> \&amp;print_lol,
+        <span style="color:#269186"><span style="color:#2aa198">'</span>pwet<span style="color:#2aa198">'</span></span><span style="color:#b58900"> =></span> \&amp;print_pwet
+    );
+    
+    <span style="color:#859900">if</span> (<span style="color:#859900">exists</span>(<span style="color:#b58900"><span style="color:#b58900">$</span>functions</span>{<span style="color:#b58900"><span style="color:#b58900">$</span>arg</span>}))
+    {
+        <span style="color:#b58900"><span style="color:#b58900">$</span>functions</span>{<span style="color:#b58900"><span style="color:#b58900">$</span>arg</span>}<span style="color:#b58900">-></span>();
+    }
+    <span style="color:#859900">else</span>
+    {
+        <span style="color:#859900">print</span> <span style="color:#269186"><span style="color:#2aa198">"</span>La fonction correspondante n'est pas enregistrée.<span style="color:#dc322f">\n</span><span style="color:#2aa198">"</span></span>;
+    }
+}
+
+main(<span style="color:#b58900"><span style="color:#b58900">@</span>ARGV</span>);
+</pre>
+</div>
+</div>
+
+<h4>Commentaires</h4>
+<p>Il n'y a à aucun moment besoin de préciser au langage les arguments d'une fonction, ni d'une
+référence vers une fonction.
+Si cela permet d'écrire très facilement pointeurs de fonctions, cela peut poser problème, 
+car même à l'exécution l'interpréteur ne se plaint pas si une fonction est invoquée avec le 
+mauvais nombre d'arguments, ou avec des types erronées.</p>
+<p>Cela m'est arrivé une fois quand j'ai modifié la fonction parcours_arborescence_fichiers 
+(sur laquelle nous reviendrons) pour prendre en argument la fonction d'extraction à appliquer.
+J'avais oublié de repasser cet argument lors de l'appel récursif, ce qui ne menait pas à l'exécution
+escomptée du programme.</p>
+
+<h3>En C</h3>
+<p>TODO</p>
+
+<h3>En C#</h3>
+<p>En C# il est possible d'utiliser des pointeurs de fonctions, appelés <em>delegate</em>
+<a href="http://msdn.microsoft.com/en-us/library/900fyy8e.aspx">(doc msdn)</a>
+qui sont des références typées vers une méthode.</p>
+<p>La déclaration d'un delegate ressemble à la signature d'une méthode, accompagnée du
+mot clef delegate.</p>
+
+<p>Le nom du delegate devient un type qui nous permet de créer des variables pour stocker des
+références vers une méthode qui se conforme au prototype renseigné pour le delegate.
+<br/>Elle peut ensuite être affectée via le nom d'une méthode, ou une fonction lambda.
+</p>
+
+<div class="code-block">
+<div class="code-block-content">
+<!-- HTML generated using hilite.me --><div><pre style="margin: 0; line-height: 125%"><span style="color: #0000ff">delegate</span> <span style="color: #2b91af">int</span> AddOne(<span style="color: #2b91af">int</span> a); <span style="color: #008000">// déclaration d&#39;un type delegate</span>
+
+AddOne fun_ptr = x =&gt; x + 1; <span style="color: #008000">// on instancie une variable de type AddOne avec une fonction lambda</span>
+</pre></div>
+
+
+</div>
+</div>
+
+<div id="nav"><a href="bao1_1_filtreur.html">précédent</a> | 
+<a href="bao1_2_organisation.html">suivant</a></div></div>
+</div>
+</div>
+      </div>
+      <footer>
+  <div class="site-source">
+    Design du site <a href="https://github.com/git/git-scm.com/blob/master/MIT-LICENSE.txt">licence open-source</a>.<br>
+    Patches, suggestions, and comments are welcome.
+  </div>
+  <div class="sfc-member">
+    Git is a member of <a href="http://git-scm.com/sfc">Software Freedom Conservancy</a>
+  </div>
+</footer>
+
+    </div>
+</body></html>

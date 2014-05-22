@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<!-- saved from url=(0023)http://git-scm.com/book -->
+<html lang="en" class="js fontface webkit chrome no-windows no-ie8 wf-adelle-n4-active wf-adelle-n7-active wf-active">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  		<meta charset="utf-8">
+  		<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+		<title>Git - Book</title>
+
+  		<link href="http://git-scm.com/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+  		<link href="index.css" media="screen" rel="stylesheet" type="text/css">
+  		<link href="louis.css" media="screen" rel="stylesheet" type="text/css">
+
+  		<style type="text/css">.tk-adelle{font-family:"adelle",serif;}</style><link rel="stylesheet" href="http://use.typekit.com/c/1265dd/adelle:n4:n7.XK9:F:2,XKF:F:2/d?3bb2a6e53c9684ffdc9a98ff1f5b2a62be32f57674629b256bf45cc5d898bd33078f6d102fef89283fbbb31e1e08dbab19f40e05a4b4be3e89b3372a143e7a26dcd5dad130c72bab3e8fd8b99a9642fbd1ac9ca2f85adca09826901eba44606d532f918a18db21e3aa7eedc4c96415fb336454aeba9ccc4db2a429ad19d964ab58d4b37e4065f51b76f05e5784b3d8559dc1b815733d6d01c3628dc2ef213aaf691e3a89bf6dd61e2ad9429b23fe4aa8ae920a330c526bf40743ee5dfcd44574840a956bad758ed0eee2b5a93c60d4e7fb298bff1da10e582117053d1df952252f3c620756aa9c01af18b814425fcac6691a37beec766e06872a3e540e07e591a00479af59d5422d070cd9e6028fcffcbc624bd8c4a7d13947ef50a81c4a28244fad90bde4a302">
+  		<script>
+    		//<![CDATA[
+      		try{Typekit.load();}catch(e){}
+    		//]]>
+  		</script>
+	</head>
+<body id="documentation">
+
+  <div class="inner">
+    <header>
+  		<a href="index.html">
+  			<img src="toolbox.png" width="110" height="46" alt="Git">
+  		</a>
+  		<span id="tagline">
+    		<em>--</em>projet-boite-à-outils
+  		</span>
+		<!--<form id="search" action="http://git-scm.com/search/results">
+    		<input id="search-text" name="search" placeholder="Search entire site..." autocomplete="off" type="text">
+  		</form>
+  		<div id="search-results"></div>-->
+	</header>
+  </div> <!-- .inner -->
+
+	<div class="inner">
+      <div id="content-wrapper">
+        <aside class="sidebar">
+  <nav>
+    <ul>
+      <li>
+        <a href="">À propos</a>
+      </li>
+      <li>
+        <a href="">Sujets chauds</a>
+        <ul class="expanded">
+          <li>
+            <a href="bao1_2_function_pointer.html">Pointeurs de fonction</a>
+          </li>
+          <li>
+            <a href="bao1_5_parallelisation.html">Code parallèle</a>
+          </li>
+          <li>
+            <a href="">Mini-mémo git</a>
+          </li>
+
+        </ul>
+      </li>
+      <li>
+        <a href="">Téléchargements</a>
+      </li>
+    </ul>
+    
+    <hr class="sidebar">
+    	<p>Download this book in <a href="https://github.s3.amazonaws.com/media/progit.en.pdf">PDF</a>, <a href="https://github.s3.amazonaws.com/media/pro-git.en.mobi">mobi</a>, or <a href="https://github.s3.amazonaws.com/media/progit.epub">ePub</a> form for free.</p>
+
+  		<p>
+			This book is translated into 
+  			<a href="http://git-scm.com/book/de">German</a>,
+  			<a href="http://git-scm.com/book/zh">中文</a>,
+  			<a href="http://git-scm.com/book/zh-tw">Taiwanese Mandarin</a>,
+  			<a href="http://git-scm.com/book/fr">French</a>,
+  			<a href="http://git-scm.com/book/ja">Japanese</a>.
+		</p>
+	</hr>
+	<hr class="sidebar">
+		<p>
+			The source of this book and the translations are <a href="https://github.com/progit/progit">hosted on GitHub.</a><br>
+			Patches, suggestions, and comments are welcome.
+		</p>
+	</hr>
+  </nav>
+		</aside>
+          <div id="content">
+<div id='main' class="book">
+    <h1>Modularisation du code</h1>
+  <div>
+  <h2>Extraction XML avec LibXML</h2>
+
+<p>Le code a refactorisé de façon à utiliser une référence à une fonction pour l’extraction.
+Ainsi, toute la partie concernant l’ouverture des fichiers, le parcours récursif du
+répertoire et la création des fichiers de sortie n’est pas dupliquée.</p>
+
+<p>Pour que cela fonctionne, il faut bien évidemment que les fonctions d’extractions
+(basées sur des opérations sur les chaînes ou sur XML) aient la même interface : 
+elles doivent prendre les mêmes arguments et renvoyer le même type de résultat.</p>
+
+<p>C’est pourquoi le code originel de la fonction d’extraction par chaîne a été légèrement 
+modifié : à l’origine il supprimait les balises les plus externes du contenu qu’il 
+extrayait. Mais ce comportement ne permettait pas à la fonction d’extraction XML de 
+fonctionner, puisque cela engendrait une erreur de parsing lorsqu’on l’appelait
+successivement pour extraire le contenu d’un élément précédemment extrait, c’est à
+dire en composant la fonction avec elle-même (par exemple extraire le titre d’un item).</p>
+
+<p>
+Le code en lui même est d'une simplicité enfantine, puisqu'il ne s'agit que de faire un
+appel à la fonction <acronym title="Document Object Model">DOM</acronym>
+<em>getElementsByTagName</em>
+sur une représentation objet d'un noeud XML préalablement construite à partir de la 
+chaîne passée en paramètre.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">lib-parcours-xml.pl</bold>
+</div>
+<div class="code-block-content">
+<pre style="color:#586e75"><span style="color:#859900">use</span> warnings;
+<span style="color:#859900">use</span> strict;
+<span style="color:#859900">use</span> XML::LibXML;
+<span style="color:#859900">use</span> Try::Tiny;
+
+<span style="color:#586e75;font-style:italic"># param $content : texte xml à traiter</span>
+<span style="color:#586e75;font-style:italic"># param $tag : nom (sans crochets) du tag xml dont il faut récupérer le contenu</span>
+<span style="color:#586e75;font-style:italic"># return : la liste des contenus du tag contenu dans le texte</span>
+<span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">extract_xml</span>
+{
+    <span style="color:#073642;font-weight:700">my</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>tag</span>) = <span style="color:#268bd2"><span style="color:#b58900">@</span>_</span>;
+    
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">@</span>list</span> = ();
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>parser</span> = new XML::LibXML;
+    
+    try {
+        <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>xml_doc</span> = <span style="color:#b58900"><span style="color:#b58900">$</span>parser</span><span style="color:#b58900">-></span>parse_string(<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>);
+
+        <span style="color:#859900">foreach</span> <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>t</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>xml_doc</span><span style="color:#b58900">-></span>getElementsByTagName(<span style="color:#b58900"><span style="color:#b58900">$</span>tag</span>))
+        {
+            <span style="color:#859900">push</span> <span style="color:#b58900"><span style="color:#b58900">@</span>list</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>t</span><span style="color:#b58900">-></span>toStringEC14N;
+        }
+    } catch {
+        <span style="color:#859900">warn</span> <span style="color:#269186"><span style="color:#2aa198">"</span>Erreur dans extract_rss : <span style="color:#b58900"><span style="color:#b58900">$</span>_</span><span style="color:#2aa198">"</span></span>;
+    };
+    
+    <span style="color:#859900">return</span> <span style="color:#b58900"><span style="color:#b58900">@</span>list</span>;
+}
+
+1;
+
+</pre>
+</div>
+</div>
+
+<h3>Extraction XPATH</h3>
+
+<p>Bien que l’API XPATH soit relativement simple d’utilisation, une méthode d’extraction 
+l’utilisant n’a pas été implémentée. En effet, j’ai déjà évoqué le fait que la méthode
+d’extraction doit renvoyer une chaîne et doit pouvoir travailler en prenant comme
+argument le retour d’un autre appel à elle-même.</p>
+
+<p>Cependant, l’API ne permet de le faire (du moins pas raisonnablement facilement) 
+car un appel à <em>string_value</em> va enlever tout les noms des nœuds enfants pour ne garder
+que le texte visible. Si ce n’est pas un problème majeur lorsqu’il s’agit d’un élement
+feuille, c’est très problématique pour travailler sur les nœuds item d’un flux RSS.</p>
+
+<p>Je n’ai pas vu venir ce problème suffisamment tôt dans le développement, car j’ai 
+l’habitude d’utiliser un framework dont le comportement était celui que j’attendais,
+à savoir qu’un appel à une méthode type toString renvoie le contenu du nœud sous 
+forme XML (cf. <a href="http://msdn.microsoft.com/fr-fr/library/bb341005(v=vs.100).aspx" target="_blank">System.Xml.Linq.XNode.ToString</a>).</p>
+
+<h3>Extraction RSS</h3>
+
+<p>Il existe un modèle Perl basé sur LibXML spécialisé dans le traitement des fichiers
+RSS. Il n'a pas été non plus utilisé, car il ne peut parser que des fichiers RSS, ce
+qui incompatible avec l'approche utilisée.</p>
+
+
+
+<div id="nav"><a href="bao1_3_chaine.html">précédent</a> | 
+<a href="bao1_5_parallelisation.html">suivant</a></div></div>
+</div>
+</div>
+      </div>
+      <footer>
+  <div class="site-source">
+    Design du site <a href="https://github.com/git/git-scm.com/blob/master/MIT-LICENSE.txt">licence open-source</a>.<br>
+    Patches, suggestions, and comments are welcome.
+  </div>
+  <div class="sfc-member">
+    Git is a member of <a href="http://git-scm.com/sfc">Software Freedom Conservancy</a>
+  </div>
+</footer>
+
+    </div>
+</body></html>

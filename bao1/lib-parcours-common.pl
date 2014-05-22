@@ -53,7 +53,8 @@ sub parcours_arborescence_fichiers {
 				$file_content = decode("Detect", $file_content);
 				
 				my @titles = $proc->($file_content, "title");
-				push(@out_list, [clean(remove_outer_tag($titles[0])), "rubrique"]);
+				#push(@out_list, [clean(remove_outer_tag($titles[0])), "rubrique"]);
+				my $category = clean(remove_outer_tag($titles[0]));
 				
 				foreach $item($proc->($file_content, "item"))
 				{
@@ -62,8 +63,8 @@ sub parcours_arborescence_fichiers {
 					# précédent le premier item n'est pas constant
 					my @titre = $proc->($item, "title");
 					my @descr = $proc->($item, "description");
-					push(@out_list, [clean(remove_outer_tag($titre[0])), "titre"]);
-					push(@out_list, [clean(remove_outer_tag($descr[0])), "description"]);
+					push(@out_list, [clean(remove_outer_tag($titre[0])), "titre", $category]);
+					push(@out_list, [clean(remove_outer_tag($descr[0])), "description", $category]);
 				}
 				
 				print "File [$file] processed.\n"
@@ -83,28 +84,44 @@ sub write_result
 	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
 	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
 	
-	my $output_xml="$output_dir/SORTIE_$mday-$months[$mon]-$hour-$min-$sec.xml";
-	if (!open (FILEOUT, ">:encoding(UTF-8)", "$output_xml")) { die "Pb a l'ouverture du fichier $output_xml"};
 	my $output_txt="$output_dir/sortie_$mday-$months[$mon]-$hour-$min-$sec.txt";
-	if (!open (TXT_OUT, ">:encoding(UTF-8)", "$output_txt")) { die "Pb a l'ouverture du fichier $output_txt"};
+	if (!open (TXT_OUT, ">:encoding(UTF-8)", $output_txt)) { die "Pb a l'ouverture du fichier $output_txt"};
 
-	print FILEOUT "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
-	print FILEOUT '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
-	print FILEOUT "<parcours>\n";
-	print FILEOUT "<nom>Lecailliez ; Genet</nom>\n";
-	print FILEOUT "<filtrage>";
+	# on va créer un fichier par rubrique
+	my %files = ();
 
 	foreach my $pair(@$list_ref)
 	{
-		print FILEOUT "<$pair->[1]><![CDATA[$pair->[0]]]></$pair->[1]>\n";
+		my $cat = clean_cat_name($pair->[2]);
+		if(!exists($files{$cat})) {
+			my $encoding = "UTF-8";
+			if(!open($files{$cat}, ">:encoding($encoding)", "$output_dir/${cat}_$mday-$months[$mon]-$hour-$min-$sec.xml")) { die $! ; }
+			print {$files{$cat}} "<?xml version=\"1.0\" encoding=\"$encoding\" ?>\n";
+			print {$files{$cat}} '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
+			print {$files{$cat}} "<parcours>";
+		}
+		print {$files{$cat}} "<$pair->[1]><![CDATA[$pair->[0]]]></$pair->[1]>\n";
 		print TXT_OUT "$pair->[0]\n";
 	}
-	print FILEOUT "</filtrage>\n";
-	print FILEOUT "</parcours>\n";
-	close(FILEOUT);
+	
+	foreach my $fh (values(%files)) {
+		print $fh "</parcours>\n";
+		close($fh);
+	}
+	
+	print "Fichier xml généré : $output_xml\n";
+}
 
-	print "Fichier xml ecrit : $output_xml\n";
-	print "Fichier txt ecrit : $output_txt\n";
+# param $str : une chaîne à nettoyer
+# return : retourne une chaine qu'il est possible d'utiliser sur un système de fichier
+# et dans le shell sans trop d'ennuis ultérieurs
+sub clean_cat_name
+{
+	my ($str) = @_;
+	
+	$str =~ s/[\s]+//g;
+	$str =~ s/://g; # Windows fait la tronche avec des : dans les noms de fichier
+	return $str;
 }
 
 # param $str : enlève de la chaîne sélectionné la balise qui est censé l'entourer

@@ -43,6 +43,14 @@ le déploiement depuis GitHub.</p>
 push réalisés sur la branche d'un projet (public ou privé) hébergé sur GitHub.
 <br/>C'est la solution retenue pour ce projet.</p>
 
+<div class="note-block">
+<div class="code-block-content">
+J'insiste, parce que je trouve ça génial : la publication est réalisée avec une seule
+ligne de commande, git push. Les commits locaux sont exportés et sauvegardés sur GitHub, puis Azure 
+en récupère le contenu dans la foulée et le met à disposition du public.
+</div>
+</div>
+
 <p>Je voulais maintenir une branche orpheline gérant uniquement le résultat de la 
 génération du site, mais comme j'ai rencontré plusieurs difficultés, mais je me suis
 contenté de revenir à une solution simple : ajouter ces fichiers à la branche master et
@@ -62,6 +70,13 @@ et affichée automatique car elle présente dans la liste des pages par défaut 
 </p>
 
 <img src="img/site_root.png"/>
+
+<p>De manière générale, IIS a une approche assez défensive quant à l'accès des fichiers.
+Les fichiers dont l'extension n'a pas été spécifiquement enregistrée pour être
+servis à l'utilisateur ne lui seront pas envoyer même si le chemin est valide. Des petites
+bidouilles de path pour accéder au répertoire parent sont stoppées à la racine, etc.
+<br/>Cela me permet de copier toute ma branche master sur le site sans trop de soucis.
+</p>
 
 <h2>Hébergement sur GitHub Pages</h2>
 

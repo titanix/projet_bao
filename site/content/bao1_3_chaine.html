@@ -33,7 +33,7 @@ et d'éviter le comportement glouton par défaut.
 </div>
 </div>
 
-<h3>[todo]</h3>
+<h3>extract_tag_content</h3>
 
 <p>C’est pourquoi j’ai eu l’idée d’une procédure (extract_tag_content) qui à partir d’un 
 nom de balise donné, va chercher dans le texte donné en paramètre la position de la 
@@ -45,7 +45,7 @@ fonctions <em>index</em> et <em>substr</em> de Perl.</p>
 différents sont présentes. Si une balise contient au moins une autre balise du 
 même nom, le résultat renvoyé ne sera pas le résultat attendu.</p>
 
-<p>La procédure effectivement implémentée renvoi la liste des contenus contenu dans
+<p>La procédure effectivement implémentée renvoie la liste des contenus contenu dans
 une balise donnée, dans leur ordre d’apparition dans le fichier. Ainsi, un appel
 pour obtenir le contenu de la balise <em>title</em> va renvoyer en premier lieu la balise
 title enfant du <em>channel</em>, puis celles se trouvant dans les différents <em>item</em>s du flux.</p>

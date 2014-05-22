@@ -1,0 +1,65 @@
+<div id="content">
+<div id='main' class="book">
+    <h1>Script de création du site</h1>
+  <div>
+  <h2>...</h2>
+
+<p>L'idée est classique : on dispose d'un contenu identique pour toutes les pages,
+au sein duquel on place un contenu qui varie en fonction de la page demandée.
+C'est le concept de 
+<a href="http://msdn.microsoft.com/en-us/library/wtxbf3hh(v=vs.100).aspx" target="_blank">
+page maîtres</a> que l'on retrouve en asp.net.</p>
+
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">build_site.pl <a href="code/build_site.pl">(téléchargement)</a></span></bold>
+</div>
+<div class="code-block-content">
+<pre style="color:#586e75"><span style="color:#859900">use</span> strict;
+<span style="color:#859900">use</span> warnings;
+<span style="color:#859900">use</span> File::Slurp;
+
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>usage</span> = <span style="color:#269186"><span style="color:#2aa198">'</span>Usage : build_site &lt;template_file> &lt;content_dir><span style="color:#2aa198">'</span></span>;
+
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>template</span> = <span style="color:#b58900"><span style="color:#b58900">$</span>ARGV</span>[0];
+<span style="color:#b58900"><span style="color:#b58900">$</span>template</span> = read_file(<span style="color:#b58900"><span style="color:#b58900">$</span>template</span>); <span style="color:#586e75;font-style:italic"># on lit le contenu du template</span>
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>dir</span> = <span style="color:#b58900"><span style="color:#b58900">$</span>ARGV</span>[1];
+
+<span style="color:#859900">opendir</span>(DIR, <span style="color:#b58900"><span style="color:#b58900">$</span>dir</span>) || <span style="color:#859900">die</span> <span style="color:#269186"><span style="color:#2aa198">"</span>Can't open directory <span style="color:#b58900"><span style="color:#b58900">$</span>dir</span><span style="color:#dc322f">\n</span><span style="color:#2aa198">"</span></span>;
+<span style="color:#859900">while</span>(<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>file</span> = <span style="color:#859900">readdir</span>(DIR))
+{
+    <span style="color:#859900">next</span> <span style="color:#859900">if</span> <span style="color:#b58900"><span style="color:#b58900">$</span>file</span> =<span style="color:#d30102">~ /^\..*$/</span>;
+    <span style="color:#b58900"><span style="color:#b58900">$</span>file</span> = <span style="color:#269186"><span style="color:#2aa198">"</span><span style="color:#b58900"><span style="color:#b58900">$</span>dir</span>/<span style="color:#b58900"><span style="color:#b58900">$</span>file</span><span style="color:#2aa198">"</span></span>;
+    <span style="color:#859900">if</span>(<span style="color:#859900">-f</span> <span style="color:#b58900"><span style="color:#b58900">$</span>file</span>)
+    {
+        <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>file_content</span> = read_file(<span style="color:#b58900"><span style="color:#b58900">$</span>file</span>);
+        <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>result</span> = <span style="color:#b58900"><span style="color:#b58900">$</span>template</span>;
+        <span style="color:#b58900"><span style="color:#b58900">$</span>result</span> =~ <span style="color:#d30102"><span style="color:#859900">s</span>/CONTENT_PLACEHOLDER</span><span style="color:#d30102">/<span style="color:#b58900"><span style="color:#b58900">$</span>file_content</span>/</span>;
+        write_result(<span style="color:#b58900"><span style="color:#b58900">$</span>result</span>, <span style="color:#269186"><span style="color:#2aa198">"</span><span style="color:#b58900"><span style="color:#b58900">$</span>dir</span>/build/<span style="color:#2aa198">"</span></span>, <span style="color:#b58900"><span style="color:#b58900">$</span>file</span>);
+    }
+}
+<span style="color:#859900">closedir</span>(DIR);
+
+<span style="color:#586e75;font-style:italic"># param $content : contenu à écrire dans la sortie</span>
+<span style="color:#586e75;font-style:italic"># param $dir : répertoire de base dans lequel écrire le fichier</span>
+<span style="color:#586e75;font-style:italic"># param $name : nom du fichier d'où est originaire le contenu</span>
+<span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">write_result</span>
+{
+    <span style="color:#073642;font-weight:700">my</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>dir</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>name</span>) = <span style="color:#268bd2"><span style="color:#b58900">@</span>_</span>;
+    <span style="color:#b58900"><span style="color:#b58900">$</span>name</span> =<span style="color:#d30102">~ /\/(.+?).html/</span>;
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>temp</span> = <span style="color:#269186"><span style="color:#2aa198">"</span>build/<span style="color:#268bd2"><span style="color:#b58900">$</span>1</span>.html<span style="color:#2aa198">"</span></span>;
+    <span style="color:#859900">open</span>(FILE_OUT, <span style="color:#269186"><span style="color:#2aa198">"</span>><span style="color:#b58900"><span style="color:#b58900">$</span>temp</span><span style="color:#2aa198">"</span></span>) <span style="color:#859900">or</span> <span style="color:#859900">die</span> <span style="color:#269186"><span style="color:#2aa198">"</span>Shit happened!<span style="color:#2aa198">"</span></span>;
+    <span style="color:#859900">print</span> FILE_OUT <span style="color:#b58900"><span style="color:#b58900">$</span>content</span>;
+    <span style="color:#859900">close</span>(FILE_OUT);
+}
+</pre>
+</div>
+</div>
+
+
+
+<div id="nav"><a href="">précédent</a> | 
+<a href="">suivant</a></div></div>
+</div>
+</div>

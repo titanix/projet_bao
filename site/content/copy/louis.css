@@ -3,10 +3,21 @@ h3
 	color: #0388a6;
 }
 
+acronym
+{
+	text-decoration:underline;
+}
+
 div.code-block
 {
 	border: 1px dashed #C0C0C0;
-	margin-bottom: 10px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	background-color:#F2F2F0;
+	/*
+	E8E8E8
+	F0F0EB
+	*/
 }
 
 div.code-block-header
@@ -29,7 +40,9 @@ div.code-block-content
 div.warning-block
 {
 	border: 1px dashed #CC0000;
-	margin-bottom: 10px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	background-color:#FCE7E6;
 }
 
 div.warning-block-header
@@ -48,12 +61,12 @@ div.warning-block-content
 	display: block;
 }
 
-/* Là, l'utilisation d'un préprocesseur tel que LESS serait utile. */
+
 div.note-block
 {
 	border: 1px dashed #0066E5;
-	margin-bottom: 10px;
-	/*background-color:#E8F1FF;*/
+	margin-top: 20px;
+	margin-bottom: 20px;
 	background-color:#EDF4FF;
 	
 }

@@ -2,9 +2,7 @@
 <div id='main' class="book">
     <h1>Modularisation du code</h1>
   <div>
-  <h2>...</h2>
-
-Extraction XML
+  <h2>Extraction XML avec LibXML</h2>
 
 <p>Le code a refactorisé de façon à utiliser une référence à une fonction pour l’extraction.
 Ainsi, toute la partie concernant l’ouverture des fichiers, le parcours récursif du
@@ -21,7 +19,55 @@ fonctionner, puisque cela engendrait une erreur de parsing lorsqu’on l’appel
 successivement pour extraire le contenu d’un élément précédemment extrait, c’est à
 dire en composant la fonction avec elle-même (par exemple extraire le titre d’un item).</p>
 
-Extraction XPATH
+<p>
+Le code en lui même est d'une simplicité enfantine, puisqu'il ne s'agit que de faire un
+appel à la fonction <acronym title="Document Object Model">DOM</acronym>
+<em>getElementsByTagName</em>
+sur une représentation objet d'un noeud XML préalablement construite à partir de la 
+chaîne passée en paramètre.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">lib-parcours-xml.pl</bold>
+</div>
+<div class="code-block-content">
+<pre style="color:#586e75"><span style="color:#859900">use</span> warnings;
+<span style="color:#859900">use</span> strict;
+<span style="color:#859900">use</span> XML::LibXML;
+<span style="color:#859900">use</span> Try::Tiny;
+
+<span style="color:#586e75;font-style:italic"># param $content : texte xml à traiter</span>
+<span style="color:#586e75;font-style:italic"># param $tag : nom (sans crochets) du tag xml dont il faut récupérer le contenu</span>
+<span style="color:#586e75;font-style:italic"># return : la liste des contenus du tag contenu dans le texte</span>
+<span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">extract_xml</span>
+{
+    <span style="color:#073642;font-weight:700">my</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>tag</span>) = <span style="color:#268bd2"><span style="color:#b58900">@</span>_</span>;
+    
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">@</span>list</span> = ();
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>parser</span> = new XML::LibXML;
+    
+    try {
+        <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>xml_doc</span> = <span style="color:#b58900"><span style="color:#b58900">$</span>parser</span><span style="color:#b58900">-></span>parse_string(<span style="color:#b58900"><span style="color:#b58900">$</span>content</span>);
+
+        <span style="color:#859900">foreach</span> <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>t</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>xml_doc</span><span style="color:#b58900">-></span>getElementsByTagName(<span style="color:#b58900"><span style="color:#b58900">$</span>tag</span>))
+        {
+            <span style="color:#859900">push</span> <span style="color:#b58900"><span style="color:#b58900">@</span>list</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>t</span><span style="color:#b58900">-></span>toStringEC14N;
+        }
+    } catch {
+        <span style="color:#859900">warn</span> <span style="color:#269186"><span style="color:#2aa198">"</span>Erreur dans extract_rss : <span style="color:#b58900"><span style="color:#b58900">$</span>_</span><span style="color:#2aa198">"</span></span>;
+    };
+    
+    <span style="color:#859900">return</span> <span style="color:#b58900"><span style="color:#b58900">@</span>list</span>;
+}
+
+1;
+
+</pre>
+</div>
+</div>
+
+<h3>Extraction XPATH</h3>
 
 <p>Bien que l’API XPATH soit relativement simple d’utilisation, une méthode d’extraction 
 l’utilisant n’a pas été implémentée. En effet, j’ai déjà évoqué le fait que la méthode
@@ -29,28 +75,24 @@ d’extraction doit renvoyer une chaîne et doit pouvoir travailler en prenant c
 argument le retour d’un autre appel à elle-même.</p>
 
 <p>Cependant, l’API ne permet de le faire (du moins pas raisonnablement facilement) 
-car un appel à string_value va enlever tout les noms des nœuds enfants pour ne garder
+car un appel à <em>string_value</em> va enlever tout les noms des nœuds enfants pour ne garder
 que le texte visible. Si ce n’est pas un problème majeur lorsqu’il s’agit d’un élement
 feuille, c’est très problématique pour travailler sur les nœuds item d’un flux RSS.</p>
 
 <p>Je n’ai pas vu venir ce problème suffisamment tôt dans le développement, car j’ai 
 l’habitude d’utiliser un framework dont le comportement était celui que j’attendais,
 à savoir qu’un appel à une méthode type toString renvoie le contenu du nœud sous 
-forme XML (cf. System.Xml.Linq.XNode.ToString).</p>
+forme XML (cf. <a href="http://msdn.microsoft.com/fr-fr/library/bb341005(v=vs.100).aspx" target="_blank">System.Xml.Linq.XNode.ToString</a>).</p>
 
+<h3>Extraction RSS</h3>
 
-<div class="code-block">
-<div class="code-block-header">
-	<span style="font-weight:bold;"></bold>
-</div>
-<div class="code-block-content">
-
-</div>
-</div>
+<p>Il existe un modèle Perl basé sur LibXML spécialisé dans le traitement des fichiers
+RSS. Il n'a pas été non plus utilisé, car il ne peut parser que des fichiers RSS, ce
+qui incompatible avec l'approche utilisée.</p>
 
 
 
-<div id="nav"><a href="">précédent</a> | 
-<a href="">suivant</a></div></div>
+<div id="nav"><a href="bao1_3_chaine.html">précédent</a> | 
+<a href="bao1_5_parallelisation.html">suivant</a></div></div>
 </div>
 </div>

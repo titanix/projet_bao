@@ -2,7 +2,7 @@
 <div id='main' class="book">
     <h1>Parallélisation du code</h1>
   <div>
-  <h2>...</h2>
+  <h2>Problématique</h2>
 <p>
 </p>
 
@@ -27,16 +27,20 @@ et essayé plusieurs choses que je vais lister sur cette page.
 
 <p>
 Comme l'interpréteur Perl est au moins aussi mauvais que le langage qu'il interprète,
-il ne s'arrange donc pas pour exploiter de lui-même plusieurs CPU ou cores,
+il ne s'arrange pas pour exploiter de lui-même plusieurs cores ou CPU,
 comme le ferait par machine BEAM (la VM d'Erlang) par exemple.
 <br/>Il faut donc le faire explicitement. Dans la plupart des langages, on penserait
-pour cela à utiliser des threads (aussi appelés processus légers). Et c'est faisable
+pour cela à utiliser des 
+<a href="http://fr.wikipedia.org/wiki/Thread_(informatique)" target="_blank">threads</a>
+(aussi appelés processus légers). Et c'est faisable
 en Perl aussi, mais en me renseignant sur le sujet, je suis tout d'abord tombé sur
-la création de nouveaux processus, au moyen de fork.
+la création de nouveaux processus, au moyen de 
+<a href="http://fr.wikipedia.org/wiki/Fork_(programmation)" target="_blank">fork</a>.
 </p>
 
-
-<p>La méthode que j'ai utilisée fait usage de la classe Parallel:ForkManager, qui n'est
+<p>La méthode que j'ai utilisée fait usage de la classe 
+<a href="http://search.cpan.org/~szabgab/Parallel-ForkManager-1.06/lib/Parallel/ForkManager.pm" target="_blank">
+Parallel:ForkManager</a>, qui n'est
 qu'un wrapper autour de l'appel système fork. Les processus créés utilisent de facto des 
 espaces mémoires différents pour l'écriture (il est fait usage de la technique de copy
 on write par le système, d'où un faible coût de création des processus) ce qui empêchent
@@ -55,27 +59,81 @@ il s'agit d'un emplacement situé sur un ramdisk.</p>
 partitionner l'ensemble des données à traiter en N parts qu'on essaiera de faire les
 plus égales possibles.</p>
 
-<p>Pour cela j'ai crée un version particulière du parcours de l'arborescence dont laquelle
+<p>Pour cela j'ai créé une version particulière du parcours de l'arborescence dans
+laquelle
 il existe une fonction qui va se charger construire une liste de répertoires. Il est 
 possible de choisir la profondeur à laquelle descend la procédure pour établir la liste.
-<br/>Dans le cas de nos données, une profondeur de 1 construit la liste des dossiers
-qui correspondent aux mois de l'année</p>
+</p><p>Dans le cas de nos données, une profondeur de 1 construit la liste des dossiers
+qui correspondent aux mois de l'année.</p>
+
+<div class="code-block">
+<div class="code-block-header">
+Construction de la listes des dossiers à traiter
+	<!--<span style="font-weight:bold;"></bold>-->
+</div>
+<div class="code-block-content">
+<pre style="color:#586e75"><span style="color:#586e75;font-style:italic"># construit une liste des répertoires contenus dans le dossier passé en paramètre</span>
+<span style="color:#586e75;font-style:italic"># avec une profondeur maximale</span>
+<span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">build_subdir_list</span> {
+    <span style="color:#073642;font-weight:700">my</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>dir</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>list_ref</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>max_depth</span>) = <span style="color:#268bd2"><span style="color:#b58900">@</span>_</span>;
+    build_subdir_list_helper(<span style="color:#b58900"><span style="color:#b58900">$</span>dir</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>list_ref</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>max_depth</span> - 1, 0);
+}
+
+<span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">build_subdir_list_helper</span> {
+    <span style="color:#073642;font-weight:700">my</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>dir</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>list_ref</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>max_depth</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>depth</span>) = <span style="color:#268bd2"><span style="color:#b58900">@</span>_</span>;
+  
+    <span style="color:#859900">opendir</span>(DIR, <span style="color:#b58900"><span style="color:#b58900">$</span>dir</span>) <span style="color:#859900">or</span> <span style="color:#859900">die</span> <span style="color:#269186"><span style="color:#2aa198">"</span>can't open <span style="color:#b58900"><span style="color:#b58900">$</span>dir</span>: <span style="color:#b58900"><span style="color:#b58900">$</span>!</span><span style="color:#dc322f">\n</span><span style="color:#2aa198">"</span></span>;
+    <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">@</span>files</span> = <span style="color:#859900">readdir</span>(DIR);
+    <span style="color:#859900">closedir</span>(DIR);
+
+    <span style="color:#859900">foreach</span> <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>file</span> (<span style="color:#b58900"><span style="color:#b58900">@</span>files</span>) {    
+        <span style="color:#859900">next</span> <span style="color:#859900">if</span> <span style="color:#b58900"><span style="color:#b58900">$</span>file</span> =<span style="color:#d30102">~ /^\.\.?$/</span>;
+        
+        <span style="color:#b58900"><span style="color:#b58900">$</span>file</span> = <span style="color:#b58900"><span style="color:#b58900">$</span>dir</span>.<span style="color:#269186"><span style="color:#2aa198">"</span>/<span style="color:#2aa198">"</span></span>.<span style="color:#b58900"><span style="color:#b58900">$</span>file</span>;
+        <span style="color:#859900">if</span> (<span style="color:#859900">-d</span> <span style="color:#b58900"><span style="color:#b58900">$</span>file</span> &amp;&amp; (<span style="color:#b58900"><span style="color:#b58900">$</span>depth</span> &lt; <span style="color:#b58900"><span style="color:#b58900">$</span>max_depth</span>)) {
+            build_subdir_list_helper(<span style="color:#b58900"><span style="color:#b58900">$</span>file</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>list_ref</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>max_depth</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>depth</span> + 1);
+        }
+        <span style="color:#859900">else</span> {
+            <span style="color:#859900">if</span>(<span style="color:#859900">-d</span> <span style="color:#b58900"><span style="color:#b58900">$</span>file</span>) {
+                <span style="color:#859900">push</span>(<span style="color:#b58900"><span style="color:#b58900">@</span>$list_ref</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>file</span>);
+            }
+        }
+    }
+}
+</pre>
+</div>
+</div>
 
 <p>Le code itère ensuite sur cette liste et crée un processus par dossier. Le composant
 ForkManager se charge de respecter la contrainte qui lui ai passé en paramètre du nombre
 maximal de processus fils concurrent.</p>
 
+<h2>Fusion des résultats</h2>
+
+<p>Puisque les fichiers sont traités en parallèle, il faut à un moment donné réunir les
+différentes données dans une seule liste afin de passer à l'étape de traitement suivante,
+qui est d'écrire les fichiers générés.
+</p>
+
+<p>La fusion d'un nombre raisonnable de listes se rapidement car à la fonction push de Perl.
+Avec une implémentation sous forme de liste chaînée, c'est effectivement une opération
+rapide où il suffit de déplacer le pointeur de fin de liste vers la tête de la liste
+à concaténer.
+</p>
+
+<p>En revanche, le coût de filtrement des doublons est prohibitif, tout du moins comme
+je l'avais fait avec l'utilisation de l'opérateur ~~ et une itération sur tous les 
+éléments de toutes les listes résultants pour créer une liste sans doublons.
+</p><p>Car si on peut empêcher l'ajout au sein d'un processus, rien ne dit que l'élément
+ne sera pas présent dans les résultats de plusieurs processus. Il faut donc nécessairement
+le reporté à la fin. Mais il s'agit d'une liste d'environ 300 000 chaînes de caractères
+de tailles diverses.</p>
 
 
 
 
 
-<p>Le second coût est celui de réunir les différentes données dans une seule liste. Faire
-cela permet d'utiliser une procédure unique d'écriture dans les fichiers de sortie. Mais
-cela prend beaucoup trop de temps.</p>
-
-
-
+<!--
 size of hash:  12.
 taille de la liste:  22542.
 taille de la liste:  25809.
@@ -110,11 +168,10 @@ bibliothèque standard.
 	<span style="font-weight:bold;"></bold>
 </div>
 <div class="code-block-content">
-
 </div>
 </div>
 
-
+-->
 
 <div id="nav"><a href="">précédent</a> | 
 <a href="">suivant</a></div></div>

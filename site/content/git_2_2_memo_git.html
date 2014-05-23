@@ -1,8 +1,12 @@
 <div id="content">
 <div id='main' class="book">
-    <h1>Modularisation du code</h1>
+    <h1>Mini-mémo git</h1>
   <div>
-  
+<p>
+Cette page recense des commandes utiles, qui ont été utilisées au moins une fois au
+cours du projet. Il n'est pas exhaustif, et d'autres commandes sont à découvrir au fil
+des explications de ce site.
+</p>
   
   <h2>Actions de base</h2>
 <dl>
@@ -18,7 +22,8 @@
 <dt>Sauvegarde d’un état (commit)</dt>
 <dd>git commit –m "<em>message</em>"</dd>
 
-<dt>Revenir à la dernière version sauvegardée d’un fichier</dt>
+<dt>Revenir à la dernière version sauvegardée d’un fichier
+<br/> (il s'agit bien de deux tirets, séparés du nom par une espace)</dt>
 <dd>git checkout -- <em>filename</em></dd>
 
 <dt>Corriger le message du dernier commit</dt>
@@ -38,7 +43,7 @@
 
 <h2>Gestion des dépôts distants</h2>
 <dl>
-<dt>Ajout du répertoire distant sous le raccourci githubrep</dt>
+<dt>Ajout du répertoire distant sous le raccourci githubrep (exemple)</dt>
 <dd>git remote add githubrep https://github.com/titanix/projet_bao.git</dd>
 
 <dt>Liste les répertoires distants enregistrés (alias seulement)</dt>
@@ -60,6 +65,88 @@ quand on revient sur une branche, on arrive sur l'état du dernier commit.
 </div>
 </div>
 
+
+<h2>Commit --amend</h2>
+
+<div class="warning-block">
+<div class="warning-block-header">
+	<span style="font-weight:bold;">Une connerie de plus</bold>
+</div>
+<div class="warning-block-content">
+Dans la série des choses à ne pas faire que je découvre en les faisant, il y a la 
+modification d'un commit. Lorsque l'on a oublié un fichier lors d'un commit, ou qu'on
+veut en modifier le message, on peut utiliser l'option <em>--amend</em> lors du commit.
+Or, le cas de la seule modification de message excepté, cela crée en réalité un nouveau
+commit, et le dépôt distant ne va pas apprécier la nouvelle au prochain push.
+</div>
+</div>
+
+<p>Le commit amendé à en fait complètement supprimé de l'historique le précédent commit,
+qu'il est censé modifié. Ainsi, lors du push, le dépôt distant pense que l'on "saute dans
+le temps", ce qu'il n'autorise pas. Il faut donc rapatrier le code du dépôt au moyen
+de la commande pull, qui est en fait un fetch (téléchargement du code) suivit d'un
+merge (fusion du code local et du code téléchargé). Dans notre cas la fusion se fait sans
+aucun conflit, puisqu'il n'y a eu que l'ajout d'un fichier qui n'existait pas.
+<br/>Il faut finalement pousser le résultat de la fusion (c'est à dire notre commit
+amendé maintenant compatible avec le dépôt distant) sur le dépot, au moyen de la commande
+push.
+</p>
+
+<p>Voici ce que cela a donné dans mon cas. Les commandes tappées dans le shell sont en
+police normale, tandis que les résultats sont affichés en italique.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+git add -f build/img/azure_deploy.png 
+</div>
+<div class="code-block-header">
+git commit --amend
+</div>
+<div class="code-block-header"><em><pre>
+[master 2147e59] Travail sur le contenu du site et sa présentation.
+ 29 files changed, 541 insertions(+), 662 deletions(-)
+ delete mode 100644 site/build/.html
+ create mode 100644 site/build/code/build_site.pl
+ create mode 100644 site/build/img/azure_deploy.png
+ create mode 100644 site/content/copy/img/azure_deploy.png
+ create mode 100644 site/content/site_perl.html</pre></em>
+</div>
+<div class="code-block-header">
+git push githubrep master
+</div>
+<div class="code-block-header"><em><pre>
+Username for 'https://github.com': louis....@....fr
+Password for 'https://louis....@....fr@github.com': 
+To https://github.com/titanix/projet_bao.git
+ ! [rejected]        master -> master (non-fast-forward)
+error: failed to push some refs to 'https://github.com/titanix/projet_bao.git'
+To prevent you from losing history, non-fast-forward updates were rejected
+Merge the remote changes (e.g. 'git pull') before pushing again.  See the
+'Note about fast-forwards' section of 'git push --help' for details.
+</pre></em>
+</div>
+<div class="code-block-header">
+git pull githubrep master
+</div>
+<div class="code-block-header"><em><pre>
+Username for 'https://github.com': louis....@....fr
+Password for 'https://louis....@....fr@github.com': 
+From https://github.com/titanix/projet_bao
+ * branch            master     -> FETCH_HEAD
+Merge made by the 'recursive' strategy.
+</pre></em>
+</div>
+<div class="code-block-header">
+git push githubrep master
+</div>
+<div class="code-block-header">
+<em><pre>Username for 'https://github.com': louis....@....fr
+Password for 'https://louis....@....fr@github.com': 
+To https://github.com/titanix/projet_bao.git
+   26b4d93..80cfd76  master -> master</em></pre>
+</div>
+</div>
 
 
 <div id="nav"><a href="">précédent</a> | 

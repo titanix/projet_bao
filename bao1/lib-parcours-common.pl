@@ -22,7 +22,12 @@ sub main
 	$rep=~ s/[\/]$//; 	# on s'assure que le nom du répertoire ne se termine pas par un "/"
 	
 	parcours_arborescence_fichiers($rep, $proc);
-	write_result(\@out_list, $out_dir);
+	my $outfile = write_result(\@out_list, $out_dir);
+	
+	if($conf_ref->{'tgg_path'})
+	{
+		system("$conf_ref->{'tgg_path'} < $outfile > $conf_ref->{'out_dir'}/tagger_result.txt");
+	}
 	
 	my $end = time();
 	printf("Temps d'exécution : %.2f\n", $end - $start);
@@ -75,6 +80,7 @@ sub parcours_arborescence_fichiers {
 
 # param $list_ref : référence vers la liste qui contient les couples "contenu/item" à imprimer dans les fichiers de sortie
 # param[opt] $output_dir : chemin de base du dossier qui contiendra les fichiers de sorties
+# return : le chemin vers le fichier TXT de sortie nouvellement créé
 sub write_result
 {
 	my ($list_ref, $output_dir) = @_;
@@ -110,6 +116,7 @@ sub write_result
 	}
 	
 	print "Fichier xml généré : $output_xml\n";
+	return $output_txt;
 }
 
 # param $str : une chaîne à nettoyer

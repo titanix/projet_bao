@@ -22,6 +22,7 @@ Les options suivantes sont disponibles (longues et courtes) :
 --xml 				-x	Utilisations de l'extraction xml
 --output_dir=<dossier>		-o	Chemin vers le dossier de sortie
 --proc=N			-p	Nombre de processus maximal utilisé en parallèle
+--encodfing			-e Encodage utilisé pour les fichiers de sorti
 --verbose			-v	Affichage d'informations verbeux [pas implémenté]
 --help				-h	Affichage de ce message d'aide
 END
@@ -37,6 +38,12 @@ my %conf =
 	'max_proc' => $proc,
 	'use_xml' => $xml
 );
+
+
+if(exists($ENV{'TREETAGGER_PATH'}))
+{
+	$conf{'tgg_path'} = "$ENV{'TREETAGGER_PATH'}/tree-tagger-french-utf8";
+}
 
 if($help == 1)
 {

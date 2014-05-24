@@ -107,6 +107,27 @@ de fichier. Ce fichier sera placé à la racine du site.
 </div>
 </div>
 
+<h3>Chemin de vers le dossier de code</h3>
+
+<p>Il existait à la base dans le dossier <em>build</em> du site web un sous-dossier 
+<em>code</em> destiné à contenir les fichiers de code disponibles au téléchargement.
+Cependant, ces fichiers sont déjà présents sur le serveur à cause de la méthode
+de déploiement utilisé, et je ne voulais pas les dupliquer.
+</p>
+
+<p>C'est pourquoi j'ai ajouté des chemins de dossiers virtuels supplémentaires dans la
+configuration du site web. De cette manière, les chemins sont toujours référencés avec 
+des chemins relatifs tels que <em>code/fichier.pl</em> dans les pages html mais n'ont 
+pas besoin d'être déplacé de leur endroit d'origine, qui n'est pas un dossier enfant
+du répertoire où se trouvent les pages web.
+</p>
+
+<p>Notez que le dossier virtuel <em>/code</em> a été ajouté car Azure n'autorise pas la
+création de dossiers virtuels enfants d'un dossier virtuel inexistant.
+</p>
+
+<img src="img/azure_code_folder.png" />
+
 <h2>Hébergement sur GitHub Pages</h2>
 
 <p>GitHub propose lui aussi un service d'hébergement de pages web, à la différence qu'il

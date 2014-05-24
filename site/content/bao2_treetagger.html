@@ -1,0 +1,230 @@
+<div id="content">
+<div id='main' class="book">
+    <h1>Utilisation et intégration de TreeTagger</h1>
+  <div>
+  <h2>Installation</h2>
+
+<p>Il faut au préalable installer le logiciel TreeTagger sur sa machine. Le logiciel
+fonctionne sur Windows, OS X et Linux.</p>
+
+<div class="warning-block">
+<div class="warning-block-header">
+	<span style="font-weight:bold;">Installation sur OS X</bold>
+</div>
+<div class="warning-block-content">
+L'installation n'est pas compliquée mais se fait en plusieurs étapes où il faut télécharger
+plusieurs archives tar.gz et ne pas les décompresser. C'est le script d'installation
+qui s'en charge. En outre, il faut télécharger plusieurs fichiers de configuration
+qui sont listés plus bas dans la page.
+</div>
+</div>
+
+<h2>Intégration à BOA2</h2>
+
+<p>Le code ayant été organisé de manière relativement propre, l'intégration de TreeTagger
+au workflow est très simple. Conceptuellement, il s'agit de faire les 3 choses suivantes :
+</p>
+
+<ol>
+<li>dans parcours.pl, si la variable d'environnement TREETAGGER_PATH existe, on
+passe un argument supplémentaire à la procédure <em>main</em></li>
+<li>le fonction <em>write_result</em> est modifiée de façon à retourner le chemin du
+fichier texte généré</li>
+<li>la fonction <em>main</em> se sert du chemin de treetagger et de celui du fichier 
+généré pour invoquer une commande shell qui fait le travail</li>
+</ol>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Utilisation de treetagger (générique)</bold>
+</div>
+<div class="code-block-content">
+<em>chemin_vers_treetagger</em>/tree-tagger-french-utf8 &lt; <em>file_a_analyser</em> &gt; <em>fichier_de_résultats</em>
+</div>
+</div>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Utilisation de treetagger (dans mon cas)</span>
+</div>
+<div class="code-block-content">
+/Users/Louis/Downloads/treetagger/cmd/tree-tagger-french-utf8 &lt; sortie_23-May-0-10-34.txt &gt; treetagger_output.txt
+</div>
+</div>
+
+<h3>La variable TREETAGGER_PATH</h3>
+
+<p>
+J'ai décidé de faire reposer l'exécution, conditionnelle, du chemin de code utilisant
+TreeTagger à la présence ou non de la variable d'environnement TREETAGGER_PATH.
+Cette variable n'est pas créée lors d'une installation, il faut donc la fixer au moyen 
+de la suite de commande suivantes.
+</p>
+
+<div class="code-block">
+<div class="code-block-content">
+TREETAGGER_PATH=<em>chemin_vers_le_dossier_content_treetagger</em>
+<br/>export TREETAGGER_PATH
+</div>
+</div>
+
+<div class="note-block">
+<div class="note-block-header">
+	<span style="font-weight:bold;">Création d'une variable d'environnement sous Bash</span>
+</div>
+<div class="note-block-content">
+Fixer la variable d'environnement est simple, mais elle n'est pas immédiatement visible
+par les programmes, ce qu'on remarque par son absence dans la sortie de la commande 
+<span style="font-weight:bold;">env</span>.
+Il ne faut pas oublier d'utiliser la commande <span style="font-weight:bold;">export</span>
+ afin que ce soit le cas.
+<br/>Notez qu'elle la variable ainsi définie n'est valable que pour la session de bash
+en cours.
+</div>
+</div>
+
+<h3>Utilisation de TREETAGGER_PATH</h3>
+
+<p>
+Cette variable contient le chemin vers le programme à utiliser. Le chemin complet
+de treetagger est complété dans le code avec le nom <em>tree-tagger-french-utf8</em>
+codé en dur. Puisqu'on utilise la fonction Perl <em>system</em> qui va exécuté la chaîne
+passée en paramètre, on s'expose à un risque de sécurité si on utilise la variable complète
+elle-même.
+<p>
+
+<p>Ainsi, si on fixe dans le shell une commande malicieuse plutôt qu'un chemin, 
+le code Perl va l'exécuter.
+<div class="code-block">
+<div class="code-block-content">
+TREETAGGER_PATH="rm * "
+<br/><em>(dans le code perl)</em>
+<br/>system("$ENV{'TREETAGGER_PATH'} < inFile.txt > outFile.txt");
+</div>
+</div>
+
+<p>La première commande est à tapper dans le code shell, la troisième ligne représente 
+l'appel dans le code. Notez la présente d'une espace après l'étoile dans la variable
+d'environnement. Si elle est absente, rm tentera de supprimer un fichier ayant pour 
+nom */treetagger-french-utf8. Avec l'espace, rm supprime tous les fichiers du répertoire
+et tente également de supprimer un fichier nommé /treetagger-french-utf8.
+</p>
+
+<div class="warning-block">
+<div class="warning-block-header">
+	<span style="font-weight:bold;">J'ai testé pour vous</span>
+</div>
+<div class="warning-block-content">
+Effectivement, avec une variable telle que TREETAGGER_PATH="rm * "
+le code supprime le contenu du répertoire courant.<br/>
+Mon répertoire de code a fait les frais de l'expérimentation,
+heureusement que je travaille avec git et que j'avais un 
+éditeur de code ouvert avec la plupart des fichiers non suivit.
+</div>
+</div>
+
+<p>Ce n'était donc pas la meilleure idée du monde... Donc j'ai changé d'avis.
+Mais je vous copie-colle quand même le <span style="font-weight:bold;">patch</span>
+ généré grâce à git qui implémentait
+cette solution. Je pense que, comme moi, vous aurez probablement besoin d'
+<a href="http://www.markusbe.com/2009/12/how-to-read-a-patch-or-diff-and-understand-its-structure-to-apply-it-manually/" target="_blank">apprendre à lire un fichier
+diff/patch</a>.</p>
+
+<div class="code-block">
+<div class="code-block-content">
+git patch format-patch -1 HEAD
+</div>
+</div>
+
+<div class="code-block">
+<div class="code-block-header">
+<span style="font-weight:bold;">La patch de la solution pourrie</bold>
+</div>
+<div class="code-block-content">
+<!-- HTML generated using hilite.me --><div>
+<pre style="margin: 0; line-height: 125%">From 53772d58c5553cb7f29c5043d68ec12bd3c8d04c Mon Sep 17 00:00:00 2001
+From: Louis Lecailliez &lt;louis.lecailliez@....fr&gt;
+Date: Sat, 24 May 2014 20:26:26 +0200
+Subject: [PATCH] =?UTF-8?q?Int=C3=A9gration=20de=20treetagger=20=C3=A0=20BAO?=
+ =?UTF-8?q?1.?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<span style="color: #000000; background-color: #ffdddd">---</span>
+ bao1/lib-parcours-common.pl |    9 ++++++++-
+ bao1/parcours.pl            |    7 +++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+<span style="color: #999999">diff --git a/bao1/lib-parcours-common.pl b/bao1/lib-parcours-common.pl</span>
+<span style="color: #999999">index 364861b..bdb36e0 100644</span>
+<span style="color: #000000; background-color: #ffdddd">--- a/bao1/lib-parcours-common.pl</span>
+<span style="color: #000000; background-color: #ddffdd">+++ b/bao1/lib-parcours-common.pl</span>
+<span style="color: #aaaaaa">@@ -22,7 +22,12 @@ sub main</span>
+ 	$rep=~ s/[\/]$//; 	# on s&#39;assure que le nom du répertoire ne se termine pas par un &quot;/&quot;
+ 	
+ 	parcours_arborescence_fichiers($rep, $proc);
+<span style="color: #000000; background-color: #ffdddd">-	write_result(\@out_list, $out_dir);</span>
+<span style="color: #000000; background-color: #ddffdd">+	my $outfile = write_result(\@out_list, $out_dir);</span>
+<span style="color: #000000; background-color: #ddffdd">+	</span>
+<span style="color: #000000; background-color: #ddffdd">+	if($conf_ref-&gt;{&#39;tgg_path&#39;})</span>
+<span style="color: #000000; background-color: #ddffdd">+	{</span>
+<span style="color: #000000; background-color: #ddffdd">+		system(&quot;$conf_ref-&gt;{&#39;tgg_path&#39;} &lt; $outfile &gt; $conf_ref-&gt;{&#39;out_dir&#39;}/tagger_result.txt&quot;);</span>
+<span style="color: #000000; background-color: #ddffdd">+	}</span>
+ 	
+ 	my $end = time();
+ 	printf(&quot;Temps d&#39;exécution : %.2f\n&quot;, $end - $start);
+<span style="color: #aaaaaa">@@ -75,6 +80,7 @@ sub parcours_arborescence_fichiers {</span>
+ 
+ # param $list_ref : référence vers la liste qui contient les couples &quot;contenu/item&quot; à imprimer dans les fichiers de sortie
+ # param[opt] $output_dir : chemin de base du dossier qui contiendra les fichiers de sorties
+<span style="color: #000000; background-color: #ddffdd">+# return : le chemin vers le fichier TXT de sortie nouvellement créé</span>
+ sub write_result
+ {
+ 	my ($list_ref, $output_dir) = @_;
+<span style="color: #aaaaaa">@@ -110,6 +116,7 @@ sub write_result</span>
+ 	}
+ 	
+ 	print &quot;Fichier xml généré : $output_xml\n&quot;;
+<span style="color: #000000; background-color: #ddffdd">+	return $output_txt;</span>
+ }
+ 
+ # param $str : une chaîne à nettoyer
+<span style="color: #999999">diff --git a/bao1/parcours.pl b/bao1/parcours.pl</span>
+<span style="color: #999999">index 7ac6daa..1cdf3a8 100644</span>
+<span style="color: #000000; background-color: #ffdddd">--- a/bao1/parcours.pl</span>
+<span style="color: #000000; background-color: #ddffdd">+++ b/bao1/parcours.pl</span>
+<span style="color: #aaaaaa">@@ -38,6 +39,12 @@ my %conf =</span>
+ 	&#39;use_xml&#39; =&gt; $xml
+ );
+ 
+<span style="color: #000000; background-color: #ddffdd">+</span>
+<span style="color: #000000; background-color: #ddffdd">+if(exists($ENV{&#39;TREETAGGER_PATH&#39;}))</span>
+<span style="color: #000000; background-color: #ddffdd">+{</span>
+<span style="color: #000000; background-color: #ddffdd">+	$conf{&#39;tgg_path&#39;} = &quot;$ENV{&#39;TREETAGGER_PATH&#39;}/tree-tagger-french-utf8&quot;;</span>
+<span style="color: #000000; background-color: #ddffdd">+}</span>
+<span style="color: #000000; background-color: #ddffdd">+</span>
+ if($help == 1)
+ {
+ 	print $help_text;
+<span style="color: #000000; background-color: #ffdddd">-- </span>
+1.7.9.6 (Apple Git-31.1)
+</pre></div>
+
+</div>
+</div>
+
+<h3>Solution avec PATH</h3>
+
+<p>La méthode précédente utilisant une méthode beaucoup trop dangereuse, j'ai décidé de
+me baser plutôt sur la variable PATH préexistante, et de laisser l'utilisateur la
+remplir lui même. Le programme utilisera la commande exec comme tout à l'heure,
+mais avec seulement le nom de treetagger. Si le programme n'est pas dans le path, il ne
+sera pas trouvé, donc pas exécuté. Tant pis pour l'utilisateur.
+</p>
+
+
+<div id="nav"><a href="intro.html">précédent</a> | 
+<a href="">suivant</a></div></div>
+</div>
+</div>

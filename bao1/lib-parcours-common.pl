@@ -6,7 +6,7 @@ use Encode;
 require Encode::Detect;
 use HTML::Entities;
 use Time::HiRes qw(time);
-
+require('treetagger2xml-utf8.pl');
 # contient le contenu extrait des fichiers rss
 @out_list = (); # je sais, les variables globales c'est mal...
 my $processed_files = 0;
@@ -23,11 +23,10 @@ sub main
 	
 	parcours_arborescence_fichiers($rep, $proc);
 	my $outfile = write_result(\@out_list, $out_dir);
-	
-	if($conf_ref->{'tgg_path'})
-	{
-		system("$conf_ref->{'tgg_path'} < $outfile > $conf_ref->{'out_dir'}/tagger_result.txt");
-	}
+	my $tagger_outfile = "$conf_ref->{'out_dir'}/tagger_result.txt";
+
+	system("tree-tagger-french-utf8 < $outfile > $tagger_outfile");
+	treetagger_to_xml($tagger_outfile, 'utf-8');
 	
 	my $end = time();
 	printf("Temps d'exécution : %.2f\n", $end - $start);

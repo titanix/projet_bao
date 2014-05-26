@@ -286,13 +286,18 @@ Content-Transfer-Encoding: 8bit
 </div>
 </div>
 
-<h3>Utilisation de PATH</h3>
+<h3>Solution avec PATH</h3>
 
 <p>La méthode précédente utilisant une méthode beaucoup trop dangereuse, j'ai décidé de
 me baser plutôt sur la variable PATH préexistante, et de laisser l'utilisateur la
 remplir lui même. Le programme utilisera la commande exec comme tout à l'heure,
 mais avec seulement le nom de treetagger. Si le programme n'est pas dans le path, il ne
-sera pas trouver, donc pas exécuté. Tant pis pour l'utilisateur.
+sera pas trouvé, donc pas exécuté. Tant pis pour l'utilisateur.
+</p>
+
+<p>
+Le code de lib-parcours-common.pl se sert désormais du fichier treetagger2xml.pl qui
+a été modifié afin de pouvoir être utilisé en tant que fonction.
 </p>
 
 

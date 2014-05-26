@@ -1,6 +1,3 @@
-
-use Data::Dumper;
-
 use warnings;
 use File::Slurp;
 use Encode;
@@ -8,8 +5,9 @@ require Encode::Detect;
 use HTML::Entities;
 use Time::HiRes qw(time);
 require('treetagger2xml-utf8.pl');
+
 # contient le contenu extrait des fichiers rss
-@out_list = (); # je sais, les variables globales c'est mal...
+@out_list = (); # conservé pour la compatibilité avec le parcours parallèle
 my $processed_files = 0;
 
 sub main
@@ -20,18 +18,13 @@ sub main
 	my $out_dir = $conf_ref->{'out_dir'};
 	my $start = time();
 	
-	$rep=~ s/[\/]$//; 	# on s'assure que le nom du répertoire ne se termine pas par un "/"
+	$rep=~ s/[\/]$//; # on s'assure que le nom du répertoire ne se termine pas par un "/"
 	
 	my %result = ();
 	parcours_arborescence_fichiers($rep, $proc, \%result);
+	my $outfile = write_result_new(\%result, $out_dir);
 	
-	
-write_result_new(\%result, '');
-	exit;
-	
-	my $outfile = write_result(\@out_list, $out_dir);
 	my $tagger_outfile = "$conf_ref->{'out_dir'}/tagger_result.txt";
-
 	system("tree-tagger-french-utf8 < $outfile > $tagger_outfile");
 	treetagger_to_xml($tagger_outfile, 'utf-8');
 	
@@ -41,34 +34,48 @@ write_result_new(\%result, '');
 	exit 0;
 }
 
+# param : hash_ref : référence vers une table de hashage qui à chaque clefs (rubrique)
+# associe une table de hashage telle que titre => description, dans le contexte de notre projet
 sub write_result_new
 {
 	my ($hash_ref, $output_dir) = @_;
 	
-	#my %hash = %$hash_ref;
+	if(!defined($output_dir)) { $output_dir = "./" }
 	
-	foreach my $rub (keys(%$hash_ref)) {
-   		print "Rubrique [$rub] \n";
-   		
-   		# %{$hash_ref->{$rub}}, vraiment ? il m'a fallu 20 minutes de recherche pour
-   		# trouver cette syntaxe, quelle langage de MERDE.
-   		foreach my $title (keys(%{$hash_ref->{$rub}}))
+	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+	my $output_txt="$output_dir/sortie_$mday-$months[$mon]-$hour-$min-$sec.txt";
+	
+	if (!open (TXT_OUT, ">:encoding(UTF-8)", $output_txt)) { die "Pb a l'ouverture du fichier $output_txt"};
+	my %files = (); 	# on va créer un fichier XML par rubrique
+
+	foreach my $rub (keys(%$hash_ref))
+	{
+		my $cat = clean_cat_name($rub);
+		my $encoding = "UTF-8";
+		if(!open($files{$cat}, ">:encoding($encoding)", "$output_dir/${cat}_$mday-$months[$mon]-$hour-$min-$sec.xml")) { die $! ; }
+		print {$files{$cat}} "<?xml version=\"1.0\" encoding=\"$encoding\" ?>\n";
+		print {$files{$cat}} '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
+		print {$files{$cat}} "<parcours>";
+		
+		foreach my $title (keys(%{$hash_ref->{$rub}}))
    		{
-   			#print "\t$title\n"; # OK
-   			print %{$hash_ref->{$rub}}->{$title};
-   			
-   			#, %{$hash_ref->{$rub}{$title}}, "\n";
+   			print {$files{$cat}} "<title><![CDATA[$title]]></title>\n";
+   			print {$files{$cat}} "<description><![CDATA[%{$hash_ref->{$rub}}->{$title}]]></description>\n";
+			print TXT_OUT $title, "\n";
+   			print TXT_OUT %{$hash_ref->{$rub}}->{$title}, "\n";		
    		}
-   		
-   		#foreach my $title (keys(%$hash_ref->{$rub}))
-   		#{
-   		#	print "\t$title", %$hash_ref->{$rub}{$title}, "\n";
-   		#}
-   		
-   		#foreach my $title (keys(%$hash_ref{$rub})) {
-   		#	print "\t$title", "\n"; #$result{$rub}{$title}, "\n";
-   		#}
 	}
+	
+	foreach my $fh (values(%files)) 
+	{
+		print $fh "</parcours>\n";
+		close($fh);
+	}
+	close(TXT_OUT);
+	
+	print "Fichier xml généré : $output_xml\n";
+	return $output_txt;
 }
 
 # param $path : chemin du dossier dont les fichiers sont analysés
@@ -118,6 +125,7 @@ sub parcours_arborescence_fichiers {
     }
 }
 
+# deprecated : on garde ça pour la compatibilité avec le parcours parallèle
 # param $list_ref : référence vers la liste qui contient les couples "contenu/item" à imprimer dans les fichiers de sortie
 # param[opt] $output_dir : chemin de base du dossier qui contiendra les fichiers de sorties
 # return : le chemin vers le fichier TXT de sortie nouvellement créé
@@ -154,6 +162,7 @@ sub write_result
 		print $fh "</parcours>\n";
 		close($fh);
 	}
+	close(TXT_OUT);
 	
 	print "Fichier xml généré : $output_xml\n";
 	return $output_txt;

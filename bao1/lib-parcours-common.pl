@@ -1,4 +1,5 @@
-#/usr/bin/perl
+
+use Data::Dumper;
 
 use warnings;
 use File::Slurp;
@@ -21,7 +22,13 @@ sub main
 	
 	$rep=~ s/[\/]$//; 	# on s'assure que le nom du répertoire ne se termine pas par un "/"
 	
-	parcours_arborescence_fichiers($rep, $proc);
+	my %result = ();
+	parcours_arborescence_fichiers($rep, $proc, \%result);
+	
+	
+write_result_new(\%result, '');
+	exit;
+	
 	my $outfile = write_result(\@out_list, $out_dir);
 	my $tagger_outfile = "$conf_ref->{'out_dir'}/tagger_result.txt";
 
@@ -34,10 +41,40 @@ sub main
 	exit 0;
 }
 
+sub write_result_new
+{
+	my ($hash_ref, $output_dir) = @_;
+	
+	#my %hash = %$hash_ref;
+	
+	foreach my $rub (keys(%$hash_ref)) {
+   		print "Rubrique [$rub] \n";
+   		
+   		# %{$hash_ref->{$rub}}, vraiment ? il m'a fallu 20 minutes de recherche pour
+   		# trouver cette syntaxe, quelle langage de MERDE.
+   		foreach my $title (keys(%{$hash_ref->{$rub}}))
+   		{
+   			#print "\t$title\n"; # OK
+   			print %{$hash_ref->{$rub}}->{$title};
+   			
+   			#, %{$hash_ref->{$rub}{$title}}, "\n";
+   		}
+   		
+   		#foreach my $title (keys(%$hash_ref->{$rub}))
+   		#{
+   		#	print "\t$title", %$hash_ref->{$rub}{$title}, "\n";
+   		#}
+   		
+   		#foreach my $title (keys(%$hash_ref{$rub})) {
+   		#	print "\t$title", "\n"; #$result{$rub}{$title}, "\n";
+   		#}
+	}
+}
+
 # param $path : chemin du dossier dont les fichiers sont analysés
 # param $proc : référence vers la fonction d'extraction qui opère sur des fragments XML
 sub parcours_arborescence_fichiers {
-    my ($path, $proc) = @_;
+    my ($path, $proc, $hash_ref) = @_;
     opendir(DIR, $path) or die "can't open $path: $!\n";
     
     my @files = readdir(DIR);
@@ -48,7 +85,7 @@ sub parcours_arborescence_fichiers {
 		next if $file =~ /^fil/;
 		$file = $path."/".$file;
 		if (-d $file) {
-	    	parcours_arborescence_fichiers($file, $proc);
+	    	parcours_arborescence_fichiers($file, $proc, $hash_ref);
 		}
 		if (-f $file) {
 			if($file =~ /\.xml$/i)
@@ -65,11 +102,15 @@ sub parcours_arborescence_fichiers {
 					# en réalité on possède déjà tous les titres du fichiers dans @titles
 					# mais on risque une désynchronisation si le nombre de balises titres
 					# précédent le premier item n'est pas constant
+						
 					my @titre = $proc->($item, "title");
 					my @descr = $proc->($item, "description");
-					push(@out_list, [clean(remove_outer_tag($titre[0])), "titre", $category]);
-					push(@out_list, [clean(remove_outer_tag($descr[0])), "description", $category]);
-				}
+					#push(@out_list, [clean(remove_outer_tag($titre[0])), "titre", $category]);
+					#push(@out_list, [clean(remove_outer_tag($descr[0])), "description", $category]);
+				
+					$hash_ref->{$category}{clean(remove_outer_tag($titre[0]))} = clean(remove_outer_tag($descr[0]));
+					
+					}
 				
 				print "File [$file] processed.\n"
 			}

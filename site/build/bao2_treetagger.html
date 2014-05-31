@@ -252,7 +252,8 @@ Content-Transfer-Encoding: 8bit
  	printf(&quot;Temps d&#39;exécution : %.2f\n&quot;, $end - $start);
 <span style="color: #aaaaaa">@@ -75,6 +80,7 @@ sub parcours_arborescence_fichiers {</span>
  
- # param $list_ref : référence vers la liste qui contient les couples &quot;contenu/item&quot; à imprimer dans les fichiers de sortie
+ # param $list_ref : référence vers la liste qui contient les couples &quot;contenu/item&quot; à imprimer dans les 
+ fichiers de sortie
  # param[opt] $output_dir : chemin de base du dossier qui contiendra les fichiers de sorties
 <span style="color: #000000; background-color: #ddffdd">+# return : le chemin vers le fichier TXT de sortie nouvellement créé</span>
  sub write_result

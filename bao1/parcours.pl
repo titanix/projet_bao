@@ -12,6 +12,7 @@ my $out_dir = '.'; # chemin vers le répertoire de sortie
 my $proc = 0; # nombre de processus maximal utilisé
 my $xml = 0; # utilisation de l'extraction xml
 my $help = 0; # affichage de l'aide
+my $tt = 0; # utilisation de treetagger
 
 my $help_text = "usage : perl parcours.pl --input_dir=<dossier_entrée> [-]\n";
 
@@ -20,15 +21,16 @@ usage : perl parcours.pl --input_dir=<dossier_entrée> [options]
 
 Les options suivantes sont disponibles (longues et courtes) :
 --xml 				-x	Utilisations de l'extraction xml
+--treetagger		-t Utilisation de treetagger pour la sortie des fichiers xml
 --output_dir=<dossier>		-o	Chemin vers le dossier de sortie
 --proc=N			-p	Nombre de processus maximal utilisé en parallèle
---encodfing			-e Encodage utilisé pour les fichiers de sorti
+--encoding			-e Encodage utilisé pour les fichiers de sortie
 --verbose			-v	Affichage d'informations verbeux [pas implémenté]
 --help				-h	Affichage de ce message d'aide
 END
 
 my $res = GetOptions ('input_dir=s' => \$work_dir, 'output_dir:s' => \$out_dir,
-	'proc:i' => \$proc, 'xml' => \$xml, 'help' => \$help);
+	'proc:i' => \$proc, 'xml' => \$xml, 'help' => \$help, 'treetagger' => \$tt);
 	
 # en utilisant une telle structure, on peut rajouter plus facilement des paramètres par la suite
 my %conf = 
@@ -36,14 +38,9 @@ my %conf =
 	'work_dir' => $work_dir,
 	'out_dir' => $out_dir,
 	'max_proc' => $proc,
-	'use_xml' => $xml
+	'use_xml' => $xml,
+	'treetagger' => $tt
 );
-
-
-if(exists($ENV{'TREETAGGER_PATH'}))
-{
-	$conf{'tgg_path'} = "$ENV{'TREETAGGER_PATH'}/tree-tagger-french-utf8";
-}
 
 if($help == 1)
 {

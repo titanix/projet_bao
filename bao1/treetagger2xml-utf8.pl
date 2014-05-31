@@ -14,9 +14,9 @@ sub treetagger_to_xml
     $FichierSortie = $FichierEntree . ".xml";
     open(Sortie,">:encoding(utf-8)", $FichierSortie);
     
-	print Sortie "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>\n";
-    print Sortie "<document>\n";
-    print Sortie "<article>\n";
+	#print Sortie "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>\n";
+    #print Sortie "<document>\n";
+    #print Sortie "<article>\n";
     
     while ($Ligne = <Entree>)
     {
@@ -38,8 +38,8 @@ sub treetagger_to_xml
 		}
     }
     
-    print Sortie "</article>\n";
-    print Sortie "</document>\n";
+    #print Sortie "</article>\n";
+    #print Sortie "</document>\n";
     
     close(Entree);
     close(Sortie);

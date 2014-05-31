@@ -1,0 +1,90 @@
+<div id="content">
+<div id='main' class="book">
+    <h1>...</h1>
+  <div>
+  <h2>Utilisation de PATH</h2>
+
+<p>La méthode précédente utilisant une méthode beaucoup trop dangereuse, j'ai décidé de
+me baser plutôt sur la variable PATH préexistante, et de laisser l'utilisateur la
+remplir lui même. Le programme utilisera la commande exec comme tout à l'heure,
+mais avec seulement le nom de treetagger. Si le programme n'est pas dans le path, il ne
+sera pas trouvé, donc pas exécuté. Tant pis pour l'utilisateur.
+</p>
+
+<p>
+Le code de lib-parcours-common.pl se sert désormais du fichier treetagger2xml.pl qui
+a été modifié afin de pouvoir être utilisé en tant que fonction.
+</p>
+
+<h2></h2>
+
+<p>L'utilisation d'un programme externe qui travaille sur des fichiers présents sur le
+système de fichiers est agaçante car elle oblige à créer des fichiers temporaires
+et à les lire, et à invoquer un programme externe dans le lancement est coûteux en 
+temps.</p>
+
+<p>Ainsi, réaliser un étiquetage de chaque fragment de texte au moment où il est extrait
+est prohibitif en terme de temps d'exécution, même sur un petit corpus. En outre, c'est
+incompatible avec l'approche choisie, qui sépare la phase d'extraction et celle de génération
+des résultats.
+</p>
+
+<p>Il a donc été choisi de traiter seulement les fichiers de rubriques finaux, qui sont
+ainsi présents sous deux formats XML distincts : un généré par le script, l'autre faisant
+usage de treetagger et de treetagger2xml.
+</p>
+
+<h2>Le module Lingua::TreeTagger</h2>
+
+<p>La manipulation de treetagger est laborieusement, car c'est un programme externe qui
+travaille sur des fichiers. Il aurait plus simple et plus rapide de pouvoir travailler 
+avec des flux stockés en mémoire. Si cela n'est pas possible, il existe toutefois un 
+module permettant d'abstraire l'utilisation de TreeTagger via une classe dédiée.
+</p>
+
+<div class="warning-block">
+<div class="warning-block-header">
+	<span style="font-weight:bold;">Installation interactive</bold>
+</div>
+<div class="warning-block-content">
+Pour installer ce module avec cpanm, il faut faire usage du flag --interactive. Si ce
+n'est pas le cas, l'installation est considérée comme unattended et ne demande pas à 
+l'utilisateur le chemin du répertoire de treetagger. Et le module échouera à s'installer.
+</div>
+</div>
+
+<p>
+Cependant, ce module ne gère pas les bibliothèques utf8 et ne peut donc pas être utilisé
+pour ce projet.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+Installation de Lingua::TreeTagger qui échoue
+</div>
+<div class="code-block-header">
+cpanm --interactive Lingua::TreeTagger
+</div>
+<div class="code-block-content">
+--> Working on Lingua::TreeTagger
+Fetching http://www.cpan.org/authors/id/A/AX/AXANTHOS/Lingua-TreeTagger-0.06.tar.gz ... OK
+Configuring Lingua-TreeTagger-0.06 ... Checking prerequisites...
+  build_requires:
+    !  Test::More::UTF8 is not installed
+
+ERRORS/WARNINGS FOUND IN PREREQUISITES.  You may wish to install the versions
+of the modules indicated above before proceeding with this installation
+
+Please enter the full path to the TreeTagger executable:  /Users/Louis/Downloads/treetagger/bin
+Please enter the full path to the TreeTagger 'lib' directory:  /Users/Louis/Downloads/treetagger/lib
+Sorry, there are only unicode parameter files in the 'lib' directory and those are not supported by the module (yet). Aborting install... at Build.PL line 144, <STDIN> line 2.
+N/A
+! Configure failed for Lingua-TreeTagger-0.06. See /var/root/.cpanm/work/1401560104.2592/build.log for details.
+</div>
+</div>
+
+
+<div id="nav"><a href="bao2_treetagger.html">précédent</a> | 
+<a href="">suivant</a></div></div>
+</div>
+</div>

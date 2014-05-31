@@ -120,6 +120,47 @@ sub parallel_main
 	exit 0;
 }
 
+# param $list_ref : référence vers la liste qui contient les couples "contenu/item" à imprimer dans les fichiers de sortie
+# param[opt] $output_dir : chemin de base du dossier qui contiendra les fichiers de sorties
+# return : le chemin vers le fichier TXT de sortie nouvellement créé
+sub write_result
+{
+	my ($list_ref, $output_dir) = @_;
+	
+	if(!defined($output_dir)) { $output_dir = "./" }
+	
+	my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime();
+	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+	
+	my $output_txt="$output_dir/sortie_$mday-$months[$mon]-$hour-$min-$sec.txt";
+	if (!open (TXT_OUT, ">:encoding(UTF-8)", $output_txt)) { die "Pb a l'ouverture du fichier $output_txt"};
+
+	# on va créer un fichier par rubrique
+	my %files = ();
+
+	foreach my $pair(@$list_ref)
+	{
+		my $cat = clean_cat_name($pair->[2]);
+		if(!exists($files{$cat})) {
+			my $encoding = "UTF-8";
+			if(!open($files{$cat}, ">:encoding($encoding)", "$output_dir/${cat}_$mday-$months[$mon]-$hour-$min-$sec.xml")) { die $! ; }
+			print {$files{$cat}} "<?xml version=\"1.0\" encoding=\"$encoding\" ?>\n";
+			print {$files{$cat}} '<?xml-stylesheet href="arbo_style.xslt" type="text/xsl"?>', "\n";
+			print {$files{$cat}} "<parcours>";
+		}
+		print {$files{$cat}} "<$pair->[1]><![CDATA[$pair->[0]]]></$pair->[1]>\n";
+		print TXT_OUT "$pair->[0]\n";
+	}
+	
+	foreach my $fh (values(%files)) {
+		print $fh "</parcours>\n";
+		close($fh);
+	}
+	close(TXT_OUT);
+	
+	return $output_txt;
+}
+
 # param $dir : répertoire à analyser
 # param $list_ref : rférence vers une liste qui contiendra les fichiers
 # param[opt] $pattern : motif auquel doivent se conformer les fichiers pour être ajoutés dans la liste

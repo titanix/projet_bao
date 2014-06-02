@@ -18,6 +18,19 @@ dd{margin-left:0}
 .dl-horizontal dt{float:left;width:160px;clear:left;text-align:right;overflow:hidden;text-overf‌​low:ellipsis;white-space:nowrap} 
 .dl-horizontal dd{margin-left:180px}
 
+img
+{
+	display: block;
+	margin: 0 auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+img.reset
+{
+	margin: 0;
+}
+
 dt
 {
 	font-weight:normal;

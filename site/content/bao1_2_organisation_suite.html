@@ -1,6 +1,6 @@
 <div id="content">
 <div id='main' class="book">
-    <h1>Modularisation du code (suite)</h1>
+    <h1>Modularisation du code (partie 2)</h1>
   <div>
   <h2>Préparation à la parallélisation</h2>
 <p>
@@ -11,14 +11,14 @@ inclus dans les scripts parallèles et séquentiels.
 
 <p>
 Rappel de l'architecture précédente :
-<img src="img/archi_modulaire_1.png" style="margin:0 auto;"/>
+<img src="img/archi_modulaire_1.png"/>
 </p>
 
 <p>Les procédures d'extractions définies dans les fichiers parcours-XYZ.pl ont été transférées
 dans des fichiers lib-parcours-XYZ.pl. Les fichiers parcours-*.pl en eux-mêmes ne contiennent
 plus qu'un appel à la procédure <em>main</em> de lib-parcours-common.pl.</p>
 
-<img src="img/archi_modulaire_2.png" style="margin:0 auto;"/>
+<img src="img/archi_modulaire_2.png"/>
 
 <p>
 Le fichiers parcours-parallel.pl se base sur certaines procédures de nettoyage du parcours
@@ -37,7 +37,7 @@ exécutables devaient gérer les arguments passés en ligne de commande pour fai
 </p>Le code a donc été réparti de manière à utiliser un point d'entrée unique : parcours.pl.
 En outre, il centralise les dépendances aux autres bibliothèques.</p>
 
-<img src="img/archi_modulaire_3.png" style="margin:0 auto;"/>
+<img src="img/archi_modulaire_3.png"/>
 
 
 <h4>Getopt</h4>

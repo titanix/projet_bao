@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" class="js fontface webkit chrome no-windows no-ie8 wf-adelle-n4-active wf-adelle-n7-active wf-active">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  		<meta charset="utf-8">
+  		<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+		<title>Projet bào</title>
+
+  		<link href="index.css" media="screen" rel="stylesheet" type="text/css">
+  		<link href="louis.css" media="screen" rel="stylesheet" type="text/css">
+
+  		<style type="text/css">.tk-adelle{font-family:"adelle",serif;}</style><link rel="stylesheet" href="http://use.typekit.com/c/1265dd/adelle:n4:n7.XK9:F:2,XKF:F:2/d?3bb2a6e53c9684ffdc9a98ff1f5b2a62be32f57674629b256bf45cc5d898bd33078f6d102fef89283fbbb31e1e08dbab19f40e05a4b4be3e89b3372a143e7a26dcd5dad130c72bab3e8fd8b99a9642fbd1ac9ca2f85adca09826901eba44606d532f918a18db21e3aa7eedc4c96415fb336454aeba9ccc4db2a429ad19d964ab58d4b37e4065f51b76f05e5784b3d8559dc1b815733d6d01c3628dc2ef213aaf691e3a89bf6dd61e2ad9429b23fe4aa8ae920a330c526bf40743ee5dfcd44574840a956bad758ed0eee2b5a93c60d4e7fb298bff1da10e582117053d1df952252f3c620756aa9c01af18b814425fcac6691a37beec766e06872a3e540e07e591a00479af59d5422d070cd9e6028fcffcbc624bd8c4a7d13947ef50a81c4a28244fad90bde4a302">
+  		<script>
+    		//<![CDATA[
+      		try{Typekit.load();}catch(e){}
+    		//]]>
+  		</script>
+	</head>
+<body id="documentation">
+
+  <div class="inner">
+    <header>
+  		<a href="index.html">
+  			<img class="reset" src="toolbox.png" width="110" height="46" alt="Git">
+  		</a>
+  		<span id="tagline">
+    		<em>--</em>projet-boite-à-outils
+  		</span>
+	</header>
+  </div>
+
+	<div class="inner">
+      <div id="content-wrapper">
+        <aside class="sidebar">
+  <nav>
+    <ul>
+      <li>
+        <a href="">Sujets chauds</a>
+        <ul class="expanded">
+          <li>
+            <a href="bao1_2_function_pointer.html">Pointeurs de fonction</a>
+          </li>
+          <li>
+            <a href="bao1_5_parallelisation.html">Code parallèle</a>
+          </li>
+          <li>
+            <a href="git_2_2_memo_git.html">Mini-mémo git</a>
+          </li>
+        <li>
+            <a href="site_publication.html">Publication du site</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="bao1_0_jump_start.html">Téléchargements</a>
+      </li>
+    	<li>
+        <a href="bio.html">Auteurs</a>
+      </li>
+            </li>
+    	<li>
+        <a href="links.html">Liens</a>
+      </li>
+    </ul>
+    
+    <hr class="sidebar">
+    	
+	</hr>
+  </nav>
+		</aside>
+          <div id="content">
+<div id='main' class="book">
+    <h1>Extraction de patrons syntaxiques (sorties textuelles)</h1>
+  <div>
+  <h2>Consigne</h2>
+
+<p>Il s'agit, à partir d'un ensemble de suite de catégories lexicales 
+(les patrons en question) de détecter dans les fichiers produits avec Cordial
+ou TreeTagger les suites de mots correspondantes qui s'y trouvent.</p>
+
+<p>Ces patrons sont formulés à partir des noms des catégories, dépendantes de
+chaque logiciel, séparés les unes des autres par une tabulation. Ils sont
+stockés dans un fichier texte où une ligne correspondant à un
+patron.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Exemple de patron</bold>
+</div>
+<div class="code-block-content">
+NOM ADJ
+</div>
+</div>
+
+<p>
+Les données sur lesquelles nous travaillons sont des fichiers textes dans
+lequels une ligne correspond à un terme, pour lequel est fourni la forme
+trouvées dans le texte, le lemme correspondant et sa catégorie. Ces 
+informations sont séparées par une tabulation et leur ordre dépendant du
+logiciel (Cordial ou TreeTagger).
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Exemple de fichier de données à traiter (sortie TreeTagger)</bold>
+</div>
+<div class="code-block-content">
+<table>
+<tr><td>à</td><td>PRP</td><td>à</td></tr>
+<tr><td>la</td><td>DET:ART</td><td>le</td></tr>
+<tr><td>perpétuité</td><td>NOM</td><td>perpétuité</td></tr>
+<tr><td>avec</td><td>PRP</td><td>avec</td></tr>
+<tr><td>vingt-deux</td><td>NUM</td><td>vingt-deux</td></tr>
+<tr><td>ans</td><td>NOM</td><td>an</td></tr>
+<tr><td>de</td><td>PRP</td><td>de</td></tr>
+<tr><td>sûreté</td><td>NOM</td><td>sûreté</td></tr>
+<tr><td>,</td><td>PUN</td><td>,</td></tr>
+</table>
+</div>
+</div>
+
+<h2>Algorithme</h2>
+<p>
+Conceptuellement, on travaille principalement avec 3 listes : une qui contient
+le motif "découpé" (un élément du tableau = une catégorie), une qui contient 
+la suite des catégories du fichier qu'on traite, dans leur order d'apparition
+et finalement une liste qui stocke temporairement des résultats intermédiaire,
+tel que les mots correspondants au motif partiel. Notez que cette dernière
+liste n'apparaît pas explicitement dans le pseudo-code.
+</p>
+
+<p>L'idée est de tester pour chaque suite de catégories (boucle i)
+présente dans le fichier si elle correspond au motif. 
+Pour cela, on teste si l'élément en cours correspondant au premier élément 
+du motif. Si ce n'est pas le cas, on peut
+déjà passer à l'élément de donnée suivant, car le motif ne correspond pas.
+</p>
+
+<p>Dans le cas contraire, on va vérifier si les éléments suivants correspondent
+également (boucle j). Dès qu'on trouve un contre-exemple, on arrête cette 
+vérification car on sait que le motif ne correspond pas. La clef, est de
+ne pas incrémenter i lors de la recherche de la suite du motif.
+Ainsi il n'est pas nécessaire de tenir compte du décalage introduit pour la tester.
+</p>
+
+<p>
+Il s'agit donc en quelque chose de faire glisser le motif le long de la suite
+de catégorie et de voir s'il correspond. L'image ci-dessous représente 3
+itérations de la boucle i. Dans la première, on constate à i=0 et j=0 que le
+motif ne correspond pas (c'est pourquoi j'ai utilisé la couleur rouge).
+Idem avec i=1 et j=0. En revanche, avec i=1 la catégorie est identique. 
+On incrémente j, qui passe également à 1 afin de tester la suite du motif.
+Elle matche également. En outre le motif est complètement reconnu, on passe
+donc à la reconnaissance à partir du mot suivant (PRP), qui n'est pas indiquée
+sur l'image.
+</p>
+
+<img src="img/tab_algo.png"/>
+
+<h3>Pseudo-code</h3>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Algorithme en pseudo-code</bold>
+</div>
+<div class="code-block-content">
+<pre>// on suppose que 'liste2' contient la catégorie de la ligne considérée
+// et que 'motifListe' contient les parties d'un motif
+
+pour i = 0 ; i < length(liste2) ; i++
+{
+        pour j = 0 ; j < length(motifListe) ; j++
+        {
+                if liste2[i + j] == listeMotif[j]     // ça c'est le cas où tout se déroule comme prévu
+                {
+                        // on fait quelque chose, comme conserver dans une liste les éléments qu'on veut cf. infra
+                }
+                else    // si le motif n'est pas celui qu'on veut, il faut quitter la boucle J
+                {
+                        last; // c'est l'instruction Perl qui s'appelle break partout ailleurs
+                }
+                if j == (length(listeMotif) - 1) // quand on arrive à la fin du motif
+                {
+                        // là on a lu tout le motif, 
+                        // on tu peut par exemple imprimer la séquence de mots correspondantes
+                }
+        }
+}
+</pre>
+</div>
+</div>
+
+
+<h2>Implémentation</h2>
+
+<p>L'implémentation réelle est un poil plus complexe, puisqu'elle gère plusieurs
+motifs. Ainsi, l'algorithme précité est lui-même contenu dans une boucle qui 
+itère sur les motifs à rechercher.</p>
+
+<p>Les structures de données changent aussi quelque peu : on utilise un
+tableau de tableaux pour stocker les motifs ("lignes") sous forme d'une suite
+de catégories ("colonnes").
+</p>
+
+<p>Il est également fait usage d'un tableau de tableaux (nommé <em>data</em>)
+pour stocker les
+données lues depuis le fichier. Le tableau principal contient les lignes du
+fichiers, elles-mêmes représentées sous la forme d'un tableau forme / lemme / 
+catégorie, dont l'ordre exacte dépendant du fichier traité.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Création des structures de données</bold>
+</div>
+<div class="code-block-content">
+<pre><span style="color:#859900">if</span>(!<span style="color:#859900">open</span>(PAT_FILE, <span style="color:#269186"><span style="color:#2aa198">"</span>&lt;:encoding(UTF-8)<span style="color:#2aa198">"</span></span>, <span style="color:#b58900"><span style="color:#b58900">$</span>patt_file</span>)) { <span style="color:#859900">die</span> <span style="color:#b58900"><span style="color:#b58900">$</span>!</span> ; }
+<span style="color:#859900">if</span>(!<span style="color:#859900">open</span>(DATA_FILE, <span style="color:#b58900"><span style="color:#b58900">$</span>filename</span>)) { <span style="color:#859900">die</span> <span style="color:#b58900"><span style="color:#b58900">$</span>!</span> ; }
+
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">@</span>patterns</span> = ();
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">@</span>data</span> = ();
+
+<span style="color:#859900">while</span>(&lt;PAT_FILE>)
+{
+    <span style="color:#859900">if</span> (<span style="color:#859900">scalar</span>(<span style="color:#859900">split</span>(<span style="color:#d30102">/\s+/</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>_</span>)) == 0) { <span style="color:#859900">next</span>; } <span style="color:#586e75;font-style:italic"># anti-shit</span>
+    <span style="color:#b58900"><span style="color:#b58900">$</span>_</span> =~ <span style="color:#d30102"><span style="color:#859900">s</span>/<span style="color:#dc322f">\R</span></span><span style="color:#d30102">//</span>; <span style="color:#586e75;font-style:italic"># idem</span>
+    <span style="color:#859900">push</span>(<span style="color:#b58900"><span style="color:#b58900">@</span>patterns</span>, [<span style="color:#859900">split</span>(<span style="color:#d30102">/\s/</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>_</span>)]); <span style="color:#586e75;font-style:italic"># le peuple veut un tableau de tableau</span>
+}
+
+<span style="color:#859900">while</span> (&lt;DATA_FILE>) {
+    <span style="color:#859900">if</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>_</span> =<span style="color:#d30102">~ /^\S+\s+\S+\s+\S+$/</span>) <span style="color:#586e75;font-style:italic"># on vérifie que les données sont conformes à nos attentes</span>
+    {
+        <span style="color:#b58900"><span style="color:#b58900">$</span>_</span> =~ <span style="color:#d30102"><span style="color:#859900">s</span>/<span style="color:#dc322f">\R</span></span><span style="color:#d30102">//</span>;
+        <span style="color:#859900">push</span>(<span style="color:#b58900"><span style="color:#b58900">@</span>data</span>, [<span style="color:#859900">split</span>(<span style="color:#d30102">/\s+/</span>)]); <span style="color:#586e75;font-style:italic"># the creepier, the better</span>
+    }
+}
+</pre>
+</div>
+</div>
+
+<p>Les variables <em>$word_pos</em> et <em>$type_pos</em> contiennent 
+respectivement la position de la forme non lemmatisée et de la catégorie
+dans le tableau de la ligne de <em>@data</em> courante. Ainsi, le code peut
+être utilisé à la fois pour Cordial et pour TreeTagger, moyennant l'affectation
+correcte de ces variables.
+</p>
+
+<div class="note-block">
+<div class="note-block-header">
+	<span style="font-weight:bold;">Une légère fausse note</bold>
+</div>
+<div class="note-block-content">
+L'algorithme ne teste pas, dans le boucle (k, correspondante à j dans le
+pseudo-code) si l'index i+k existe dans tableau de donnée. Perl semble assez
+laxiste sur la question, mais cela provoquerait une exception si le code était
+transposé tel quel dans un autre autre langage, ou pire, une erreur qui ne
+se pas détectée immédiatement (en C par exemple).
+</div>
+</div>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Implémentation de l'algorithme
+	<a href="code/bao3/extract_pattern.pl" target="_blank">(téléchargement)</a></bold>
+</div>
+<div class="code-block-content">
+<pre><span style="color:#586e75;font-style:italic"># liste contenant, pour chaque motif, les chaînes de caractères correspondantes trouvées</span>
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">@</span>result</span> = ();
+<span style="color:#586e75;font-style:italic"># liste temporaire qui contient la suite partielle de catégories syntaxiques</span>
+<span style="color:#586e75;font-style:italic"># qui correspondent au motif courant</span>
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">@</span>temp</span> = ();
+<span style="color:#586e75;font-style:italic"># j'utilise la suite i, k, m pour les boucles plutôt que i, j, k car j ressemble trop à i</span>
+<span style="color:#073642;font-weight:700">my</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>i</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>k</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>m</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>r</span>);
+
+<span style="color:#859900">for</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>m</span> = 0;  <span style="color:#b58900"><span style="color:#b58900">$</span>m</span> &lt; <span style="color:#859900">scalar</span>(<span style="color:#b58900"><span style="color:#b58900">@</span>patterns</span>); <span style="color:#b58900"><span style="color:#b58900">$</span>m</span>++, <span style="color:#b58900"><span style="color:#b58900">$</span>r</span> = 0) <span style="color:#586e75;font-style:italic"># pour chaque motif</span>
+{
+    <span style="color:#859900">for</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>i</span> = 0; <span style="color:#b58900"><span style="color:#b58900">$</span>i</span> &lt; <span style="color:#859900">scalar</span>(<span style="color:#b58900"><span style="color:#b58900">@</span>data</span>); <span style="color:#b58900"><span style="color:#b58900">$</span>i</span>++) <span style="color:#586e75;font-style:italic"># pour tous les termes</span>
+    {
+        <span style="color:#859900">for</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>k</span> = 0; <span style="color:#b58900"><span style="color:#b58900">$</span>k</span> &lt; <span style="color:#859900">scalar</span>(@{<span style="color:#b58900"><span style="color:#b58900">$</span>patterns</span>[<span style="color:#b58900"><span style="color:#b58900">$</span>m</span>]}); <span style="color:#b58900"><span style="color:#b58900">$</span>k</span>++) <span style="color:#586e75;font-style:italic"># pour les morceaux du motif</span>
+        {
+            <span style="color:#859900">if</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>data</span>[<span style="color:#b58900"><span style="color:#b58900">$</span>i</span> + <span style="color:#b58900"><span style="color:#b58900">$</span>k</span>][<span style="color:#b58900"><span style="color:#b58900">$</span>type_pos</span>] <span style="color:#859900">eq</span> <span style="color:#b58900"><span style="color:#b58900">$</span>patterns</span>[<span style="color:#b58900"><span style="color:#b58900">$</span>m</span>][<span style="color:#b58900"><span style="color:#b58900">$</span>k</span>]) <span style="color:#586e75;font-style:italic"># quand tout se déroule comme prévu</span>
+            {
+                <span style="color:#859900">push</span> (<span style="color:#b58900"><span style="color:#b58900">@</span>temp</span>, <span style="color:#b58900"><span style="color:#b58900">$</span>data</span>[<span style="color:#b58900"><span style="color:#b58900">$</span>i</span> + <span style="color:#b58900"><span style="color:#b58900">$</span>k</span>][<span style="color:#b58900"><span style="color:#b58900">$</span>word_pos</span>]); <span style="color:#586e75;font-style:italic"># on stocke le mot correspondant</span>
+            }
+            <span style="color:#859900">else</span> <span style="color:#586e75;font-style:italic"># si le motif n'est pas celui qu'on veut, il faut quitter la boucle k</span>
+            {
+                <span style="color:#b58900"><span style="color:#b58900">@</span>temp</span> = ();
+                <span style="color:#859900">last</span>; <span style="color:#586e75;font-style:italic"># break</span>
+            }
+            <span style="color:#859900">if</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>k</span> == (<span style="color:#859900">scalar</span>(@{<span style="color:#b58900"><span style="color:#b58900">$</span>patterns</span>[<span style="color:#b58900"><span style="color:#b58900">$</span>m</span>]}) - 1)) <span style="color:#586e75;font-style:italic"># quand on arrive à la fin du motif</span>
+            {
+                <span style="color:#b58900"><span style="color:#b58900">$</span>result</span>[<span style="color:#b58900"><span style="color:#b58900">$</span>m</span>][<span style="color:#b58900"><span style="color:#b58900">$</span>r</span>++] = <span style="color:#859900">join</span>(<span style="color:#269186"><span style="color:#2aa198">'</span> <span style="color:#2aa198">'</span></span>, <span style="color:#b58900"><span style="color:#b58900">@</span>temp</span>);
+                <span style="color:#b58900"><span style="color:#b58900">@</span>temp</span> = ();
+            }
+        }
+    }
+}
+</pre>
+</div>
+</div>
+
+<p>Enfin, on affiche les résultats : les séquences de mots trouvées pour chaque
+motif.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Affichage des résultats</bold>
+</div>
+<div class="code-block-content">
+<pre><span style="color:#859900">for</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>i</span> = 0; <span style="color:#b58900"><span style="color:#b58900">$</span>i</span> &lt; <span style="color:#859900">scalar</span>(<span style="color:#b58900"><span style="color:#b58900">@</span>result</span>); <span style="color:#b58900"><span style="color:#b58900">$</span>i</span>++) <span style="color:#586e75;font-style:italic"># pour tout les motifs</span>
+{
+    <span style="color:#859900">if</span> (<span style="color:#859900">defined</span>(@{<span style="color:#b58900"><span style="color:#b58900">$</span>result</span>[<span style="color:#b58900"><span style="color:#b58900">$</span>i</span>]}))
+    {
+        <span style="color:#859900">print</span> <span style="color:#269186"><span style="color:#2aa198">"</span>* Résultat(s) pour le motif @{<span style="color:#b58900"><span style="color:#b58900">$</span>patterns</span>[<span style="color:#b58900"><span style="color:#b58900">$</span>i</span>]}<span style="color:#dc322f">\n</span><span style="color:#2aa198">"</span></span>;
+        <span style="color:#859900">foreach</span> (@{<span style="color:#b58900"><span style="color:#b58900">$</span>result</span>[<span style="color:#b58900"><span style="color:#b58900">$</span>i</span>]})
+        {
+            <span style="color:#859900">print</span> <span style="color:#269186"><span style="color:#2aa198">"</span><span style="color:#dc322f">\t</span><span style="color:#b58900"><span style="color:#b58900">$</span>_</span><span style="color:#dc322f">\n</span><span style="color:#2aa198">"</span></span>;
+        }
+    }
+    <span style="color:#859900">else</span>
+    {
+        <span style="color:#586e75;font-style:italic"># n'affiche pas de message pour les motifs sans résultats pour lesquels il n'y a pas un</span>
+        <span style="color:#586e75;font-style:italic"># motif avec résultat plus loin dans le fichier car le tableau est créé dynamiquement </span>
+        <span style="color:#586e75;font-style:italic"># (Perl est exaspérant ...)</span>
+        <span style="color:#859900">print</span> <span style="color:#269186"><span style="color:#2aa198">"</span>* Aucun résultat pour le motif @{<span style="color:#b58900"><span style="color:#b58900">$</span>patterns</span>[<span style="color:#b58900"><span style="color:#b58900">$</span>i</span>]}<span style="color:#dc322f">\n</span><span style="color:#2aa198">"</span></span>;
+    }
+}
+</pre>
+</div>
+</div>
+
+
+<div id="nav"><a href="">précédent</a> | 
+<a href="">suivant</a></div></div>
+</div>
+</div>
+      </div>
+      <footer>
+  <div class="site-source">
+    Design du site <a href="https://github.com/git/git-scm.com/blob/master/MIT-LICENSE.txt">licence open-source</a>.
+  </div>
+  <div class="sfc-member">&nbsp;</div>
+</footer>
+
+    </div>
+</body></html>

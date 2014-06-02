@@ -1,0 +1,70 @@
+<div id="content">
+<div id='main' class="book">
+    <h1>La page de contact</h1>
+  <div>
+  <h2>Moyen de contact</h2>
+
+<p>La présence d'une page de contact sur un tel s'impose. Mais je n'avais pas
+envie de laisser mon adresse en clair, ni celle de ma collègue de travail.
+J'ai donc décidé de créer une page dynamique contenant un formulaire permettant
+de nous envoyer des messages.</p>
+
+<p>Comme mon hébergement supporte notamment PHP et ASP.Net j'avais le choix de la
+technologie. J'ai choisi de la réaliser à l'aide d'une page .cshtml qui est
+interprétée sans configuration supplémentaire de ma part comme une page
+utilisant le moteur de vue <a href="http://en.wikipedia.org/wiki/ASP.NET_Razor_view_engine" 
+target="_blank">Razor</a>. Comparé au couple page .aspx et fichier de code behind
+.aspx.cs traditionel de l'ASP.Net cette solution à l'avantage de tenir dans 
+un unique fichier.</p>
+
+<h3>Envoi de mail</h3>
+
+<p>L'envoi d'email programmaticallement nécessite des informations de connexions
+à un serveur SMTP, qu'il faudra passer à l'API idoine. Cependant coder ces
+informations en dur dans le code est une mauvaise idée, notamment pour la maintenance
+mais aussi surtout pour la confidentialité : le code est destiné à être partagé.
+</p>
+
+<p>Heureusement le framework .net permet de déporter le problème vers le fichier
+<em>web.config</em> dont nous avons déjà parlé. Je peux donc partager mon code
+sans soucis ; les autres utilisateurs utiliseront leurs propres identifiants
+de connexion.</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">web.config</span> (anonymisé)
+</div>
+<div class="code-block-content">
+<div><pre style="margin: 0; line-height: 125%"><span style="color: #008080">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;</span>
+<span style="color: #000080; font-weight: bold">&lt;configuration&gt;</span>
+    <span style="color: #000080; font-weight: bold">&lt;system.webServer&gt;</span>
+        <span style="color: #000080; font-weight: bold">&lt;staticContent&gt;</span>
+            <span style="color: #000080; font-weight: bold">&lt;mimeMap</span> <span style="color: #FF0000">fileExtension=</span><span style="color: #0000FF">&quot;.pl&quot;</span> <span style="color: #FF0000">mimeType=</span><span style="color: #0000FF">&quot;text/plain&quot;</span> <span style="color: #000080; font-weight: bold">/&gt;</span>
+        <span style="color: #000080; font-weight: bold">&lt;/staticContent&gt;</span>
+    <span style="color: #000080; font-weight: bold">&lt;/system.webServer&gt;</span>
+    <span style="color: #000080; font-weight: bold">&lt;system.net&gt;</span>
+        <span style="color: #000080; font-weight: bold">&lt;mailSettings&gt;</span>
+            <span style="color: #000080; font-weight: bold">&lt;smtp</span> <span style="color: #FF0000">from=</span><span style="color: #0000FF">&quot;site_projet_bao&quot;</span><span style="color: #000080; font-weight: bold">&gt;</span>
+                <span style="color: #000080; font-weight: bold">&lt;network</span> <span style="color: #FF0000">host=</span><span style="color: #0000FF">&quot;xxx&quot;</span> <span style="color: #FF0000">port=</span><span style="color: #0000FF">&quot;587&quot;</span> <span style="color: #FF0000">password=</span><span style="color: #0000FF">&quot;xxx&quot;</span>
+                         <span style="color: #FF0000">userName=</span><span style="color: #0000FF">&quot;xxx&quot;</span> <span style="color: #FF0000">defaultCredentials=</span><span style="color: #0000FF">&quot;false&quot;</span> <span style="color: #000080; font-weight: bold">/&gt;</span>
+            <span style="color: #000080; font-weight: bold">&lt;/smtp&gt;</span>
+        <span style="color: #000080; font-weight: bold">&lt;/mailSettings&gt;</span>
+    <span style="color: #000080; font-weight: bold">&lt;/system.net&gt;</span>
+    <span style="color: #000080; font-weight: bold">&lt;appSettings&gt;</span>
+        <span style="color: #000080; font-weight: bold">&lt;add</span> <span style="color: #FF0000">key=</span><span style="color: #0000FF">&quot;mailLouis&quot;</span> <span style="color: #FF0000">value=</span><span style="color: #0000FF">&quot;xxx&quot;</span> <span style="color: #000080; font-weight: bold">/&gt;</span>
+        <span style="color: #000080; font-weight: bold">&lt;add</span> <span style="color: #FF0000">key=</span><span style="color: #0000FF">&quot;mailDiane&quot;</span> <span style="color: #FF0000">value=</span><span style="color: #0000FF">&quot;xxx&quot;</span> <span style="color: #000080; font-weight: bold">/&gt;</span>
+    <span style="color: #000080; font-weight: bold">&lt;/appSettings&gt;</span>
+<span style="color: #000080; font-weight: bold">&lt;/configuration&gt;</span> 
+</pre></div>
+</div>
+</div>
+
+<p>Les deux valeurs de configuration supplémentaires ajoutées (mailLouis et
+mailDiane) permettent de configurer les adresses où seront envoyés les messages
+générés par le site.</p>
+
+
+<div id="nav"><a href="site_publication.html">précédent</a> | 
+<a href="">suivant</a></div></div>
+</div>
+</div>

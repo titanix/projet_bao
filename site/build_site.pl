@@ -2,23 +2,33 @@ use strict;
 use warnings;
 use File::Slurp;
 
+
 my $usage = 'Usage : build_site <template_file> <content_dir>';
+#if(length(@ARGV) != 2)
+#{
+#	print "Incorrect number of arguments\n";
+#	print $usage, "\n";
+#	exit 1;
+#}
 
 my $template = $ARGV[0];
-$template = read_file($template); # on lit le contenu du template
+$template = read_file($template); # on lit le contenu de la template
 my $dir = $ARGV[1];
 
 opendir(DIR, $dir) || die "Can't open directory $dir\n";
 while(my $file = readdir(DIR))
 {
 	next if $file =~ /^\..*$/;
-	$file = "$dir/$file";
-	if(-f $file)
+	if($file =~ /\.html$/)
 	{
-		my $file_content = read_file($file);
-		my $result = $template;
-		$result =~ s/CONTENT_PLACEHOLDER/$file_content/;
-		write_result($result, "$dir/build/", $file);
+		$file = "$dir/$file";
+		if(-f $file)
+		{
+			my $file_content = read_file($file);
+			my $result = $template;
+			$result =~ s/CONTENT_PLACEHOLDER/$file_content/;
+			write_result($result, "$dir/build/", $file);
+		}
 	}
 }
 closedir(DIR);

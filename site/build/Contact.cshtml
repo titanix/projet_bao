@@ -1,12 +1,6 @@
 @using System.Net.Mail;
 @using System.Web.Configuration;
 @using System.Web;
-@using System.Web.UI;
-@using System.Web.WebPages;
-@using System.ComponentModel.DataAnnotations;
-@{
-}
-
 <!DOCTYPE html>
 <html class="js fontface webkit chrome no-windows no-ie8 wf-adelle-n4-active wf-adelle-n7-active wf-active">
     <head>
@@ -86,7 +80,6 @@
                         <h1>Contact</h1>
                         <div>
                            @{
-                            
                             if (IsPost) {
                             
                                 Dictionary<string, string> form = new Dictionary<string, string>()

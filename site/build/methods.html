@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" class="js fontface webkit chrome no-windows no-ie8 wf-adelle-n4-active wf-adelle-n7-active wf-active">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  		<meta charset="utf-8">
+  		<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+		<title>Projet bào</title>
+
+  		<link href="index.css" media="screen" rel="stylesheet" type="text/css">
+  		<link href="louis.css" media="screen" rel="stylesheet" type="text/css">
+
+  		<style type="text/css">.tk-adelle{font-family:"adelle",serif;}</style><link rel="stylesheet" href="http://use.typekit.com/c/1265dd/adelle:n4:n7.XK9:F:2,XKF:F:2/d?3bb2a6e53c9684ffdc9a98ff1f5b2a62be32f57674629b256bf45cc5d898bd33078f6d102fef89283fbbb31e1e08dbab19f40e05a4b4be3e89b3372a143e7a26dcd5dad130c72bab3e8fd8b99a9642fbd1ac9ca2f85adca09826901eba44606d532f918a18db21e3aa7eedc4c96415fb336454aeba9ccc4db2a429ad19d964ab58d4b37e4065f51b76f05e5784b3d8559dc1b815733d6d01c3628dc2ef213aaf691e3a89bf6dd61e2ad9429b23fe4aa8ae920a330c526bf40743ee5dfcd44574840a956bad758ed0eee2b5a93c60d4e7fb298bff1da10e582117053d1df952252f3c620756aa9c01af18b814425fcac6691a37beec766e06872a3e540e07e591a00479af59d5422d070cd9e6028fcffcbc624bd8c4a7d13947ef50a81c4a28244fad90bde4a302">
+	<!--
+To collect end user analytics about your application,
+insert the following script into each page you want to track.
+Place this code immediately before the closing </head> tag,
+and before any other scripts.
+-->
+<script type="text/javascript">
+    window.appInsights={queue:[],applicationInsightsId:null,accountId:null,appUserId:null,configUrl:null,start:function(n){function u(n){t[n]=function(){var i=arguments;t.queue.push(function(){t[n].apply(t,i)})}}function f(n,t){if(n){var u=r.createElement(i);u.type="text/javascript";u.src=n;u.async=!0;u.onload=t;u.onerror=t;r.getElementsByTagName(i)[0].parentNode.appendChild(u)}else t()}var r=document,t=this,i;t.applicationInsightsId=n;u("logEvent");u("logPageView");i="script";f(t.configUrl,function(){f("//az416426.vo.msecnd.net/scripts/ai.0.js")});t.start=function(){}}};
+
+    appInsights.start("e42a59d0-2511-44c8-98d0-7772a02c8662");
+    appInsights.logPageView();
+</script>
+	</head>
+	
+	
+<body id="documentation">
+
+  <div class="inner">
+    <header>
+  		<a href="index.html">
+  			<img class="reset" src="toolbox.png" width="110" height="46" alt="Git">
+  		</a>
+  		<span id="tagline">
+    		<em>--</em>projet-boite-à-outils
+  		</span>
+	</header>
+  </div>
+
+	<div class="inner">
+      <div id="content-wrapper">
+        <aside class="sidebar">
+  <nav>
+    <ul>
+      <li>
+        <a href="">Sujets chauds</a>
+        <ul class="expanded">
+          <li>
+            <a href="bao1_2_function_pointer.html">Pointeurs de fonction</a>
+          </li>
+          <li>
+            <a href="bao1_5_parallelisation.html">Code parallèle</a>
+          </li>
+          <li>
+            <a href="git_2_2_memo_git.html">Mini-mémo git</a>
+          </li>
+        <li>
+            <a href="site_publication.html">Publication du site</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="bao1_0_jump_start.html">Téléchargements</a>
+      </li>
+    	<li>
+        <a href="bio.html">Auteurs</a>
+      </li>
+            </li>
+    	<li>
+        <a href="links.html">Liens</a>
+      </li>
+    </ul>
+    
+    <hr class="sidebar">
+    	
+	</hr>
+  </nav>
+		</aside>
+          <div id="content">
+<div id='main' class="book">
+    <h1>...</h1>
+  <div>
+  <h2>...</h2>
+
+<p>Perl ne se contente pas d'être un langage à la syntaxe farfelue, à la sémantique
+étrange et à la performance douteuse. Son écosystème <em>aussi</em> donne 
+régulièrement envie de se pendre.</p>
+
+<p>
+Il m'est arrivé à plusieurs reprises durant la réalisation de ce projet d'avoir
+affaire au site CPAN (qui centralise les modules tiers et la documentation 
+associée) qui est inaccessible. Cela pourrait être un sujet de dérision sympathique
+si je n'avais pas ce projet à finir...
+</p>
+
+<img src="img/fucking_perl.png"/>
+
+<p>Dans ces cas là, pour avancer, il faut avoir une idée des méthodes accessibles
+sur la classe qu'on veut manipuler. Pour cela j'ai trouvé une petite fonction sur
+internet qui permet de lister les membres d'une classe.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Affichage des méthodes de la classe XML::Path</span>
+</div>
+<div class="code-block-content">
+<pre><span style="color:#859900">use</span> XML::XPath;
+<span style="color:#859900">use</span> Class::MOP;
+
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>meta</span> = Class::MOP::Class<span style="color:#b58900">-></span>initialize(<span style="color:#269186"><span style="color:#2aa198">'</span>XML::XPath<span style="color:#2aa198">'</span></span>);
+
+<span style="color:#859900">for</span> <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>meth</span> ( <span style="color:#b58900"><span style="color:#b58900">$</span>meta</span><span style="color:#b58900">-></span>get_all_methods ) {
+    <span style="color:#859900">print</span> <span style="color:#b58900"><span style="color:#b58900">$</span>meth</span><span style="color:#b58900">-></span>fully_qualified_name, <span style="color:#269186"><span style="color:#2aa198">"</span><span style="color:#dc322f">\n</span><span style="color:#2aa198">"</span></span>;
+}
+</pre>
+</div>
+</div>
+
+<p>Le code est a adapté à la classe qu'on veut analyser : il faut importer
+le bon module et également placer le bon nom dans l'appel à la méthode
+<em>initialize</em>. Notez que ce n'est pas récursif. Si on veut analyser des
+sous-classes, il faut falloir le faire à la main.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Sortie pour la classe XML::Path</span>
+</div>
+<div class="code-block-content">
+<pre>XML::XPath::O_NOCTTY
+XML::XPath::set_context
+XML::XPath::set_filename
+XML::XPath::O_WRONLY
+XML::XPath::O_DSYNC
+XML::XPath::setNodeText
+XML::XPath::O_DIRECTORY
+XML::XPath::O_TRUNC
+XML::XPath::getNodeText
+XML::XPath::O_SHLOCK
+XML::XPath::get_filename
+XML::XPath::O_BINARY
+XML::XPath::new
+XML::XPath::O_SYNC
+XML::XPath::cleanup
+XML::XPath::set_namespace
+XML::XPath::SEEK_SET
+XML::XPath::set_parser
+XML::XPath::get_ioref
+XML::XPath::O_CREAT
+XML::XPath::get_xml
+XML::XPath::O_ASYNC
+XML::XPath::O_RDONLY
+XML::XPath::O_NDELAY
+XML::XPath::get_parser
+XML::XPath::set_xml
+XML::XPath::find
+XML::XPath::findvalue
+XML::XPath::get_context
+XML::XPath::createNode
+XML::XPath::O_NONBLOCK
+XML::XPath::O_ACCMODE
+XML::XPath::clear_namespaces
+XML::XPath::O_RDWR
+XML::XPath::O_EXLOCK
+XML::XPath::O_NOFOLLOW
+XML::XPath::O_EXCL
+XML::XPath::O_APPEND
+XML::XPath::matches
+XML::XPath::findnodes
+XML::XPath::getNodeAsXML
+XML::XPath::set_ioref
+XML::XPath::SEEK_END
+XML::XPath::SEEK_CUR
+XML::XPath::O_TEXT
+XML::XPath::findnodes_as_string
+XML::XPath::exists</pre>
+</div>
+</div>
+
+<p>Bien entendu on n'obtient là seulement le nom des méthodes. Comme la couche
+object de Perl n'est qu'un hack médiocre construit sur les procédures normales
+du langage, qui ne déclarent ni ne typent leur liste d'arguments, nous n'avons 
+pas accès à cette information. Il faut donc <em>deviner</em> quels sont les 
+paramètres à utiliser. On est donc à des milliers de kilomètres des capacités
+d'introspection d'un langage comme C#.
+<br/>Cette solution m'a quand même dépannée plusieurs fois.
+</p>
+
+<p>
+On comprend donc aisément qu'un langage et son écosystème, dans la somme des 
+inconvénients surpasse largement les quelques maigres prétendus avantages qu'ils
+possèdent soit si peu pris au sérieux par le monde professionnel et soit en totale
+perte de vitesse.
+</p>
+<img src="img/lang_graph.png"/>
+
+<div id="nav"><a href="">précédent</a> | 
+<a href="">suivant</a></div></div>
+</div>
+</div>
+      </div>
+      <footer>
+  <div class="site-source">
+    Design du site <a href="https://github.com/git/git-scm.com/blob/master/MIT-LICENSE.txt">licence open-source</a>.
+  </div>
+  <div class="sfc-member">&nbsp;</div>
+</footer>
+
+    </div>
+</body></html>

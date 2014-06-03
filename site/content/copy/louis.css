@@ -116,3 +116,14 @@ div.note-block-content
 	padding: 10px;
 	display: block;
 }
+
+
+.forme{
+	color: #E82C0C;
+}
+.lemme{
+	color: darkblue;
+}
+.cat{
+	color: darkgreen;
+}

@@ -1,27 +1,29 @@
 use strict;
 use warnings;
 use Getopt::Long;
+use XML::XPath;
+
+use utf8;
+binmode STDOUT, ':encoding(UTF-8)';
 
 my $filename = '<pas de fichier>'; # chemin du fichier à traiter
 my $patt_file = 'patterns.txt'; # chemin du fichier de motif
 my $use_cordial = 0; # utilise l'ordre des fichiers générés par Cordial
 my $help = 0; # affiche l'aide ou non
 
-my $help_text = "usage : perl parcours.pl --file=<fichier_à_traiter> [options]\n";
+my $help_text = "usage : perl parcours.pl --file=<fichier_à_traite> [options]\n";
 
 $help_text = <<END;
 usage : perl extract_pattern.pl --file=<fichier_à_traiter> [options]
 
 Les options suivantes sont disponibles (formes longues puis courtes) :
 --patterns		-p Nom du fichier contenant les motifs à utiliser.
---cordial		-c À utiliser pour traiter un fichier taggé par Cordial.
 --help			-h Affiche ce message d'aide et quitte le programme.
 END
 
 my $res = GetOptions (
 	'file=s' => \$filename, 
 	'patterns:s' => \$patt_file,
-	'cordial' => \$use_cordial, 
 	'help' => \$help);
 	
 if(! -f $filename)
@@ -40,14 +42,9 @@ if($help == 1)
 my $word_pos = 0; # position du mot non lemmatisé dans une ligne de données
 my $type_pos = 1; # position de l'indication de type dans une ligne de données
 
-if($use_cordial == 1)
-{
-	$word_pos = 0;
-	$type_pos =	2;
-}
+if(!open(PAT_FILE, "<:encoding(UTF-8)", $patt_file)) { die $!; }
 
-if(!open(PAT_FILE, "<:encoding(UTF-8)", $patt_file)) { die $! ; }
-if(!open(DATA_FILE, $filename)) { die $! ; }
+my $xp = XML::XPath->new(filename =>$filename) or die $!;
 
 my @patterns = ();
 my @data = ();
@@ -59,12 +56,14 @@ while(<PAT_FILE>)
 	push(@patterns, [split(/\s/, $_)]); # le peuple veut un tableau de tableau
 }
 
-while (<DATA_FILE>) {
-	if ($_ =~ /^\S+\s+\S+\s+\S+$/) # on vérifie que les données sont conformes à nos attentes
-	{
-		$_ =~ s/\R//;
-		push(@data, [split(/\s+/)]); # the creepier, the better
-	}
+my $nodeset = $xp->find('//element');
+
+foreach my $element ($nodeset->get_nodelist) 
+{
+	push(@data,
+		[$xp->find("./data[\@type='string']", $element)->get_node(1)->string_value(),
+		$xp->find("./data[\@type='type']", $element)->get_node(1)->string_value(),
+		$xp->find("./data[\@type='lemma']", $element)->get_node(1)->string_value()]);
 }
 
 # liste contenant, pour chaque motif, les chaînes de caractères correspondantes trouvées

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" class="js fontface webkit chrome no-windows no-ie8 wf-adelle-n4-active wf-adelle-n7-active wf-active">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  		<meta charset="utf-8">
+  		<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+		<title>Projet bào</title>
+
+  		<link href="index.css" media="screen" rel="stylesheet" type="text/css">
+  		<link href="louis.css" media="screen" rel="stylesheet" type="text/css">
+
+  		<style type="text/css">.tk-adelle{font-family:"adelle",serif;}</style><link rel="stylesheet" href="http://use.typekit.com/c/1265dd/adelle:n4:n7.XK9:F:2,XKF:F:2/d?3bb2a6e53c9684ffdc9a98ff1f5b2a62be32f57674629b256bf45cc5d898bd33078f6d102fef89283fbbb31e1e08dbab19f40e05a4b4be3e89b3372a143e7a26dcd5dad130c72bab3e8fd8b99a9642fbd1ac9ca2f85adca09826901eba44606d532f918a18db21e3aa7eedc4c96415fb336454aeba9ccc4db2a429ad19d964ab58d4b37e4065f51b76f05e5784b3d8559dc1b815733d6d01c3628dc2ef213aaf691e3a89bf6dd61e2ad9429b23fe4aa8ae920a330c526bf40743ee5dfcd44574840a956bad758ed0eee2b5a93c60d4e7fb298bff1da10e582117053d1df952252f3c620756aa9c01af18b814425fcac6691a37beec766e06872a3e540e07e591a00479af59d5422d070cd9e6028fcffcbc624bd8c4a7d13947ef50a81c4a28244fad90bde4a302">
+	<!--
+To collect end user analytics about your application,
+insert the following script into each page you want to track.
+Place this code immediately before the closing </head> tag,
+and before any other scripts.
+-->
+<script type="text/javascript">
+    window.appInsights={queue:[],applicationInsightsId:null,accountId:null,appUserId:null,configUrl:null,start:function(n){function u(n){t[n]=function(){var i=arguments;t.queue.push(function(){t[n].apply(t,i)})}}function f(n,t){if(n){var u=r.createElement(i);u.type="text/javascript";u.src=n;u.async=!0;u.onload=t;u.onerror=t;r.getElementsByTagName(i)[0].parentNode.appendChild(u)}else t()}var r=document,t=this,i;t.applicationInsightsId=n;u("logEvent");u("logPageView");i="script";f(t.configUrl,function(){f("//az416426.vo.msecnd.net/scripts/ai.0.js")});t.start=function(){}}};
+
+    appInsights.start("e42a59d0-2511-44c8-98d0-7772a02c8662");
+    appInsights.logPageView();
+</script>
+	</head>
+	
+	
+<body id="documentation">
+
+  <div class="inner">
+    <header>
+  		<a href="index.html">
+  			<img class="reset" src="toolbox.png" width="110" height="46" alt="Git">
+  		</a>
+  		<span id="tagline">
+    		<em>--</em>projet-boite-à-outils
+  		</span>
+	</header>
+  </div>
+
+	<div class="inner">
+      <div id="content-wrapper">
+        <aside class="sidebar">
+  <nav>
+    <ul>
+      <li>
+        <a href="">Sujets chauds</a>
+        <ul class="expanded">
+          <li>
+            <a href="bao1_2_function_pointer.html">Pointeurs de fonction</a>
+          </li>
+          <li>
+            <a href="bao1_5_parallelisation.html">Code parallèle</a>
+          </li>
+          <li>
+            <a href="git_2_2_memo_git.html">Mini-mémo git</a>
+          </li>
+        <li>
+            <a href="site_publication.html">Publication du site</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="bao1_0_jump_start.html">Téléchargements</a>
+      </li>
+    	<li>
+        <a href="bio.html">Auteurs</a>
+      </li>
+            </li>
+    	<li>
+        <a href="links.html">Liens</a>
+      </li>
+    </ul>
+    
+    <hr class="sidebar">
+    	
+	</hr>
+  </nav>
+		</aside>
+          <div id="content">
+<div id='main' class="book">
+    <h1>Extraction de motifs avec XSLT</h1>
+  <div>
+  <h2>Consigne</h2>
+
+<p>Il s'agit ici de créer une feuille de style XSLT qui pourra être utilisée sur les sorties
+XML réalisées à l'aide TreeTagger dans la phase précédente.</p>
+
+<p>Une feuille de style est fournie par les enseignants. J'ai décidé de me baser dessus, en
+ayant en arrière pensée la génération de tels feuilles pour un motif arbitraire.
+</p>
+
+<h2>Couleurs</h2>
+
+<p>C'est pourquoi j'ai décidé de me pencher sur le problème des couleurs. En effet, si on veut
+pouvoir générer des feuilles pouvant gérer un nombre arbitrairement grand de catégories
+lexicales, il faut aussi pouvoir y utiliser un tel nombre de couleurs.
+</p>
+
+<p>La feuille de style embarque dans un petit script qui s'occupe de coloriser les classes
+affectées aux éléments de sorties qui ont pour nom conventionnel <em>colorX</em> avec 
+X ∈ ℕ<sup>*</sup>.
+</p>
+
+<p>L'obtention des couleurs pseudo-aléatoire se fait via un 
+<a href="http://github.com/sterlingwes/RandomColor/blob/master/rcolor.js" target="_blank">script tiers</a> lui-même basé sur un
+<a href="http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/" target="_blank">billet de blog</a>.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">
+	bao3_1.xslt</span> <a href="bao3/bao3_1.xslt" target="_blank">(téléchargement)</a>
+</div>
+<div class="code-block-content">
+<pre>&lt;?<span style="color:#268bd2;font-weight:700">xml</span><span style="color:#93a1a1"> version</span>=<span style="color:#269186"><span style="color:#c60000">"</span>1.0<span style="color:#c60000">"</span></span><span style="color:#93a1a1"> encoding</span>=<span style="color:#269186"><span style="color:#c60000">"</span>UTF-8<span style="color:#c60000">"</span></span> ?>
+&lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">stylesheet</span> <span style="color:#93a1a1">xmlns</span>:xsl=<span style="color:#269186"><span style="color:#c60000">"</span>http://www.w3.org/1999/XSL/Transform<span style="color:#c60000">"</span></span>
+                <span style="color:#93a1a1">version</span>=<span style="color:#269186"><span style="color:#c60000">"</span>1.0<span style="color:#c60000">"</span></span>>
+  &lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">output</span> <span style="color:#93a1a1">method</span>=<span style="color:#269186"><span style="color:#c60000">"</span>html<span style="color:#c60000">"</span></span>/>
+  &lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">template</span> <span style="color:#93a1a1">match</span>=<span style="color:#269186"><span style="color:#c60000">"</span>/<span style="color:#c60000">"</span></span>>
+    &lt;<span style="color:#268bd2;font-weight:700">html</span>>
+      &lt;<span style="color:#268bd2;font-weight:700">head</span>>
+        &lt;<span style="color:#268bd2;font-weight:700">meta</span> <span style="color:#93a1a1">http-equiv</span>=<span style="color:#269186"><span style="color:#c60000">"</span>Content-Type<span style="color:#c60000">"</span></span> <span style="color:#93a1a1">content</span>=<span style="color:#269186"><span style="color:#c60000">"</span>text/html; charset=utf-8<span style="color:#c60000">"</span></span>/>
+        &lt;<span style="color:#268bd2;font-weight:700">script</span> <span style="color:#93a1a1">src</span>=<span style="color:#269186"><span style="color:#c60000">"</span>color.js<span style="color:#c60000">"</span></span> <span style="color:#93a1a1">type</span>=<span style="color:#269186"><span style="color:#c60000">"</span>text/javascript<span style="color:#c60000">"</span></span>/>
+        &lt;<span style="color:#268bd2;font-weight:700">script</span> <span style="color:#93a1a1">type</span>=<span style="color:#269186"><span style="color:#c60000">"</span>text/javascript<span style="color:#c60000">"</span></span>>
+            <span style="color:#2aa198"><span style="color:#c60000">&lt;![CDATA[</span>
+		<span style="color:#a57800"><span style="color:#268bd2">function</span> <span style="color:#a57800">colorize_classes</span>(nbClasses)</span> <span style="color:#268bd2">{</span>
+            <span style="color:#859900">for</span> <span style="color:#93a1a1">(</span><span style="color:#268bd2">var</span> i <span style="color:#859900">=</span> <span style="color:#269186">0</span>; i <span style="color:#859900">&lt;</span> nbClasses; i<span style="color:#859900">++</span><span style="color:#93a1a1">)</span> <span style="color:#268bd2">{</span>
+                <span style="color:#268bd2">var</span> color <span style="color:#859900">=</span> <span style="color:#859900">new</span> RColor;
+                colorize_class<span style="color:#93a1a1">(</span><span style="color:#269186"><span style="color:#c60000">'</span>color<span style="color:#c60000">'</span></span> <span style="color:#859900">+</span> <span style="color:#93a1a1">(</span>i <span style="color:#859900">+</span> <span style="color:#269186">1</span><span style="color:#93a1a1">)</span>, color.get<span style="color:#93a1a1">(</span><span style="color:#b58900">true</span><span style="color:#93a1a1">)</span><span style="color:#93a1a1">)</span>;
+            <span style="color:#268bd2">}</span>
+        <span style="color:#268bd2">}</span>
+
+        <span style="color:#a57800"><span style="color:#268bd2">function</span> <span style="color:#a57800">colorize_class</span>(className, colorString)</span> <span style="color:#268bd2">{</span>
+            <span style="color:#268bd2">var</span> elems <span style="color:#859900">=</span> <span style="color:#859900">document</span>.getElementsByClassName<span style="color:#93a1a1">(</span>className<span style="color:#93a1a1">)</span>;
+            <span style="color:#859900">for</span> <span style="color:#93a1a1">(</span>i <span style="color:#859900">=</span> <span style="color:#269186">0</span>; i <span style="color:#859900">&lt;</span> elems.length; i<span style="color:#859900">++</span><span style="color:#93a1a1">)</span> <span style="color:#268bd2">{</span>
+                <span style="color:#93a1a1">//elems[i].style.backgroundColor = colorString;</span>
+                elems<span style="color:#268bd2">[</span>i<span style="color:#268bd2">]</span>.style.color <span style="color:#859900">=</span> colorString;
+            <span style="color:#268bd2">}</span>
+        <span style="color:#268bd2">}</span>
+          <span style="color:#c60000">]]></span></span>
+        &lt;/<span style="color:#268bd2;font-weight:700">script</span>>
+      &lt;/<span style="color:#268bd2;font-weight:700">head</span>>
+      &lt;<span style="color:#268bd2;font-weight:700">body</span> <span style="color:#93a1a1">onload</span>=<span style="color:#269186"><span style="color:#c60000">"</span>colorize_classes(2)<span style="color:#c60000">"</span></span>>
+        &lt;<span style="color:#268bd2;font-weight:700">table</span> <span style="color:#93a1a1">align</span>=<span style="color:#269186"><span style="color:#c60000">"</span>center<span style="color:#c60000">"</span></span> <span style="color:#93a1a1">width</span>=<span style="color:#269186"><span style="color:#c60000">"</span>70%<span style="color:#c60000">"</span></span> <span style="color:#93a1a1">border</span>=<span style="color:#269186"><span style="color:#c60000">"</span>1<span style="color:#c60000">"</span></span>>
+          &lt;<span style="color:#268bd2;font-weight:700">tr</span>>
+            &lt;<span style="color:#268bd2;font-weight:700">td</span> <span style="color:#93a1a1">width</span>=<span style="color:#269186"><span style="color:#c60000">"</span>90%<span style="color:#c60000">"</span></span> <span style="color:#93a1a1">valign</span>=<span style="color:#269186"><span style="color:#c60000">"</span>top<span style="color:#c60000">"</span></span>>
+              &lt;<span style="color:#268bd2;font-weight:700">font</span>>
+                &lt;<span style="color:#268bd2;font-weight:700">h1</span>>
+                  Extraction de patron
+                  &lt;<span style="color:#268bd2;font-weight:700">font</span> <span style="color:#93a1a1">color</span>=<span style="color:#269186"><span style="color:#c60000">"</span>red<span style="color:#c60000">"</span></span>>
+                    &lt;<span style="color:#268bd2;font-weight:700">b</span> <span style="color:#93a1a1">class</span>=<span style="color:#269186"><span style="color:#c60000">"</span>color1<span style="color:#c60000">"</span></span>>NOM&lt;/<span style="color:#268bd2;font-weight:700">b</span>>
+                  &lt;/<span style="color:#268bd2;font-weight:700">font</span>>
+                  &lt;<span style="color:#268bd2;font-weight:700">font</span> <span style="color:#93a1a1">color</span>=<span style="color:#269186"><span style="color:#c60000">"</span>blue<span style="color:#c60000">"</span></span>>
+                    &lt;<span style="color:#268bd2;font-weight:700">b</span> <span style="color:#93a1a1">class</span>=<span style="color:#269186"><span style="color:#c60000">"</span>color2<span style="color:#c60000">"</span></span>>ADJ&lt;/<span style="color:#268bd2;font-weight:700">b</span>>
+                  &lt;/<span style="color:#268bd2;font-weight:700">font</span>>
+                &lt;/<span style="color:#268bd2;font-weight:700">h1</span>>
+                (si les couleurs sont trop proches les unes des autres, rafraîchissez 
+                la page)
+              &lt;/<span style="color:#268bd2;font-weight:700">font</span>>
+            &lt;/<span style="color:#268bd2;font-weight:700">td</span>>
+          &lt;/<span style="color:#268bd2;font-weight:700">tr</span>>
+          &lt;<span style="color:#268bd2;font-weight:700">tr</span>>
+            &lt;<span style="color:#268bd2;font-weight:700">td</span>>
+              &lt;<span style="color:#268bd2;font-weight:700">blockquote</span>>
+                &lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">apply-templates</span>/>
+              &lt;/<span style="color:#268bd2;font-weight:700">blockquote</span>>
+            &lt;/<span style="color:#268bd2;font-weight:700">td</span>>
+          &lt;/<span style="color:#268bd2;font-weight:700">tr</span>>
+        &lt;/<span style="color:#268bd2;font-weight:700">table</span>>
+      &lt;/<span style="color:#268bd2;font-weight:700">body</span>>
+    &lt;/<span style="color:#268bd2;font-weight:700">html</span>>
+  &lt;/<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">template</span>>
+  
+  &lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">template</span> <span style="color:#93a1a1">match</span>=<span style="color:#269186"><span style="color:#c60000">"</span>element<span style="color:#c60000">"</span></span>>
+    &lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">choose</span>>
+      &lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">when</span> <span style="color:#93a1a1">test</span>=<span style="color:#269186"><span style="color:#c60000">"</span>(./data[contains(text(),'NOM')]) and (following-sibling::element[1]
+      								[./data[contains(text(),'ADJ')]])<span style="color:#c60000">"</span></span>>
+        &lt;<span style="color:#268bd2;font-weight:700">span</span> <span style="color:#93a1a1">class</span>=<span style="color:#269186"><span style="color:#c60000">"</span>color1<span style="color:#c60000">"</span></span>>
+          &lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">value-of</span> <span style="color:#93a1a1">select</span>=<span style="color:#269186"><span style="color:#c60000">"</span>./data[3]<span style="color:#c60000">"</span></span>/>
+        &lt;/<span style="color:#268bd2;font-weight:700">span</span>>
+        &lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">text</span>>&lt;/<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">text</span>>
+      &lt;/<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">when</span>>
+      &lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">when</span> <span style="color:#93a1a1">test</span>=<span style="color:#269186"><span style="color:#c60000">"</span>(./data[contains(text(),'ADJ')]) and (preceding-sibling::element[1]
+      								[./data[contains(text(),'NOM')]])<span style="color:#c60000">"</span></span>>
+        &lt;<span style="color:#268bd2;font-weight:700">span</span> <span style="color:#93a1a1">class</span>=<span style="color:#269186"><span style="color:#c60000">"</span>color2<span style="color:#c60000">"</span></span>>
+          &lt;<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">value-of</span> <span style="color:#93a1a1">select</span>=<span style="color:#269186"><span style="color:#c60000">"</span>./data[3]<span style="color:#c60000">"</span></span>/>
+        &lt;/<span style="color:#268bd2;font-weight:700">span</span>>
+        &lt;<span style="color:#268bd2;font-weight:700">br</span>/>
+      &lt;/<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">when</span>>
+    &lt;/<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">choose</span>>
+  &lt;/<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">template</span>>
+&lt;/<span style="color:#268bd2;font-weight:700">xsl</span><span style="color:#268bd2;font-weight:700">:</span><span style="color:#268bd2;font-weight:700">stylesheet</span>>
+</pre>
+</div>
+</div>
+
+<h3>Résultat</h3>
+
+<p>On obtient bien ce qu'on recherche, à quelques exceptions où seul un adjectif semble se montrer.
+Vous pouvez <a  href="bao3/cine.xml" target="_blank">consulter la page</a> vous-même.
+</p>
+
+<img src="img/couleurs.png"/>
+
+
+<div id="nav"><a href="bao3_2_xpath.html">précédent</a> | 
+<a href="index.html">index</a></div></div>
+</div>
+</div>
+      </div>
+      <footer>
+  <div class="site-source">
+    Design du site <a href="https://github.com/git/git-scm.com/blob/master/MIT-LICENSE.txt">licence open-source</a>.
+  </div>
+  <div class="sfc-member">&nbsp;</div>
+</footer>
+
+    </div>
+</body></html>

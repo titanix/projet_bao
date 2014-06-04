@@ -1,0 +1,55 @@
+<div id="content">
+<div id='main' class="book">
+    <h1>Application de patron2graphe</h1>
+  <div>
+  <h2>Patron2graph</h2>
+
+<p>Le programme est prévu pour Windows et s'utilise en ligne de commande. Il demande
+de spécifier en argument l'encodage utilisé pour les fichiers d'entrée ainsi qu'un 
+fichier de données à analyser et optionnellement un fichier de motifs.</p>
+
+<p>Nous avons décidé d'utiliser ce programme sur un fichier généré à partir de la
+boite à outils 2 et 3. Parmi les rubriques disponibles, nous avons choisi l'actualité
+du cinéma.
+</p>
+
+<p>Pour le motif de recherche pour la boîte à outils 3 a été NOM ADJ. Le résultat
+a ensuite servi d'entrée à patron2graphe, en plus du fichier motif au contenu suivant.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Motifs.txt</span>
+</div>
+<div class="code-block-content">MOTIF=film
+</div>
+</div>
+
+<h2>Résultats</h2>
+
+<p>La sortie produite est à première vue peu engageante : il s'agit d'une fenêtre
+comprenant les éléments du graphe généré (arrête et sommet) disposé sur une unique ligne.
+</p>
+
+<img src="img/films_raw.png"/>
+
+<p>On remarque que le motif à été interprété comme une expression régulière, puisque
+la sortie contient également les termes "films" et "filmographie" qui n'ont pas été
+explicitement demandés.</p>
+
+<p>Après réorganisation manuelle, on y voit plus clair.</p>
+
+<a href="img/films_mod.png" target="_blank"><img src="img/films_mod.png"/></a>
+
+<p>Enfin, on peut tenter d'en tirer une conclusion. On voit que les adjectifs 
+qualifiants les films dans l'actualité indique généralement ou leur origine (pays de production
+ou nationalité du réalisateur ou de l'équipe probablement) ou ce que j'ai désigné par 
+le genre.
+</p>
+
+<a href="img/films.png" target="_blank"><img src="img/films.png"/></a>
+
+<div id="nav"><a href="bao4_intro.html">précédent</a> | 
+<a href="index.html">index</a></div></div>
+</div>
+</div>

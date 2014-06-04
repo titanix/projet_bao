@@ -1,0 +1,102 @@
+<div id="content">
+<div id='main' class="book">
+    <h1>Extraction de patrons syntaxiques (sorties XML)</h1>
+  <div>
+  <h2>Consigne</h2>
+
+<p>Il s'agit de réaliser une extraction de patrons sur les sorties au format XML 
+de l'étiquetage (via Treetagger) issues de la Boîte à Outils Série 2 via un script
+Perl utilisant la bibliothèque XML::XPath.
+</p>
+
+<h2>Modifications</h2>
+
+<p>Le code principal de la recherche de motif est exactement le même que 
+précédemment. Il suffit juste de remplir les structures de données sur lesquelles
+travaille l'algorithme à partir du fichier XML passé en paramètre.</p>
+
+<p>On pourrait refactoriser le code existant pour prendre en paramètre une
+fonction qui réalise l'extraction, sur le même modèle que ce qui a été fait
+pour la boîte à outils 1. Cependant, comme on ne va se servir du code commun
+que d'une seconde fois, j'ai décidé de copier-coller mon fichier existant et de
+modifier la partie concernée.</p>
+
+<h3>Code</h3>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Chargement des données XML grâce à XPATH</span>
+</div>
+<div class="code-block-content">
+<pre><span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>xp</span> = XML::XPath<span style="color:#b58900">-></span>new(<span style="color:#cb4b16">filename </span>=><span style="color:#b58900"><span style="color:#b58900">$</span>filename</span>) <span style="color:#859900">or</span> <span style="color:#859900">die</span> <span style="color:#269186"><span style="color:#2aa198">"</span>$!<span style="color:#2aa198">"</span></span>;
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">@</span>data</span> = ();
+
+<span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>nodeset</span> = <span style="color:#b58900"><span style="color:#b58900">$</span>xp</span><span style="color:#b58900">-></span>find(<span style="color:#269186"><span style="color:#2aa198">'</span>//element<span style="color:#2aa198">'</span></span>);
+
+<span style="color:#859900">foreach</span> <span style="color:#073642;font-weight:700">my</span> <span style="color:#b58900"><span style="color:#b58900">$</span>element</span> (<span style="color:#b58900"><span style="color:#b58900">$</span>nodeset</span><span style="color:#b58900">-></span>get_nodelist) 
+{
+    <span style="color:#859900">push</span>(<span style="color:#b58900"><span style="color:#b58900">@</span>data</span>,
+        [<span style="color:#b58900"><span style="color:#b58900">$</span>xp</span><span style="color:#b58900">-></span>find(<span style="color:#269186"><span style="color:#2aa198">"</span>./data[<span style="color:#dc322f">\@</span>type='string']<span style="color:#2aa198">"</span></span>, <span style="color:#b58900"><span style="color:#b58900">$</span>element</span>)<span style="color:#b58900">-></span>get_node(1)<span style="color:#b58900">-></span>string_value(),
+        <span style="color:#b58900"><span style="color:#b58900">$</span>xp</span><span style="color:#b58900">-></span>find(<span style="color:#269186"><span style="color:#2aa198">"</span>./data[<span style="color:#dc322f">\@</span>type='type']<span style="color:#2aa198">"</span></span>, <span style="color:#b58900"><span style="color:#b58900">$</span>element</span>)<span style="color:#b58900">-></span>get_node(1)<span style="color:#b58900">-></span>string_value(),
+        <span style="color:#b58900"><span style="color:#b58900">$</span>xp</span><span style="color:#b58900">-></span>find(<span style="color:#269186"><span style="color:#2aa198">"</span>./data[<span style="color:#dc322f">\@</span>type='lemma']<span style="color:#2aa198">"</span></span>, <span style="color:#b58900"><span style="color:#b58900">$</span>element</span>)<span style="color:#b58900">-></span>get_node(1)<span style="color:#b58900">-></span>string_value()]);
+}
+
+</pre>
+</div>
+</div>
+
+<h3>Usage et exemple</h3>
+
+<p>L'utilisation du script se fait avec les mêmes arguments de précédemment, à ceci
+près que le support de Cordial est retiré, car seuls des fichiers issus TreeTagger sont
+à manipuler.
+</p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Utilisation</span>
+</div>
+<div class="code-block-content">
+perl extract_pattern_xml.pl -f=cine.xml 
+</div>
+</div>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">Exemple de sortie</span> (avec le patron 
+</div>
+<div class="code-block-content">
+<pre>* Résultat(s) pour le motif PRP NOM ADJ
+	en mode mélancolique
+	d' origine iranienne
+	d' humour noir
+	de western emblématique
+	d' origine iranienne
+	d' humour noir
+	pour galet glacé
+	pour raisons fiscales
+	de prison ferme
+	de théâtre néerlandais
+	d' art martiaux
+	d' action impressionnant
+	de famille aisée
+	de famille canadien
+	pour raisons fiscales
+	de fonds urbains
+	de cinéma américain
+	pour raisons professionnelles
+	de cinéma américaines
+	d' or spatial
+	en dynasties cinématographiques
+	d' animation élégant
+	sans explications crédibles
+	d' initiative française
+	de père Algérien
+	de passeport russe</pre>
+</div>
+</div>
+
+<div id="nav"><a href="bao3_1_patrons.html">précédent</a> | 
+<a href="">suivant</a></div></div>
+</div>
+</div>

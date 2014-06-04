@@ -86,7 +86,7 @@ and before any other scripts.
 
 <h2>Extraction « manuelle »</h2>
 
-<p>On y est censé utiliser des expressions régulières mais étant donné que pour récupérer 
+<p>Pour cela, on est censé utiliser des expressions régulières mais étant donné que pour récupérer 
 le contenu des titres et des descriptions des items, je voulais d’abord récupérer
 le contenu d’un item, puis en extraire le titre et la description, ce n’était pas
  possible.</p>
@@ -108,7 +108,7 @@ effectivement rencontré, va faire qu’il n’y a pas reconnaissance du contenu
 </div>
 <div class="warning-block-content">
 En réalité il est possible d'obtenir le comportement désiré en utilisant une extension
-Perl des expression régulières, qui permet d'indiquer qu'on souhaite un match minimum, 
+Perl des expression régulières, qui permet d'indiquer qu'on souhaite un match minimal, 
 et d'éviter le comportement glouton par défaut.
 </div>
 </div>
@@ -177,18 +177,26 @@ title enfant du <em>channel</em>, puis celles se trouvant dans les différents <
 </div>
 </div>
 
-<p>On notera que la fonction est récursive terminale. Ainsi, de nombreux appels de
+<p>On notera que la fonction est <a href="http://fr.wikipedia.org/wiki/R%C3%A9cursion_terminale" target="_blank">récursive terminale</a>. 
+Ainsi, de nombreux appels de
 fonctions sont effectués et l'interpréteur s'en plaint lorsque la chaîne passée en
 paramètre est très longue.</p>
 
 <h3>Dérécursivation</h3>
 
-<p>TODO</p>
+<p>Je voulais dérécursiver cette fonction, car Perl n'optimise visiblement pas tout seul
+ce genre de fonction, comme peut le faire certains langages fonctionnels. En outre, sur les
+très gros fichiers, l'interpréteur affiche un avertissement plus la pronfondeur d'appel de
+cette fonction.</p>
 
+<p>J'ai donc essayé d'en écrire une version itérative, dont le code est très proche de celui
+indiqué plus haut, mais en la testant sur les fichiers du corpus de texte j'avais parfois
+des occurrences vides surnuméraires se glissant dans les résultats.
+</p>
 
-
-
-
+<p>Les outils de débuggage de Perl étant ce qu'ils sont, j'ai décidé de ne pas perdre plus de
+temps sur ce problème au fond assez mineur.
+</p>
 
 <div id="nav"><a href="bao1_2_organisation_suite.html">précédent</a> | 
 <a href="bao1_4_xml.html">suivant</a></div></div>

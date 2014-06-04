@@ -16,7 +16,7 @@ git clone https://github.com/titanix/projet_bao.git
 </div>
 
 
-<h3>Arguments du programme</h3>
+<h2>Arguments du programme</h2>
 <table>
 	<tr><th>Forme longue</th><th>Forme courte</th><th>Utilité</th></tr>
 		<tr><td>--input_dir=</td><td>-i</td><td>Répertoire contenant les fichiers RSS à traiter</td></tr>
@@ -35,6 +35,17 @@ git clone https://github.com/titanix/projet_bao.git
 	<tr><td>--help</td><td>-h</td><td>Affiche le message d'aide et quitte le programme </td></tr>
 	
 <table>
+
+<div class="warning-block">
+<div class="warning-block-header">
+	<span style="font-weight:bold;">Attention</bold>
+</div>
+<div class="warning-block-content">
+L'argument <strong>-p</strong> est obsolète. En outre, il semblerait que l'option
+<strong>-x</strong> conduise à la génération de fichiers ayant des problèmes
+d'encodage.
+</div>
+</div>
 
 <h3>Exemples</h3>
 
@@ -63,8 +74,8 @@ parcours.pl --input_dir=2013 --output_dir=results --xml
 
 <p>
 Exécute un traitement séquentiel des fichiers présents dans le dossier 2013,
- basé sur l'extraction de chaîne XML, et génère les fichiers de sorties dans le
- répertoire results.
+basé sur l'extraction de chaîne XML, et génère les fichiers de sorties dans le
+répertoire nommé <em>results</em>.
 </p>
 
 <div class="code-block">
@@ -91,11 +102,8 @@ parcours.pl -input_dir=2013 -o=results -x --treetagger
 
 <p>
 On peut mixer les options à forme longues et courtes dans la même commande. Ici on demande
-au programme de générer de surcroit des fichiers XML dont le contenus provint de TreeTagger.
+au programme de générer de surcroît des fichiers XML dont le contenus provint de TreeTagger.
 </p>
-
-[TODO montrer des exemples d'usages, avec formes longues, courtes, avec et sans signe égal]
-
 
 
 <div id="nav"><a href="bao1_intro.html">précédent</a> | 

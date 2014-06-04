@@ -30,10 +30,10 @@ on trouve la mystérieuse ligne suivante à la fin de chaque fichier destiné à
 
 <h3>Première étape de modularisation</h3>
 
-<p>La première étape, dans la chronologie de développement, fût de séparer le code des
-procédures d'extractions de celle de la partie destinée à les exécuter.
+<p>La première étape, dans la chronologie du développement, fût de séparer le code des
+procédures d'extractions de celui de la partie destiné à les exécuter.
 Ainsi la routine principale, nommé <em>parcours-common.pl</em>, contenait tout le code nécessaire
-au parcours des répertoires et à la génération des fichiers.</p>
+au parcours des répertoires et à la génération des fichiers de sortie.</p>
 
 <div class="code-block">
 <div class="code-block-header">
@@ -71,7 +71,7 @@ main elle-même prend cette référence en paramètre.
 </div>
 <div class="code-block-content">
 <pre style="color:#586e75"><span style="color:#586e75;font-style:italic"># param $path : chemin du dossier dont les fichiers sont analysés</span>
-<span style="color:#586e75;font-style:italic"># param $proc : référence vers la fonction d'extraction qui opère sur des fragments XML&lt;/span></span>
+<span style="color:#586e75;font-style:italic"># param $proc : référence vers la fonction d'extraction qui opère sur des fragments XML</span>
 <span style="color:#073642;font-weight:700">sub</span> <span style="color:#268bd2">parcours_arborescence_fichiers</span> {
     [...] <span style="color:#586e75;font-style:italic"># initialisation</span>
     [...] <span style="color:#586e75;font-style:italic"># lecture du répertoire</span>
@@ -110,7 +110,7 @@ main elle-même prend cette référence en paramètre.
 </div>
 
 <p>
-On voit que la procédure passé en paramètre est appelée 4 fois.
+On voit que la procédure passée en paramètre est appelée 4 fois.
 </p>
 <p>
 Le code ainsi déclaré peut être utilisé dans d'autres fichiers. Ainsi, pour chaque implémentation
@@ -124,7 +124,7 @@ On avait donc l'architecture suivante :
 </p>
 <img src="img/archi_modulaire_1.png"/>
 <p>Le bloc bleu symbolise une bibliothèque de code, et les boîtes vertes
-représentent des scripts destinés à être exécutés.
+représentent des scripts implémentant une fonction de callback et destinés à être exécutés.
 </p>
 
 

@@ -11,17 +11,16 @@ mettre du temps à être chargé en mémoire, et le traitement de ce format de d
 gourmant en temps CPU.</p>
 
 <p>Comme le temps de traitement de mes fichiers était très long (notamment à cause du fait
-que je traitais des fichiers énorme qui ne devait pas être inclus), j'ai décidé de tenter
-de paralléliser le code afin de réduire le temps d'exécution.</p>
-
+que je traitais des fichiers énormes qui ne devaient pas être inclus), j'ai décidé de tenter
+de paralléliser le code afin de réduire le temps d'exécution total du programme.</p>
 
 <div class="note-block">
 <div class="note-block-header">
 	<span style="font-weight:bold;">Note</bold>
 </div>
 <div class="note-block-content">
-Je casse le suspens tout de suite : ça n'a pas marché.<br/>Ceci étant j'ai appris 
-et essayé plusieurs choses que je vais lister sur cette page.
+Je casse le suspens tout de suite : ça n'a pas marché.<br/>Ceci étant j'ai essayé  et appris 
+plusieurs choses que je vais lister sur cette page.
 </div>
 </div>
 
@@ -29,7 +28,9 @@ et essayé plusieurs choses que je vais lister sur cette page.
 Comme l'interpréteur Perl est au moins aussi mauvais que le langage qu'il interprète,
 il ne s'arrange pas pour exploiter de lui-même plusieurs cores ou CPU,
 comme le ferait par machine BEAM (la VM d'Erlang) par exemple.
-<br/>Il faut donc le faire explicitement. Dans la plupart des langages, on penserait
+</p>
+
+<p>Il faut donc le faire explicitement. Dans la plupart des langages, on penserait
 pour cela à utiliser des 
 <a href="http://fr.wikipedia.org/wiki/Thread_(informatique)" target="_blank">threads</a>
 (aussi appelés processus légers). Et c'est faisable
@@ -41,7 +42,7 @@ la création de nouveaux processus, au moyen de
 <p>La méthode que j'ai utilisée fait usage de la classe 
 <a href="http://search.cpan.org/~szabgab/Parallel-ForkManager-1.06/lib/Parallel/ForkManager.pm" target="_blank">
 Parallel:ForkManager</a>, qui n'est
-qu'un wrapper autour de l'appel système fork. Les processus créés utilisent de facto des 
+qu'un wrapper autour de l'appel système fork. Les processus créés utilisent <em>de facto</em> des 
 espaces mémoires différents pour l'écriture (il est fait usage de la technique de copy
 on write par le système, d'où un faible coût de création des processus) ce qui empêchent
 de les faire travailler sur une même structure de données.
@@ -49,9 +50,9 @@ Un premier coût est donc la sérialisation et la désérialisation dans un fich
 passer les résultats au processus père.</p>
 
 <p>Ceci dit, j'ai pû remarquer expérimentalement que ce coût était négligeable dans
-notre cas, en comparant les tas d'exécution entre des exécutions qui utilise le dossier
-temporaire utilisé pour la sérialisation est présent sur le disque dur et d'autres où 
-il s'agit d'un emplacement situé sur un ramdisk.</p>
+notre cas, en comparant les temps d'exécution entre des exécutions qui utilisent un dossier
+temporaire pour la sérialisation présent sur le disque dur et d'autres où 
+il est situé sur un ramdisk.</p>
 
 <h2>Partition de l'ensemble des données</h2>
 
@@ -105,8 +106,8 @@ Construction de la listes des dossiers à traiter
 </div>
 
 <p>Le code itère ensuite sur cette liste et crée un processus par dossier. Le composant
-ForkManager se charge de respecter la contrainte qui lui ai passé en paramètre du nombre
-maximal de processus fils concurrent.</p>
+ForkManager se charge de respecter la contrainte qui lui est passée en paramètre du nombre
+maximal de processus fils concurrents.</p>
 
 <h2>Fusion des résultats</h2>
 
@@ -115,7 +116,7 @@ différentes données dans une seule liste afin de passer à l'étape de traitem
 qui est d'écrire les fichiers générés.
 </p>
 
-<p>La fusion d'un nombre raisonnable de listes se rapidement car à la fonction push de Perl.
+<p>La fusion d'un nombre raisonnable de listes se fait rapidement grâce à la fonction push de Perl.
 Avec une implémentation sous forme de liste chaînée, c'est effectivement une opération
 rapide où il suffit de déplacer le pointeur de fin de liste vers la tête de la liste
 à concaténer.
@@ -129,49 +130,22 @@ ne sera pas présent dans les résultats de plusieurs processus. Il faut donc n�
 le reporté à la fin. Mais il s'agit d'une liste d'environ 300 000 chaînes de caractères
 de tailles diverses.</p>
 
-
-
-
-
-<!--
-size of hash:  12.
-taille de la liste:  22542.
-taille de la liste:  25809.
-taille de la liste:  24174.
-taille de la liste:  26010.
-taille de la liste:  24276.
-taille de la liste:  26010.
-taille de la liste:  26877.
-taille de la liste:  24075.
-taille de la liste:  24593.
-taille de la liste:  26010.
-taille de la liste:  23724.
-taille de la liste:  25998.
-
-On a donc environ 25000 * 12 = 300000 fichiers traités
-
-VS
-
-taille de la liste:  300098.
-
-
-
+<h3>
+Constat final
+</h3>
 
 <p>
-Une des difficultés de parallélisation du programme vient du manque de structures
-de données thread safe (et lock free tant qu'à faire) dans le langage ou dans sa
-bibliothèque standard.
+En conclusion, c'est le manque de structures de données thread-safe (et lock free tant qu'à faire)
+dans le langage et dans sa bibliothèque standard qui rend diffile (pour le programmeur) de 
+paralléliser le code. Cela alourdit donc la logique nécessaire dans la fusion et la rend en 
+pratique impraticable. À tout le moins en utilisant des tableaux, ce qui n'est pas forcément
+la structure à utiliser en Perl quand on veut se prémunir des doublons avec efficacité.
 </p>
 
-<div class="code-block">
-<div class="code-block-header">
-	<span style="font-weight:bold;"></bold>
-</div>
-<div class="code-block-content">
-</div>
-</div>
-
--->
+<p>En C#, on dispose de la <a href="http://msdn.microsoft.com/en-us/library/vstudio/dd460717(v=vs.100).aspx" target="_blank">Task Parallel Library</a>, 
+qui permet d'adresser ces problématiques
+de manière très productive.
+</p>
 
 <div id="nav"><a href="bao1_4_xml.html">précédent</a> | 
 <a href="index.html">index</a></div></div>

@@ -4,9 +4,9 @@
   <div>
   <h2>Préparation à la parallélisation</h2>
 <p>
-Je voulais créer une version parallèle du code, pouvant utiliser les méthodes d'extraction
+Je voulais créer une version parallèle du code pouvant utiliser les méthodes d'extraction
 déjà créées. Il fallait donc modifier les fichiers de façon à ce qu'ils puissent être
-inclus dans les scripts parallèles et séquentiels.
+inclus dans les scripts parallèle et séquentiels.
 </p>
 
 <p>
@@ -22,13 +22,13 @@ plus qu'un appel à la procédure <em>main</em> de lib-parcours-common.pl.</p>
 
 <p>
 Le fichiers parcours-parallel.pl se base sur certaines procédures de nettoyage du parcours
-commun (séquentiel). Il prend en dépendance les fichiers Perl dont on veut pouvoir utiliser
+commun (séquentiel). Il a pour dépendance les fichiers Perl dont on veut pouvoir utiliser
 les procédures d'extractions (sur l'image, uniquement parcours-string). 
 Il définit une fonction
 <em>parallel_main</em>, qui est appelée en fin de script avec les arguments adéquats.
 </p>
 
-<h3>Architecture finale</h3>
+<h2>Architecture finale</h2>
 
 <p>Finalement, cette façon de procéder n'était pas très élégante, puisque les 3 fichiers
 exécutables devaient gérer les arguments passés en ligne de commande pour faire leur appel
@@ -40,7 +40,7 @@ En outre, il centralise les dépendances aux autres bibliothèques.</p>
 <img src="img/archi_modulaire_3.png"/>
 
 
-<h4>Getopt</h4>
+<h3>Getopt</h3>
 
 Comme le programme gérait de plus en plus de paramètres fournis au lancement, les parser
 à la main aurait été laborieux. Ainsi, j'ai fait le choix d'utiliser le module 

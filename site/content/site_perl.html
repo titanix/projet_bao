@@ -19,7 +19,7 @@ il génère un fichier de même nom dans le dossier de sortie (hardcodé au nom 
 
 <div class="code-block">
 <div class="code-block-header">
-	<span style="font-weight:bold;">build_site.pl <a href="dl/build_site.pl">(téléchargement)</a></span></bold>
+	<span style="font-weight:bold;">build_site.pl <a href="dl/build_site.pl">(téléchargement)</a></span>
 </div>
 <div class="code-block-content">
 <pre style="color:#586e75"><span style="color:#859900">use</span> strict;
@@ -81,8 +81,20 @@ site via un dossier virtuel ajouté à la configuration du serveur et qui pointe
 <p>
 Comme le script Perl nécessite plusieurs arguments et que la copie de fichiers est plus
 facilement réalisée en shell qu'en Perl, j'ai crée un petit fichier Makefile, qui permet
-de généré le site en se rendant dans le répertoire éponyme et en tapant la commande make.
+de générer le site en se rendant dans le répertoire éponyme et en tapant la commande make.
 </p>
+
+<div class="code-block">
+<div class="code-block-header">
+	<span style="font-weight:bold;">makefile</a></span>
+</div>
+<div class="code-block-content">
+<pre>default:
+	test -d build || mkdir build
+	perl build_site.pl base_template.html content
+	cp -R content/copy/* build</pre>
+</div>
+</div>
 
 <div id="nav"><a href="site_intro.html">précédent</a> | 
 <a href="site_publication.html">suivant</a></div></div>

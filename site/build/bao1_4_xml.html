@@ -84,7 +84,8 @@ and before any other scripts.
   <div>
   <h2>Extraction XML avec LibXML</h2>
 
-<p>Le code a refactorisé de façon à utiliser une référence à une fonction pour l’extraction.
+<p>Je rappelle que le code a été refactorisé de façon à utiliser une référence à une fonction 
+d’extraction.
 Ainsi, toute la partie concernant l’ouverture des fichiers, le parcours récursif du
 répertoire et la création des fichiers de sortie n’est pas dupliquée.</p>
 
@@ -147,7 +148,7 @@ chaîne passée en paramètre.
 </div>
 </div>
 
-<h3>Extraction XPATH</h3>
+<h2>Extraction XPATH</h2>
 
 <p>Bien que l’API XPATH soit relativement simple d’utilisation, une méthode d’extraction 
 l’utilisant n’a pas été implémentée. En effet, j’ai déjà évoqué le fait que la méthode
@@ -161,15 +162,22 @@ feuille, c’est très problématique pour travailler sur les nœuds item d’un
 
 <p>Je n’ai pas vu venir ce problème suffisamment tôt dans le développement, car j’ai 
 l’habitude d’utiliser un framework dont le comportement était celui que j’attendais,
-à savoir qu’un appel à une méthode type toString renvoie le contenu du nœud sous 
-forme XML (cf. <a href="http://msdn.microsoft.com/fr-fr/library/bb341005(v=vs.100).aspx" target="_blank">System.Xml.Linq.XNode.ToString</a>).</p>
+à savoir qu’un appel à une méthode type <em>toString</em> renvoie le contenu du nœud sous 
+forme XML (cf. <a href="http://msdn.microsoft.com/fr-fr/library/bb341005(v=vs.100).aspx" target="_blank">System.Xml.Linq.XNode.ToString</a>).
+Et je n'avais pas envie de refaire la majeure partie de mon code pour me plier à une API
+mal designée.</p>
 
-<h3>Extraction RSS</h3>
+<h2>Extraction RSS</h2>
 
-<p>Il existe un modèle Perl basé sur LibXML spécialisé dans le traitement des fichiers
+<p>Il existe un module Perl basé sur LibXML spécialisé dans le traitement des fichiers
 RSS. Il n'a pas été non plus utilisé, car il ne peut parser que des fichiers RSS, ce
 qui incompatible avec l'approche utilisée.</p>
 
+<p>En effet, l'extraction doit pouvoir travailler sur des fragments de XML bien formé, alors
+que l'API travaille sur des fichiers RSS entier. Ceci dit, l'utilisation de ce module est 
+relativement simple, et vous pouvez consulter <a href="http://www.tal.univ-paris3.fr/plurital//travaux-2013-2014/projets-2013-2014-S2/Aurelie_Jouannet/BAO1.html" target="_blank">
+le travail d'une camarade</a> sur le sujet.
+</p>
 
 
 <div id="nav"><a href="bao1_3_chaine.html">précédent</a> | 

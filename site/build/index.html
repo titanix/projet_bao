@@ -11,15 +11,6 @@
   		<link href="index.css" media="screen" rel="stylesheet" type="text/css">
   		<link href="louis.css" media="screen" rel="stylesheet" type="text/css">
 
-<style>
-.hack
-{
-font-family: "adelle",Georgia,"Times New Roman",serif;
-font-size: 16px;
-font-weight: 700;
-line-height: 22px;
-}
-</style>
   		<style type="text/css">.tk-adelle{font-family:"adelle",serif;}</style>
   		<link rel="stylesheet" href="http://use.typekit.com/c/1265dd/adelle:n4:n7.XK9:F:2,XKF:F:2/d?3bb2a6e53c9684ffdc9a98ff1f5b2a62be32f57674629b256bf45cc5d898bd33078f6d102fef89283fbbb31e1e08dbab19f40e05a4b4be3e89b3372a143e7a26dcd5dad130c72bab3e8fd8b99a9642fbd1ac9ca2f85adca09826901eba44606d532f918a18db21e3aa7eedc4c96415fb336454aeba9ccc4db2a429ad19d964ab58d4b37e4065f51b76f05e5784b3d8559dc1b815733d6d01c3628dc2ef213aaf691e3a89bf6dd61e2ad9429b23fe4aa8ae920a330c526bf40743ee5dfcd44574840a956bad758ed0eee2b5a93c60d4e7fb298bff1da10e582117053d1df952252f3c620756aa9c01af18b814425fcac6691a37beec766e06872a3e540e07e591a00479af59d5422d070cd9e6028fcffcbc624bd8c4a7d13947ef50a81c4a28244fad90bde4a302">
 <script type="text/javascript">
@@ -48,7 +39,7 @@ xmlhttp.onreadystatechange = function()
     	document.getElementById("commit_message").innerHTML
     			= ('«' + jsonResult[0]["commit"]["message"] + '»'
     			+ '<br/>par ' + jsonResult[0]["commit"]["author"]["name"]
-    			+ '<br/>le ' + dateFr);
+    			+ '<br/><span style="color:#7D7D7D;">le ' + dateFr + '</span>');
     			
     	document.getElementById("commit_link").href
     		= jsonResult[0]["html_url"];
@@ -146,32 +137,28 @@ xmlhttp.send();
             </li>
             <li>
               1.2
-              <a href="bao1_1_filtreur.html">Code du filtreur</a>
-            </li>
-            <li>
-              1.3
               <a href="bao1_2_function_pointer.html">Pointeur de fonction en Perl</a>
             </li>
             <li>
-              1.4
+              1.3
               <a href="bao1_2_organisation.html">Modularisation du code (partie 1)</a>
             </li>
             
             <li>
-              1.5
+              1.4
               <a href="bao1_2_organisation_suite.html">Modularisation du code (partie 2)</a>
             </li>
             
             <li>
-              1.6
+              1.5
               <a href="bao1_3_chaine.html">Extraction par chaîne</a>
             </li>
             <li>
-              1.7
+              1.6
               <a href="bao1_4_xml.html">Extraction XML</a>
             </li>
             <li>
-              1.8
+              1.7
               <a href="bao1_5_parallelisation.html">Parallélisation du code</a>
             </li>
       </ol>

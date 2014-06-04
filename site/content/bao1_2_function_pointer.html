@@ -7,17 +7,20 @@
   <p>Le projet demande de traiter un corpus de fichier de plusieurs moyens différents (expressions
   régulières, parseur XML, etc.) pour lequel il y en a en commun de nombreuses opérations : 
   parcours récursif du répertoire à analyser, ouverture de fichiers, nettoyage des chaînes extraites
-  et génération des fichiers résultats.
+  et génération des fichiers de résultats.
   </p>
   <p>
-  Il n'est donc pas utile de répéter ces opérations plusieurs fois, en faisant une copie d'un fichier
-  en le modifiant pour y écrire un nouveau traitement. Pire, procéder comme cela devient vite un 
-  cauchemar à maintenir, car une modifications apportées à ces opérations dans un fichier ne seront
-  pas répercutées automatiquement dans les autres.
+  Il n'est donc pas utile de répéter ces opérations plusieurs fois, par exemple
+  en faisant une copie d'un fichier
+  et de le modifier pour y écrire un nouveau traitement. Pire, procéder comme cela devient vite un 
+  cauchemar à maintenir, car une modification apportée à ces opérations dans un fichier ne sera
+  pas répercutée automatiquement dans les autres.
   </p>
   <p>
-  L'idée est donc d'écrire ce code commun dans une fonction, d'écrire le code de traitement spécifique
-  dans une autre, de la passé en paramètre de la première fonciton évoquée.
+  L'idée est donc d'écrire ce code commun dans une fonction,
+  et  d'écrire le code de traitement spécifique dans une autre en lui passant en paramètre 
+  la première fonction évoquée
+  (<a href="http://fr.wikipedia.org/wiki/Fonction_de_rappel" target="_blank">fonction callback</a>).
   <br/>Pour pouvoir faire cela en Perl, il faut passer une référence vers la fonction à appeler
   puis utiliser une syntaxe spécifique pour l'appel depuis une variable.
   </p>
@@ -37,7 +40,7 @@ $fun_ref->(<em>arguments</em>);
 </div>
 </div>
 
-<h4>Démonstration</h4>
+<h3>Démonstration</h3>
 <p>Voici un script d'illustration. Il prend en argument le mot "lol" ou le mot "pwet". À chacun
 de ces mots est associée une procédure qui affiche un message. La fonction appelée est cherchée
 dans une table de hashage qui associe une chaîne de caractère à une référence sur une fonction.
@@ -87,23 +90,20 @@ main(<span style="color:#b58900"><span style="color:#b58900">@</span>ARGV</span>
 </div>
 </div>
 
-<h4>Commentaires</h4>
+<h3>Commentaires</h3>
 <p>Il n'y a à aucun moment besoin de préciser au langage les arguments d'une fonction, ni d'une
 référence vers une fonction.
 Si cela permet d'écrire très facilement pointeurs de fonctions, cela peut poser problème, 
 car même à l'exécution l'interpréteur ne se plaint pas si une fonction est invoquée avec le 
-mauvais nombre d'arguments, ou avec des types erronées.</p>
-<p>Cela m'est arrivé une fois quand j'ai modifié la fonction parcours_arborescence_fichiers 
+mauvais nombre d'argument, ou avec des arguments de type erroné.</p>
+<p>Cela m'est arrivé une fois quand j'ai modifié la fonction <em>parcours_arborescence_fichiers</em>
 (sur laquelle nous reviendrons) pour prendre en argument la fonction d'extraction à appliquer.
 J'avais oublié de repasser cet argument lors de l'appel récursif, ce qui ne menait pas à l'exécution
 escomptée du programme.</p>
 
-<h3>En C</h3>
-<p>TODO</p>
-
-<h3>En C#</h3>
+<h2>En C#</h2>
 <p>En C# il est possible d'utiliser des pointeurs de fonctions, appelés <em>delegate</em>
-<a href="http://msdn.microsoft.com/en-us/library/900fyy8e.aspx">(doc msdn)</a>
+<a href="http://msdn.microsoft.com/en-us/library/900fyy8e.aspx">(doc. msdn)</a>
 qui sont des références typées vers une méthode.</p>
 <p>La déclaration d'un delegate ressemble à la signature d'une méthode, accompagnée du
 mot clef delegate.</p>
@@ -119,9 +119,13 @@ références vers une méthode qui se conforme au prototype renseigné pour le d
 
 AddOne fun_ptr = x =&gt; x + 1; <span style="color: #008000">// on instancie une variable de type AddOne avec une fonction lambda</span>
 </pre></div>
+</div>
+</div>
 
-</div>
-</div>
+<p>On peut ensuite utiliser le nom du delegate avec la même syntaxe qu'un appel de méthode
+classique. L'avantage est qu'on utilise ici un typage statique fort, ce qui limite les
+problèmes d'appels avec de mauvais arguments.
+</p>
 
 <div id="nav"><a href="bao1_1_filtreur.html">précédent</a> | 
 <a href="bao1_2_organisation.html">suivant</a></div></div>

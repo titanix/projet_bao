@@ -78,16 +78,17 @@ githubrep	https://github.com/titanix/projet_bao.git (push)</pre>
 <pre>git push githubrep master</pre>
 </div></div>
 
-<p>On me demande mon nom d'utilisateur (l'adresse email principale du compte GH, qui a été
+<p>On me demande mon nom d'utilisateur (l'adresse email principale du compte GitHub, qui a été
 fixée dans la première partie de ce document) puis le mot de passe associé.
 <br/>Après un court instant, les fichiers sont maintenant sur le serveur, avec l'historique
-complet de commit réalisé sur la branche master jusque là.</p>
+complet de commit réalisé sur la branche master jusque-là.</p>
 
 <div class="note-block">
 <div class="note-block-header">
 	<span style="font-weight:bold;">Note sur la mémorisation du mot de passe</bold>
 </div>
-<div class="note-block-content">Comme j'utilise a version 1.7.9.6 (Apple Git-31.1) de Git, je ne peux pas utiliser
+<div class="note-block-content">Comme j'utilise la version 1.7.9.6 (Apple Git-31.1) de Git, 
+je ne peux pas utiliser
 l'utilitaire fourni par GitHub pour sauvegarder mon identifiant et mon mot de passe
 dans le trousseau du système d'exploitation ; il faut en effet au minimum la version
 1.7.10 pour profiter de cette fonctionnalité.
@@ -100,8 +101,6 @@ dans le trousseau du système d'exploitation ; il faut en effet au minimum la ve
 
 <p>Et tous les commits déjà effectués en local sont listés et peuvent être parcourus.</p>
 <a href="img/gh_commits.png" target="_blank"><img src="img/gh_commits.png"/></a>
-
-<p>Les différences entre les fichiers sont affichées de manière super <em>user-friendly.</em></p>
 
 <div class="note-block">
 <div class="note-block-header">
@@ -121,13 +120,15 @@ mis en ligne.
 </div>
 </div>
 
+<p>Les différences entre les fichiers sont affichées de manière super <em>user-friendly.</em></p>
+
 <a href="img/gh_modif.png" target="_blank"><img src="img/gh_modif.png"/></a>
 
 <h2>Git clone</h2>
 
 <p>Une fois le code en ligne sur la plateforme, il est possible de récupérer le code
 sur d'autres machines. Dans mon cas, j'ai testé dans une machine virtuelle faisant
-fonctionne OS X Mavericks.</p>
+fonctionner OS X Mavericks.</p>
 
 <p>
 La première fois, on utilise la commande clone, qui crée une copie locale,

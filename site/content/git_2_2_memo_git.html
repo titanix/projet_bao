@@ -13,7 +13,7 @@ des explications de ce site.
 <dt>Création d’un repository pour le dossier courant (récursif)</dt>
 <dd>git init</dd>
 
-<dt>Ajout d’un fichier aux fichiers à ajouter au dépot au prochain commit</dt>
+<dt>Ajout d’un fichier aux fichiers à sauvegarder prochain commit</dt>
 <dd>git add <em>filename</em></dd>
 
 <dt>Voir quel sont les fichiers qui seront ajoutés au prochain commit</dt>
@@ -29,6 +29,17 @@ des explications de ce site.
 <dt>Corriger le message du dernier commit</dt>
 <dd>git commit --amend -m "Fichier de sortie encodé en UFT8."</dd>
 </dl>
+
+<div class="note-block">
+<div class="note-block-header">
+	<span style="font-weight:bold;">Note à propos de git add</bold>
+</div>
+<div class="note-block-content">
+Git add agit sur le contenu du fichier au moment où la commande est exécutée. Si vous modifiez
+ce même fichier avant de faire un commit, il faudra au préalable réutiliser la commande git
+sinon les modifications faites dans l'intervalle ne seront pas prises en compte.
+</div>
+</div>
 
 <h3>Configuration de git</h3>
 
@@ -81,8 +92,8 @@ commit, et le dépôt distant ne va pas apprécier la nouvelle au prochain push.
 </div>
 </div>
 
-<p>Le commit amendé à en fait complètement supprimé de l'historique le précédent commit,
-qu'il est censé modifié. Ainsi, lors du push, le dépôt distant pense que l'on "saute dans
+<p>Le commit amendé a en fait complètement supprimé de l'historique le précédent commit,
+qu'il est censé modifier. Ainsi, lors du push, le dépôt distant pense que l'on "saute dans
 le temps", ce qu'il n'autorise pas. Il faut donc rapatrier le code du dépôt au moyen
 de la commande pull, qui est en fait un fetch (téléchargement du code) suivit d'un
 merge (fusion du code local et du code téléchargé). Dans notre cas la fusion se fait sans

@@ -80,12 +80,12 @@ and before any other scripts.
 		</aside>
           <div id="content">
 <div id='main' class="book">
-    <h1>Principe d'un logiciel de suivit de version</h1>
+    <h1>Principe d'un logiciel de suivi de version</h1>
   <div>
   <h2>Problématique</h2>
 
-<p>De manière générale, un logiciel de suivit de version répond à deux problématiques :
-<br/>- Conserver un historique des modifications des fichiers d'un projet, potentiel pour
+<p>De manière générale, un logiciel de suivi de version répond à deux problématiques :
+<br/>- Conserver un historique des modifications des fichiers d'un projet, potentiellement pour
 revenir en arrière en cas de pépin
 <br/>- Permet de travailler en équipe sur un projet
 </p>
@@ -93,46 +93,53 @@ revenir en arrière en cas de pépin
 <p>
 Le premier point est très intéressant même pour un développeur seul. En effet, qui ne
 s'est jamais retrouvé dans la situation où du code, fonctionnant quelques minutes
-auparavant, ne fonctionne désormais plus, sans qu'on une idée de la modification exacte
+auparavant, ne fonctionne désormais plus, sans qu'on ait une idée de la modification exacte
 qui a cassé le système ?
 </p>
 
-<p>Pour remédier à ça, on peut être tenter de copier tous ses fichiers dans une archive
-zip par exemple, pour avoir une sauvegarde. Mais c'est un système peut efficace, qui 
+<p>Pour remédier à cela, on peut être tenter de copier tous ses fichiers dans une archive
+zip par exemple, pour avoir une sauvegarde. Mais c'est un système peu efficace, qui 
 encombre le disque dur, prend du temps et ne permet d'un retour en arrière très limité.
-On peut aussi être tenté de sauvegardé un ou deux fichiers, de les renommer, etc. mais
-ça devient vite ingérable.
+On peut aussi être tenté de sauvegarder seulement un ou deux fichiers, de les renommer, 
+etc. mais ça devient vite ingérable.
 <p>
 
 <p>
 C'est là qu'intervient le logiciel de gestion source, qui permet de prendre en charge
-cette problématique de manière efficace. Il cache les sauvegardes, les effectue de manière
+cette problématique de manière efficace. Il met hors de la vue du développeur les sauvegardes,
+ les effectue de manière
 performante en terme d'espace disque en ne stockant que les modifications qui ont été
-réalisés sur les fichiers, et non les fichiers complet et nous permet de revenir sur une
+réalisés sur les fichiers (et non les fichiers complet) et nous permet de revenir sur une
 sauvegarde précise (qu'on aura pu commenter) et de comparer les fichiers actuels avec 
 leur versions antérieures.
 </p>
 
-<h3>Systèmes centralisés et décentralisés</h3>
+<h2>Systèmes centralisés et décentralisés</h2>
 
 <p>Si je ne me trompe pas, les <acronym title="Control Version System">VCS</acronym>
 étaient traditionnellement centralisés. C'est à dire
-qu'il étaient basé sur un serveur qui gérait se chargeait du travail précité.
+qu'ils étaient basés sur un serveur qui se chargeait du travail précité.
 CVS, Subversion (SVN) et Team Foundation Server (TFS) sont basés sur ce principe.
 </p>
 
-<p>Un de leur point faible est justement a complexité de déploiement et de maintenance
-que peut représenter un tel serveur. J'utilisait à un moment un serveur TFS 2010 sur mon
+<p>Un de leur point faible est justement la complexité de déploiement et de maintenance
+que peut représenter un tel serveur. J'utilisais à un moment un serveur TFS 2010 sur mon
 pc de bureau, cela consommait des ressources et faire une sauvegarde du serveur lui-même
-était relativement compliqué (cela impliquait le dump debase SQL Server). Heureusement,
-du côté Microsoft il existe désormais le service Visual Studio Online qui permet de
+était relativement compliqué (cela impliquait le dump manuel de bases SQL Server). 
+Heureusement,
+du côté Microsoft il existe désormais le service 
+<a href="http://www.visualstudio.com/en-us/products/what-is-visual-studio-online-vs" target="_blank">Visual Studio Online</a>
+ qui permet de
 profiter des avantages de TFS simplement sans avoir à utiliser un produit qui n'était
 de toute façon disponible que pour les professionnels.
 </p>
 
+<h3>Git</h3>
+
 <p>Git est lui un système décentralisé : chaque développeur qui l'utilise a le logiciel
-installé sur sa machine et s'en sert pour suivre les fichiers de son projet. La mise en 
-commun des sources est réalisée au moyen de fusionner avec et depuis des fichiers maintenu
+installé sur sa machine et s'en sert pour suivre les fichiers du projet. La mise en 
+commun des fichiers sources est réalisée au moyen de fusion (appelée merge) avec et depuis
+des fichiers maintenus
 par des dépôts accessibles par le réseau, qui utilisent eux-mêmes le logiciel git.
 </p>
 
@@ -143,7 +150,7 @@ Si un gestionnaire de source local est très pratique pour conserver un historiq
 son code, il ne 
 l'est pas pour mettre à disposition des membres de son équipe les sources du projet.
 Ce type de logiciel possède une version serveur, mais il est généralement embêtant pour
-un individu seul ou un groupe d'étudiant d'en installer un sur une serveur
+un individu seul ou un groupe d'étudiant d'en installer un sur un serveur
 (dans le sens de machine physique ou virtuelle connectée en permanence au réseau), car 
 cela coûte de l'argent.
 </p>
@@ -165,24 +172,24 @@ de rendre publique tous vos petits projets.
 vous pouvez cependant les contactez pour demander la version de base,
 qui coûte <a href="https://github.com/pricing" target="_blank">normalement 7$ par mois</a>
 et qui vous permet d'avoir 5 dépôts privés.
-<br/>C'est ce que j'ai fait pour ce projet. Note qu'il vous sera demandé une preuve
-de votre inscription dans une structure éducative.
+<br/>C'est ce que j'ai fait pour ce projet. Notez qu'il vous sera demandé une preuve
+de votre inscription dans une institution éducative.
 </p>
 
 <h3>Visual Studio en ligne <a href="http://www.visualstudio.com/" target="_blank">(lien)
 </a></h3>
 
 <p>
-Ici, il s'agit d'un service gratuit où les dépôts sont toujours privés, jusqu'à
+Ici, il s'agit d'un service où les dépôts sont toujours privés et gratuit jusqu'à
 5 utilisateurs. L'équivalent de GitHub dans le monde Microsoft s'appelle 
 <a href="https://www.codeplex.com/" target="_blank">Codeplex</a>, 
-dont le principal intérêt est d'offrir une compatibilité TFS. Il supporte également
+et son principal intérêt est d'offrir une compatibilité TFS. Il supporte également
 le protocole git, c'est pourquoi je le liste ici.
 </p>
 
-<p>Il s'agit d'un très bon service, dont je me sert depuis la beta et qui héberge
+<p>Il s'agit d'un très bon service, dont je me sers depuis la beta et qui héberge
 à ce jour 14 de mes projets personnels.
-Un point sympa est de ne pas avoir à créer un nième compte si vous
+Un point sympathique est de ne pas avoir à créer un nième compte si vous
 disposez déjà d'un compte live, hotmail ou Microsoft. Le système évolue rapidement
 et est souvent mis à jour avec de nouvelles fonctionnalités. En outre, il est compatible
 avec Visual Studio.</p>

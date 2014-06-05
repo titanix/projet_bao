@@ -4,7 +4,7 @@
   <div>
   <h2>Généralités</h2>
 
-<p>Comme projet utilise git et que le site, qui sert de documentation officielle, est
+<p>Comme le projet utilise git et que le site, qui sert de documentation officielle, est
 également suivit par ce logiciel, il devient possible d'exploiter certaines méthodes
 de publication que je qualifierai de <em>cool</em>.
 
@@ -13,16 +13,19 @@ de publication que je qualifierai de <em>cool</em>.
 
 <p>Azure (anciennement Windows Azure), est le service cloud de Microsoft. Il propose de
 nombreux services, souvent assez onéreux et à destination des entreprises, et parmi
-cette offre pléthorique, se trouve l'hébergement de site web.</p>
+cette offre pléthorique, se trouve l'hébergement de sites web.</p>
 
 <p>Un forfait <bold><a href="http://azure.microsoft.com/en-us/pricing/details/web-sites/" 
 target="_blank">gratuit</a></bold> existe et permet d'héberger jusqu'à 10 sites web
 en tant que sous-domaine du domaine azurewebsites.net. Si la plupart des options avancées
-de configuration nécessite un abonnement payant, on dispose de base d'un espace de stockage
-d'1 Go et de la possibilité d'exécuter du code ASP.Net, PHP, JAVA, Python sans avoir à 
+de configuration nécessitent un abonnement payant, on dispose de base d'un espace de stockage
+d'1 Go et de la possibilité d'exécuter du code ASP.Net, PHP, JAVA et Python sans avoir à 
 configurer quoique ce soit.
-<br/>Non nous limiterons aux pages statiques que nous avons générées via le petit script
-Perl.
+</p>
+
+<p>Le code du site du projet se limite cependant aux pages statiques générées 
+via le petit script Perl. Seule exception : la page de contact, qui utilise la technologie 
+asp.net.
 </p>
 
 <p>Les languages gérés par Azures Websites, vu depuis le panneau de configuration :</p>
@@ -37,9 +40,11 @@ réaliser des push afin de publier notre site web en une ligne de commande.</p>
 target="_blank">La documentation sur le sujet</a> est assez complète et couvre également
 le déploiement depuis GitHub.</p>
 
+<p>C'est une fonctionnalité intéressante, mais qui n'a pas été utilisée ici.</p>
+
 <h3>Déploiement via un compte GitHub</h3>
 
-<p>Azure Websites a la possibilité de récupérer automatiquement de lui-même les
+<p>Azure Websites offre également la possibilité de récupérer automatiquement de lui-même les
 push réalisés sur la branche d'un projet (public ou privé) hébergé sur GitHub.
 <br/>C'est la solution retenue pour ce projet.</p>
 
@@ -51,7 +56,7 @@ en récupère le contenu dans la foulée et le met à disposition du public.
 </div>
 </div>
 
-<p>Je voulais maintenir une branche orpheline gérant uniquement le résultat de la 
+<p>Je voulais maintenir une branche orpheline contenant uniquement le résultat de la 
 génération du site, mais comme j'ai rencontré plusieurs difficultés, mais je me suis
 contenté de revenir à une solution simple : ajouter ces fichiers à la branche master et
 l'utiliser comme branche de publication.
@@ -68,7 +73,7 @@ depuis le site directement vers les fichiers de code (après configuration, cf. 
 
 <img src="img/azure_deploy.png" />
 
-<h3>Configuration</h3>
+<h2>Configuration du serveur</h2>
 
 <p>Comme le contenu du site se trouve dans le répertoire site/build/ par rapport à la racine
 du projet, j'ai effectué une modification de configuration afin que le site soit 
@@ -81,15 +86,20 @@ que reconnaît IIS).
 
 <p>De manière générale, IIS a une approche assez défensive quant à l'accès des fichiers.
 Les fichiers dont l'extension n'a pas été spécifiquement enregistrée pour être
-servis à l'utilisateur ne lui seront pas envoyé même si le chemin est valide. Des petites
-bidouilles de path pour accéder au répertoire parent sont stoppées à la racine, etc.
+servi à l'utilisateur ne lui seront pas envoyé même si le chemin d'accès est valide.
+Les petites bidouilles de path pour accéder au répertoire parent sont stoppées à la racine,
+ etc.
 </p>
 
 <p>En particulier, l'accès aux fichiers Perl est interdit par défaut. Il faut donc
 configurer IIS afin qu'il puisse les renvoyer. Cela se fait au moyen d'un fichier
 de configuration XML nommé <em>web.config</em>, dans lequel on va enregistrer l'extension
 de fichier. Ce fichier sera placé à la racine du site.
-<br/>J'ai décidé de renvoyer le contenu des fichiers Perl en tant que texte brut.
+</p>
+
+<p>J'ai décidé de renvoyer le contenu des fichiers Perl en tant que texte brut, afin qu'ils
+puissent être affichés directement dans le navigateur (puisque c'est le comportement par
+défaut des navigateurs les plus utilisés pour ce type de contenu).
 </p>
 
 <div class="code-block">
@@ -111,14 +121,14 @@ de fichier. Ce fichier sera placé à la racine du site.
 
 <p>Il existait à la base dans le dossier <em>build</em> du site web un sous-dossier 
 <em>code</em> destiné à contenir les fichiers de code disponibles au téléchargement.
-Cependant, ces fichiers sont déjà présents sur le serveur à cause de la méthode
-de déploiement utilisé, et je ne voulais pas les dupliquer.
+Cependant ces fichiers sont déjà présents sur le serveur à cause de la méthode
+de déploiement utilisée, et je ne voulais pas les dupliquer.
 </p>
 
 <p>C'est pourquoi j'ai ajouté des chemins de dossiers virtuels supplémentaires dans la
-configuration du site web. De cette manière, les chemins sont toujours référencés avec 
+configuration du site web. De cette manière, les fichiers sont toujours référencés par 
 des chemins relatifs tels que <em>code/fichier.pl</em> dans les pages html mais n'ont 
-pas besoin d'être déplacé de leur endroit d'origine, qui n'est pas un dossier enfant
+pas besoin d'être déplacés de leur endroit d'origine, qui n'est pas un dossier enfant
 du répertoire où se trouvent les pages web.
 </p>
 
@@ -131,7 +141,7 @@ création de dossiers virtuels enfants d'un dossier virtuel inexistant.
 <h2>Hébergement sur GitHub Pages</h2>
 
 <p>GitHub propose lui aussi un service d'hébergement de pages web, à la différence qu'il
-ne gère que des pages statiques, qui peuvent avoir été rédigés dans certains formats, tel
+ne gère que des pages statiques, qui peuvent avoir été rédigées dans certains formats, tel
 que le <a href="http://fr.wikipedia.org/wiki/Markdown" target="_blank">markdown</a>.
 </p>
 

@@ -2,20 +2,25 @@
 <div id='main' class="book">
     <h1>Script de création du site</h1>
   <div>
+  
+  <h2>Master Page</h2>
 
 <p>L'idée est classique : on dispose d'un contenu identique pour toutes les pages,
 au sein duquel on place un contenu qui varie en fonction de la page demandée.
 C'est le concept de 
 <a href="http://msdn.microsoft.com/en-us/library/wtxbf3hh(v=vs.100).aspx" target="_blank">
-page maîtres</a> que l'on retrouve en asp.net.</p>
+page maîtres</a> que l'on retrouve en asp.net et qui est aussi utilisé dans d'autres
+frameworks web.</p>
 
 <p>Le contenu de base, qui structure chaque page, est présent dans un fichier nommé
 <em>base_template.html</em>. Dans celui-ci se trouve la chaîne de texte CONTENT_PLACEHOLDER
-qui est destinée à être remplacé par du contenu html. C'est le rôle du script Perl 
-présenté plus bas. Pour chaque fichier html présent dans un dossier passé en paramètre,
+qui est destinée à être remplacée par du contenu html. C'est le rôle du script Perl 
+présenté ci-dessous. Pour chaque fichier html présent dans un dossier passé en paramètre,
 il génère un fichier de même nom dans le dossier de sortie (hardcodé au nom de
 <em>build</em>) qui contient le code de la template de base + le contenu du fichier traité.
 </p>
+
+<h3>Script de construction du site</h3>
 
 <div class="code-block">
 <div class="code-block-header">
@@ -80,7 +85,7 @@ site via un dossier virtuel ajouté à la configuration du serveur et qui pointe
 
 <p>
 Comme le script Perl nécessite plusieurs arguments et que la copie de fichiers est plus
-facilement réalisée en shell qu'en Perl, j'ai crée un petit fichier Makefile, qui permet
+facilement réalisée en shell qu'en Perl, j'ai écrit un petit fichier Makefile, qui permet
 de générer le site en se rendant dans le répertoire éponyme et en tapant la commande make.
 </p>
 

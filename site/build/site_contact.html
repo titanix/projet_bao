@@ -84,8 +84,8 @@ and before any other scripts.
   <div>
   <h2>Moyen de contact</h2>
 
-<p>La présence d'une page de contact sur un tel s'impose. Mais je n'avais pas
-envie de laisser mon adresse en clair, ni celle de ma collègue de travail.
+<p>La présence d'une page de contact sur un tel site s'impose. Mais je n'avais pas
+envie de laisser mon adresse courriel en clair, ni celle de ma collègue de travail.
 J'ai donc décidé de créer une page dynamique contenant un formulaire permettant
 de nous envoyer des messages.</p>
 
@@ -94,7 +94,7 @@ technologie. J'ai choisi de la réaliser à l'aide d'une page .cshtml qui est
 interprétée sans configuration supplémentaire de ma part comme une page
 utilisant le moteur de vue <a href="http://en.wikipedia.org/wiki/ASP.NET_Razor_view_engine" 
 target="_blank">Razor</a>. Comparé au couple page .aspx et fichier de code behind
-.aspx.cs traditionel de l'ASP.Net cette solution à l'avantage de tenir dans 
+.aspx.cs traditionel de l'ASP.Net, cette solution à l'avantage de tenir dans 
 un unique fichier.</p>
 
 <h3>Code source</h3>
@@ -111,12 +111,13 @@ le fichier sur github</a>.
 </ul>
 </p>
 
-<h3>Envoi de mail</h3>
+<h2>Envoi de mail</h2>
 
 <p>L'envoi d'email programmaticallement nécessite des informations de connexions
-à un serveur SMTP, qu'il faudra passer à l'API idoine. Cependant coder ces
+à un serveur SMTP, qu'il faudra passer à l'API éponyme. Cependant écrire ces
 informations en dur dans le code est une mauvaise idée, notamment pour la maintenance
-mais aussi surtout pour la confidentialité : le code est destiné à être partagé.
+mais aussi et surtout pour la confidentialité : le code est destiné à être publié
+publiquement, partagé et pourquoi pas réutiliser par des étudiants des années futures.
 </p>
 
 <p>Heureusement le framework .net permet de déporter le problème vers le fichier
@@ -157,6 +158,10 @@ de connexion.</p>
 mailDiane) permettent de configurer les adresses où seront envoyés les messages
 générés par le site.</p>
 
+<p>Bien évidemment ce fichier ne se trouve pas dans le code du projet. Si une modification
+du fichier web.config référencée dans le projet est pushée sur git, il faut que je mette en
+ligne la version fonctionnelle à la main.
+</p>
 
 <div id="nav"><a href="site_publication.html">précédent</a> | 
 <a href="index.html">index</a></div></div>

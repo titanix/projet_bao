@@ -4,24 +4,25 @@
   <div>
   <h2>Utilisation de PATH</h2>
 
-<p>La méthode précédente utilisant une méthode beaucoup trop dangereuse, j'ai décidé de
+<p>Comme la méthode précédente utilise une méthode beaucoup trop dangereuse, j'ai décidé de
 me baser plutôt sur la variable PATH préexistante, et de laisser l'utilisateur la
-remplir lui même. Le programme utilisera la commande exec comme tout à l'heure,
+remplir lui même. Le programme utilisera la commande system comme tout à l'heure,
 mais avec seulement le nom de treetagger. Si le programme n'est pas dans le path, il ne
 sera pas trouvé, donc pas exécuté. Tant pis pour l'utilisateur.
 </p>
 
 <p>
 Le code de lib-parcours-common.pl se sert désormais du fichier treetagger2xml.pl qui
-a été modifié afin de pouvoir être utilisé en tant que fonction.
+a été modifié afin de pouvoir être utilisé en tant que fonction 
+(<a href="code/bao1/treetagger2xml-utf8.pl" target="_bLank">lien de téléchargement</a>).
 </p>
 
 <h2></h2>
 
 <p>L'utilisation d'un programme externe qui travaille sur des fichiers présents sur le
 système de fichiers est agaçante car elle oblige à créer des fichiers temporaires
-et à les lire, et à invoquer un programme externe dans le lancement est coûteux en 
-temps.</p>
+et à les lire, et le temps de chargement de l'exécutable est coûteux pour le déroulement
+du programme.</p>
 
 <p>Ainsi, réaliser un étiquetage de chaque fragment de texte au moment où il est extrait
 est prohibitif en terme de temps d'exécution, même sur un petit corpus. En outre, c'est

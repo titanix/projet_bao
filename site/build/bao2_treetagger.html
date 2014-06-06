@@ -95,14 +95,25 @@ fonctionne sur Windows, OS X et Linux.</p>
 L'installation n'est pas compliquée mais se fait en plusieurs étapes où il faut télécharger
 plusieurs archives tar.gz et ne pas les décompresser. C'est le script d'installation
 qui s'en charge. En outre, il faut télécharger plusieurs fichiers de configuration
-qui sont listés plus bas dans la page.
+qui sont listés plus bas dans la page du logiciel.
 </div>
 </div>
 
 <h2>Intégration à BOA2</h2>
 
+<div class="note-block">
+<div class="note-block-header">
+	<span style="font-weight:bold;">Note</bold>
+</div>
+<div class="code-block-content">
+Le contenu de la partie suivante est obsolète. Il est néanmoins conservé car il n'est pas
+inintéressant.
+</div>
+</div>
+
 <p>Le code ayant été organisé de manière relativement propre, l'intégration de TreeTagger
-au workflow est très simple. Conceptuellement, il s'agit de faire les 3 choses suivantes :
+au workflow existant est très simple. Conceptuellement, il s'agit de faire les 3 choses 
+suivantes :
 </p>
 
 <ol>
@@ -177,18 +188,19 @@ passée en paramètre, on s'expose à un risque de sécurité si on utilise la v
 elle-même.
 <p>
 
-<p>Ainsi, si on fixe dans le shell une commande malicieuse plutôt qu'un chemin, 
+<p>Par exemple, si on fixe dans le shell une commande malicieuse plutôt qu'un chemin, 
 le code Perl va l'exécuter.
 <div class="code-block">
 <div class="code-block-content">
 TREETAGGER_PATH="rm * "
-<br/><em>(dans le code perl)</em>
+<br/><em>(puis dans le code perl)</em>
 <br/>system("$ENV{'TREETAGGER_PATH'} < inFile.txt > outFile.txt");
 </div>
 </div>
 
-<p>La première commande est à tapper dans le code shell, la troisième ligne représente 
-l'appel dans le code. Notez la présente d'une espace après l'étoile dans la variable
+<p>La première commande est à taper dans le shell, tandis que la troisième ligne représente 
+l'appel à <em>system</em> dans le code. Notez la présente d'une espace après l'étoile dans 
+la variable
 d'environnement. Si elle est absente, rm tentera de supprimer un fichier ayant pour 
 nom */treetagger-french-utf8. Avec l'espace, rm supprime tous les fichiers du répertoire
 et tente également de supprimer un fichier nommé /treetagger-french-utf8.
@@ -222,7 +234,7 @@ git patch format-patch -1 HEAD
 
 <div class="code-block">
 <div class="code-block-header">
-<span style="font-weight:bold;">La patch de la solution pourrie</bold>
+<span style="font-weight:bold;">La patch de cette (mauvaise) solution</bold>
 </div>
 <div class="code-block-content">
 <!-- HTML generated using hilite.me --><div>

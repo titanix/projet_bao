@@ -27,7 +27,7 @@ NOM ADJ
 Les données sur lesquelles nous travaillons sont des fichiers textes dans
 lequels une ligne correspond à un terme, pour lequel est fourni la forme
 trouvées dans le texte, le lemme correspondant et sa catégorie. Ces 
-informations sont séparées par une tabulation et leur ordre dépendant du
+informations sont séparées par une tabulation et leur ordre dépend du
 logiciel (Cordial ou TreeTagger).
 </p>
 
@@ -52,38 +52,39 @@ logiciel (Cordial ou TreeTagger).
 
 <h2>Algorithme</h2>
 <p>
-Conceptuellement, on travaille principalement avec 3 listes : une qui contient
-le motif "découpé" (un élément du tableau = une catégorie), une qui contient 
-la suite des catégories du fichier qu'on traite, dans leur order d'apparition
-et finalement une liste qui stocke temporairement des résultats intermédiaire,
+Conceptuellement, on travaille avec 3 listes : une qui contient
+le motif "découpé" sous forme d'un tableau (un élément du tableau = une catégorie), 
+une qui contient 
+la suite des catégories du fichier qu'on traite, dans leur ordre d'apparition
+et finalement une liste qui stocke temporairement des résultats intermédiaires,
 tel que les mots correspondants au motif partiel. Notez que cette dernière
-liste n'apparaît pas explicitement dans le pseudo-code.
+liste n'apparaît pas explicitement dans le pseudo-code énoncé ci-après.
 </p>
 
 <p>L'idée est de tester pour chaque suite de catégories (boucle i)
 présente dans le fichier si elle correspond au motif. 
-Pour cela, on teste si l'élément en cours correspondant au premier élément 
+Pour cela, on teste si l'élément en cours correspond au premier élément 
 du motif. Si ce n'est pas le cas, on peut
-déjà passer à l'élément de donnée suivant, car le motif ne correspond pas.
+déjà passer à l'élément de donnée suivant, car on et sûr que le motif ne correspond pas.
 </p>
 
-<p>Dans le cas contraire, on va vérifier si les éléments suivants correspondent
+<p>Dans le cas où il y a correspondance, on va vérifier si les éléments suivants correspondent
 également (boucle j). Dès qu'on trouve un contre-exemple, on arrête cette 
-vérification car on sait que le motif ne correspond pas. La clef, est de
+vérification car on sait que le motif ne correspond pas. La clef de l'algorithme, est de
 ne pas incrémenter i lors de la recherche de la suite du motif.
-Ainsi il n'est pas nécessaire de tenir compte du décalage introduit pour la tester.
+Ainsi il n'est pas nécessaire de tenir compte du décalage introduit pour tester le motif à
+partir de l'élément suivant de la liste globale qu'on analyse.
 </p>
 
 <p>
 Il s'agit donc en quelque chose de faire glisser le motif le long de la suite
-de catégorie et de voir s'il correspond. L'image ci-dessous représente 3
+de catégories et de voir s'il correspond. L'image ci-dessous représente 3
 itérations de la boucle i. Dans la première, on constate à i=0 et j=0 que le
 motif ne correspond pas (c'est pourquoi j'ai utilisé la couleur rouge).
-Idem avec i=1 et j=0. En revanche, avec i=1 la catégorie est identique. 
+De même pour i=1 et j=0. En revanche, avec i=1 la catégorie est identique. 
 On incrémente j, qui passe également à 1 afin de tester la suite du motif.
-Elle matche également. En outre le motif est complètement reconnu, on passe
-donc à la reconnaissance à partir du mot suivant (PRP), qui n'est pas indiquée
-sur l'image.
+Elle matche également. En outre, comme le motif est complètement reconnu, on passe
+à la reconnaissance à partir du mot suivant (PRP), qui n'est pas indiquée sur l'image.
 </p>
 
 <img src="img/tab_algo.png"/>
@@ -136,8 +137,8 @@ de catégories ("colonnes").
 <p>Il est également fait usage d'un tableau de tableaux (nommé <em>data</em>)
 pour stocker les
 données lues depuis le fichier. Le tableau principal contient les lignes du
-fichiers, elles-mêmes représentées sous la forme d'un tableau forme / lemme / 
-catégorie, dont l'ordre exacte dépendant du fichier traité.
+fichier, elles-mêmes représentées sous la forme d'un tableau forme / lemme / 
+catégorie, dont l'ordre exact dépendant du fichier traité.
 </p>
 
 <div class="code-block">
@@ -182,7 +183,7 @@ correcte de ces variables.
 </div>
 <div class="note-block-content">
 L'algorithme ne teste pas, dans le boucle (k, correspondante à j dans le
-pseudo-code) si l'index i+k existe dans tableau de donnée. Perl semble assez
+pseudo-code) si l'index i+k existe dans tableau de données. Perl semble assez
 laxiste sur la question, mais cela provoquerait une exception si le code était
 transposé tel quel dans un autre autre langage, ou pire, une erreur qui ne
 se pas détectée immédiatement (en C par exemple).
